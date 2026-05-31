@@ -1,0 +1,72 @@
+<div class="page-layout">
+  <app-navbar />
+
+  <div class="main-content">
+    <div class="confirmation-container">
+      <!-- Icône succès -->
+      <div class="success-icon">
+        <span class="material-icons">check_circle</span>
+      </div>
+
+      <h2>Transfert enregistré avec succès !</h2>
+      <p class="subtitle">Le virement a été initié. Voici le code de retrait.</p>
+
+      <!-- Code de retrait -->
+      <div class="code-retrait">
+        <p class="code-label">CODE DE RETRAIT</p>
+        <h1 class="code">{{ codeRetrait }}</h1>
+        <p class="code-hint">Communiquez ce code au bénéficiaire</p>
+      </div>
+
+      <!-- Détails financiers -->
+      <div class="details-financiers">
+        <div class="detail-item">
+          <p class="detail-label">ENVOYÉ</p>
+          <p class="detail-value">{{ montant }} MAD</p>
+        </div>
+        <div class="divider-vertical"></div>
+        <div class="detail-item">
+          <p class="detail-label">FRAIS</p>
+          <p class="detail-value">{{ frais }} MAD</p>
+        </div>
+        <div class="divider-vertical"></div>
+        <div class="detail-item">
+          <p class="detail-label">REÇU</p>
+          <p class="detail-value">{{ montantRecu }} €</p>
+        </div>
+      </div>
+
+      <!-- Infos bénéficiaire -->
+      <div class="beneficiaire-info">
+        <p><strong>Bénéficiaire :</strong> Dia Thorpe</p>
+        <p><strong>Pays :</strong> Sénégal</p>
+        <p><strong>Téléphone :</strong> 778260892</p>
+      </div>
+
+      <!-- Date et heure -->
+      <div class="date-info">
+        <p>{{ dateTransfert | date: 'dd/MM/yyyy à HH:mm:ss' }}</p>
+      </div>
+
+      <!-- Envoyer le code par -->
+      <div class="envoyer-code">
+        <p>Envoyer le code par</p>
+        <div class="envoyer-buttons">
+          <button class="btn-envoyer"><span class="material-icons">phone</span> SMS</button>
+          <button class="btn-envoyer"><span class="material-icons">email</span> Email</button>
+          <button class="btn-envoyer"><span class="material-icons">chat</span> WhatsApp</button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button class="btn-imprimer">
+          <span class="material-icons">print</span> Imprimer le reçu
+        </button>
+        <button class="btn-nouveau" routerLink="/agent/nouveau-transfert">
+          <span class="material-icons">send</span> Nouveau transfert
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

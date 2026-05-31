@@ -1,0 +1,201 @@
+.page-layout {
+  display: flex;
+}
+
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  min-height: 100vh;
+  background: #f5d5c0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.confirmation-container {
+  background: white;
+  border-radius: 16px;
+  padding: 48px;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+  margin-bottom: 24px;
+}
+
+.success-icon .material-icons {
+  font-size: 80px;
+  color: #28a745;
+  background: #d4edda;
+  border-radius: 50%;
+  padding: 16px;
+}
+
+h2 {
+  font-size: 24px;
+  color: #2c1810;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 32px;
+}
+
+/* Code de retrait */
+.code-retrait {
+  border: 2px solid #e8541a;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  background: #fff5f0;
+}
+
+.code-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.code {
+  font-size: 48px;
+  font-weight: bold;
+  color: #e8541a;
+  letter-spacing: 4px;
+  margin: 0;
+}
+
+.code-hint {
+  font-size: 13px;
+  color: #666;
+  margin-top: 8px;
+}
+
+/* Détails financiers */
+.details-financiers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 32px;
+  gap: 32px;
+}
+
+.detail-item {
+  text-align: center;
+}
+
+.detail-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.detail-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2c1810;
+}
+
+.divider-vertical {
+  width: 1px;
+  height: 40px;
+  background: #ddd;
+}
+
+/* Envoyer code */
+.envoyer-code {
+  margin-bottom: 32px;
+}
+
+.envoyer-code p {
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.envoyer-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-envoyer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 2px solid #e8541a;
+  background: white;
+  color: #e8541a;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-envoyer:hover {
+  background: #e8541a;
+  color: white;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.btn-imprimer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border: 2px solid #2c1810;
+  background: white;
+  color: #2c1810;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-nouveau {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: #e8541a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.beneficiaire-info {
+  background: #f5d5c0;
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.beneficiaire-info p {
+  color: #2c1810;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.date-info {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 24px;
+}

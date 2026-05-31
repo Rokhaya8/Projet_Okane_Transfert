@@ -1,0 +1,87 @@
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: #2c1810;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 40px;
+  padding: 0 8px;
+  text-align: center;
+}
+
+.brand-okane {
+  color: #e8541a;
+}
+
+.brand-transfer {
+  color: white;
+}
+
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.sidebar-links a {
+  text-decoration: none;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-links a:hover {
+  background: rgba(232, 84, 26, 0.3);
+}
+
+.sidebar-links a.active {
+  background: #e8541a;
+  color: white;
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  align-items: center;
+}
+
+.agent-name {
+  color: white;
+  font-size: 14px;
+}
+
+.btn-logout {
+  width: 100%;
+  background: none;
+  border: 2px solid #e8541a;
+  color: #e8541a;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background: #e8541a;
+  color: white;
+}

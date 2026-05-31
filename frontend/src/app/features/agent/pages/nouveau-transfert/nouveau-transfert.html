@@ -1,1 +1,168 @@
-<p>nouveau-transfert works!</p>
+<div class="page-layout">
+  <app-navbar />
+
+  <div class="main-content">
+    <div class="transfert-container">
+      <!-- Header -->
+      <div class="page-header">
+        <h2>Nouveau Transfert</h2>
+      </div>
+
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step" [class.active]="currentStep === 1" [class.done]="currentStep > 1">
+          <div class="step-circle">1</div>
+          <div class="step-label">Expéditeur</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" [class.active]="currentStep === 2" [class.done]="currentStep > 2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Bénéficiaire & Montant</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" [class.active]="currentStep === 3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Confirmation</div>
+        </div>
+      </div>
+
+      <!-- Étape 1 : Expéditeur -->
+      @if (currentStep === 1) {
+        <div class="form-card">
+          <h3>Informations de l'expéditeur</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nom</label>
+              <input type="text" placeholder="Nom" [(ngModel)]="expediteur.nom" />
+            </div>
+            <div class="form-group">
+              <label>Prénom</label>
+              <input type="text" placeholder="Prénom" [(ngModel)]="expediteur.prenom" />
+            </div>
+            <div class="form-group">
+              <label>Type de pièce d'identité</label>
+              <select [(ngModel)]="expediteur.typeIdentite">
+                <option value="CIN">CIN</option>
+                <option value="PASSPORT">Passeport</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Numéro de pièce d'identité</label>
+              <input type="text" placeholder="Numéro" [(ngModel)]="expediteur.numIdentite" />
+            </div>
+            <div class="form-group">
+              <label>Téléphone</label>
+              <input
+                type="text"
+                placeholder="+212 6XX XXX XXX"
+                [(ngModel)]="expediteur.telephone"
+              />
+            </div>
+            <div class="form-group">
+              <label>Pays</label>
+              <input type="text" [value]="paysAgence" disabled class="input-disabled" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-primary" (click)="nextStep()">
+              Suivant <span class="material-icons">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Étape 2 : Bénéficiaire & Montant -->
+      @if (currentStep === 2) {
+        <div class="form-card">
+          <h3>Informations du bénéficiaire & Montant</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nom</label>
+              <input type="text" placeholder="Nom" [(ngModel)]="beneficiaire.nom" />
+            </div>
+            <div class="form-group">
+              <label>Prénom</label>
+              <input type="text" placeholder="Prénom" [(ngModel)]="beneficiaire.prenom" />
+            </div>
+            <div class="form-group">
+              <label>Téléphone</label>
+              <input
+                type="text"
+                placeholder="+221 7X XXX XX XX"
+                [(ngModel)]="beneficiaire.telephone"
+              />
+            </div>
+            <div class="form-group">
+              <label>Pays de réception</label>
+              <select [(ngModel)]="beneficiaire.pays">
+                <option value="Sénégal">Sénégal</option>
+                <option value="France">France</option>
+                <option value="Côte d'Ivoire">Côte d'Ivoire</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Montant à envoyer</label>
+              <div class="input-with-currency">
+                <input type="number" placeholder="0.00" [(ngModel)]="montant" />
+                <span class="currency-badge">{{ deviseAgence }}</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Mode de réception</label>
+              <select [(ngModel)]="modeReception">
+                <option value="CASH">Cash en agence</option>
+                <option value="MOBILE_MONEY">Mobile Money</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-secondary" (click)="prevStep()">
+              <span class="material-icons">arrow_back</span> Retour
+            </button>
+            <button class="btn-primary" (click)="nextStep()">
+              Suivant <span class="material-icons">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Étape 3 : Confirmation -->
+      @if (currentStep === 3) {
+        <div class="form-card">
+          <h3>Récapitulatif</h3>
+          <div class="recap-grid">
+            <div class="recap-section">
+              <h4>Expéditeur</h4>
+              <p><strong>Nom :</strong> {{ expediteur.nom }} {{ expediteur.prenom }}</p>
+              <p><strong>Téléphone :</strong> {{ expediteur.telephone }}</p>
+              <p><strong>Pièce d'identité :</strong> {{ expediteur.numIdentite }}</p>
+              <p><strong>Pays :</strong> {{ paysAgence }}</p>
+            </div>
+            <div class="recap-section">
+              <h4>Bénéficiaire</h4>
+              <p><strong>Nom :</strong> {{ beneficiaire.nom }} {{ beneficiaire.prenom }}</p>
+              <p><strong>Téléphone :</strong> {{ beneficiaire.telephone }}</p>
+              <p><strong>Pays :</strong> {{ beneficiaire.pays }}</p>
+            </div>
+            <div class="recap-section recap-montant">
+              <h4>Détails</h4>
+              <p><strong>Montant envoyé :</strong> {{ montant }} MAD</p>
+              <p><strong>Frais :</strong> 60 MAD</p>
+              # À remplacer par le calcul réel des frais
+              <p><strong>Total à payer :</strong> {{ montant + 60 }} MAD</p>
+              <p><strong>Mode de réception :</strong> {{ modeReception }}</p>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-secondary" (click)="prevStep()">
+              <span class="material-icons">arrow_back</span> Retour
+            </button>
+            <button class="btn-primary" (click)="confirmerTransfert()">
+              <span class="material-icons">check_circle</span> Confirmer
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
