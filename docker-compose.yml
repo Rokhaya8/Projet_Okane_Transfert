@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: okane_transfer
+      POSTGRES_USER: okane
+      POSTGRES_PASSWORD: okane123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/okane_transfer
+      SPRING_DATASOURCE_USERNAME: okane
+      SPRING_DATASOURCE_PASSWORD: okane123
+
+  frontend:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: sh -c "npm install && npx ng serve --host 0.0.0.0 --disable-host-check"
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

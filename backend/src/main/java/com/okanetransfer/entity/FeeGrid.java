@@ -17,10 +17,10 @@ public class FeeGrid {
     @JoinColumn(name = "corridor_id")
     private TransferCorridor corridor;
 
-    @Column(nullable = false)
+    @Column(name = "validfrom", nullable = false)
     private LocalDateTime validFrom;
 
-    @Column(nullable = false)
+    @Column(name = "validto", nullable = false)
     private LocalDateTime validTo;
 
     @Column(nullable = false)

@@ -14,33 +14,35 @@ public class Transfer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "referencecode", nullable = false, unique = true)
     private String referenceCode;
 
-    @Column(nullable = false)
+    @Column(name = "amountsent", nullable = false)
     private BigDecimal amountSent;
 
-    @Column(nullable = false)
+    @Column(name = "amountreceived", nullable = false)
     private BigDecimal amountReceived;
 
     @Column(nullable = false)
     private BigDecimal fees;
 
-    @Column(nullable = false)
+    @Column(name = "commissionagency", nullable = false)
     private BigDecimal commissionAgency;
 
-    @Column(nullable = false)
+    @Column(name = "commissioncentral", nullable = false)
     private BigDecimal commissionCentral;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransferStatus status;
 
-    @Column(nullable = false)
+    @Column(name = "createdat", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(name = "paidat")
     private LocalDateTime paidAt;
 
+    @Column(name = "expirydate")
     private LocalDateTime expiryDate;
 
     // Relations

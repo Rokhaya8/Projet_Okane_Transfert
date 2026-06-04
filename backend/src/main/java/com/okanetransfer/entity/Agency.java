@@ -23,13 +23,13 @@ public class Agency {
     @Column(nullable = false)
     private String country;
 
-    @Column(nullable = false)
+    @Column(name = "dailylimit", nullable = false)
     private BigDecimal dailyLimit;
 
     @Column(nullable = false)
     private boolean active = true;
 
-    @Column(nullable = false)
+    @Column(name = "createdat", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToOne

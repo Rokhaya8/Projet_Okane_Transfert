@@ -12,7 +12,7 @@ public class Beneficiary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "fullname", nullable = false)
     private String fullName;
 
     @Column(nullable = false)
@@ -21,9 +21,9 @@ public class Beneficiary {
     @Column(nullable = false)
     private String country;
 
-    @Column(nullable = false)
+    @Column(name = "identitynumber", nullable = false)
     private String identityNumber;
 
-    @Column(nullable = false)
+    @Column(name = "watchlistflag", nullable = false)
     private boolean watchlistFlag = false;
 }

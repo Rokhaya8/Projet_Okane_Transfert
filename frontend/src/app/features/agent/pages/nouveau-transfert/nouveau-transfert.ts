@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../components/navbar/navbar';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nouveau-transfert',
-  imports: [RouterLink, FormsModule, NavbarComponent],
+  imports: [FormsModule, NavbarComponent],
   templateUrl: './nouveau-transfert.html',
   styleUrl: './nouveau-transfert.css',
 })

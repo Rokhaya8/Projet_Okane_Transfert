@@ -17,18 +17,18 @@ public class FeeTier {
     @JoinColumn(name = "fee_grid_id")
     private FeeGrid feeGrid;
 
-    @Column(nullable = false)
+    @Column(name = "minamount", nullable = false)
     private BigDecimal minAmount;
 
-    @Column(nullable = false)
+    @Column(name = "maxamount", nullable = false)
     private BigDecimal maxAmount;
 
-    @Column(nullable = false)
+    @Column(name = "fixedfee", nullable = false)
     private BigDecimal fixedFee;
 
-    @Column(nullable = false)
+    @Column(name = "percentagefee", nullable = false)
     private BigDecimal percentageFee;
 
-    @Column(nullable = false)
+    @Column(name = "agencysharepercent", nullable = false)
     private BigDecimal agencySharePercent;
 }

@@ -21,7 +21,7 @@ public class ExchangeRate {
     @Column(nullable = false)
     private BigDecimal rate;
 
-    @Column(nullable = false)
+    @Column(name = "effectivedate", nullable = false)
     private LocalDateTime effectiveDate = LocalDateTime.now();
 
     @Column(nullable = false)

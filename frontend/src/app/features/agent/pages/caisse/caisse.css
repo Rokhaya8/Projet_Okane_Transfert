@@ -1,0 +1,157 @@
+.page-layout { display: flex; }
+.main-content { margin-left: 240px; flex: 1; min-height: 100vh; }
+
+.container {
+  padding: 32px 48px;
+  background: #f5d5c0;
+  min-height: 100vh;
+}
+
+.container h2 {
+  font-size: 26px;
+  color: #2c1810;
+  margin: 0 0 28px 0;
+  font-weight: bold;
+  border-bottom: 2px solid rgba(44,24,16,0.1);
+  padding-bottom: 16px;
+}
+
+/* Solde */
+.balance-card {
+  background: white;
+  border-radius: 14px;
+  padding: 24px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
+}
+.balance-card .material-icons { font-size: 48px; color: #e8541a; }
+.balance-card p { margin: 0; color: #888; font-size: 13px; }
+.balance-card h3 { margin: 6px 0 0 0; font-size: 32px; color: #2c1810; font-weight: bold; }
+.btn-refresh {
+  margin-left: auto;
+  padding: 10px 20px;
+  background: #fdf3ee;
+  color: #e8541a;
+  border: 2px solid #e8541a;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-refresh:hover { background: #e8541a; color: white; }
+
+/* Opérations */
+.operations-card, .close-card {
+  background: white;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
+}
+.operations-card h3, .close-card h3 {
+  color: #2c1810;
+  font-size: 18px;
+  margin: 0 0 18px 0;
+  font-weight: bold;
+}
+
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: #f5d5c0;
+  padding: 12px 14px;
+  text-align: left;
+  color: #2c1810;
+  font-weight: bold;
+  font-size: 13px;
+}
+td { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; color: #444; font-size: 14px; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fdf3ee; }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.PENDING { background: #fff3cd; color: #856404; }
+.PAID { background: #d4edda; color: #155724; }
+.CANCELLED { background: #f8d7da; color: #721c24; }
+.EXPIRED { background: #e2e3e5; color: #383d41; }
+
+.empty { text-align: center; color: #999; padding: 40px 0; font-size: 15px; }
+
+/* Clôture */
+.close-form {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.close-form label { color: #555; font-size: 14px; white-space: nowrap; }
+.close-form input {
+  padding: 11px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  width: 180px;
+  outline: none;
+}
+.close-form input:focus { border-color: #e8541a; }
+.btn-close {
+  padding: 11px 28px;
+  background: #2c1810;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-close:hover { background: #e8541a; }
+
+/* Réconciliation */
+.reconciliation {
+  background: #fdf3ee;
+  border-radius: 10px;
+  padding: 20px;
+  border-left: 4px solid #e8541a;
+}
+.reconciliation h4 { margin: 0 0 14px 0; color: #2c1810; }
+.reconciliation div { padding: 6px 0; font-size: 14px; color: #444; }
+.reconciliation div span { font-weight: 600; color: #2c1810; margin-right: 8px; }
+.reconciliation .ok { color: #155724; font-weight: bold; }
+.reconciliation .error-text { color: #dc3545; font-weight: bold; }
+
+/* Écart */
+.discrepancy-form { margin-top: 16px; }
+.discrepancy-form h4 { color: #dc3545; margin: 0 0 12px 0; }
+.discrepancy-form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  height: 80px;
+  resize: none;
+  margin-bottom: 10px;
+  outline: none;
+  box-sizing: border-box;
+}
+.discrepancy-form button {
+  padding: 10px 24px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.error { color: #dc3545; font-size: 14px; margin-top: 10px; padding: 10px 14px; background: #f8d7da; border-radius: 8px; }
+.success { color: #155724; font-size: 14px; margin-top: 10px; padding: 10px 14px; background: #d4edda; border-radius: 8px; }

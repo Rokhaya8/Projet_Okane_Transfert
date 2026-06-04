@@ -12,10 +12,10 @@ public class TransferCorridor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "sourcecountry", nullable = false)
     private String sourceCountry;
 
-    @Column(nullable = false)
+    @Column(name = "destinationcountry", nullable = false)
     private String destinationCountry;
 
     @ManyToOne

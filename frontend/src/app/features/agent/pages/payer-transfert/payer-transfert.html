@@ -1,1 +1,63 @@
-<p>payer-transfert works!</p>
+<div class="page-layout">
+  <app-navbar />
+  <div class="main-content">
+    <div class="container">
+      <h2>Payer un Transfert</h2>
+
+      <!-- Recherche -->
+      <div class="search-card" *ngIf="!transfer && !success">
+        <h3>Rechercher le transfert</h3>
+        <div class="search-row">
+          <input [(ngModel)]="searchCode" placeholder="Code de retrait (ex: AB4X9K2M)" />
+          <span>ou</span>
+          <input [(ngModel)]="searchPhone" placeholder="Téléphone bénéficiaire" />
+          <button (click)="search()" [disabled]="loading">
+            {{ loading ? 'Recherche...' : 'Rechercher' }}
+          </button>
+        </div>
+        <div class="error" *ngIf="error">{{ error }}</div>
+      </div>
+
+      <!-- Détail transfert trouvé -->
+      <div class="transfer-card" *ngIf="transfer">
+        <h3>Transfert trouvé</h3>
+        <div class="info-grid">
+          <div><span>Code :</span> <strong>{{ transfer.referenceCode }}</strong></div>
+          <div><span>Montant à payer :</span> <strong>{{ transfer.amountReceived }} </strong></div>
+          <div><span>Bénéficiaire :</span> <strong>{{ transfer.beneficiary?.fullName }}</strong></div>
+          <div><span>Téléphone :</span> <strong>{{ transfer.beneficiary?.phone }}</strong></div>
+          <div><span>Statut :</span> <span class="badge" [class]="transfer.status">{{ transfer.status }}</span></div>
+          <div><span>Expiration :</span> <strong>{{ transfer.expiryDate | date:'dd/MM/yyyy' }}</strong></div>
+        </div>
+
+        <div class="identity-section">
+          <h4>Vérification d'identité (obligatoire)</h4>
+          <div class="id-row">
+            <select [(ngModel)]="identityType">
+              <option value="CIN">CIN</option>
+              <option value="PASSEPORT">Passeport</option>
+              <option value="PERMIS">Permis de conduire</option>
+            </select>
+            <input [(ngModel)]="identityNumber" placeholder="Numéro de la pièce d'identité" />
+          </div>
+        </div>
+
+        <div class="error" *ngIf="error">{{ error }}</div>
+
+        <div class="actions">
+          <button class="btn-cancel" (click)="reset()">Annuler</button>
+          <button class="btn-confirm" (click)="confirmPayout()" [disabled]="loading">
+            {{ loading ? 'Traitement...' : 'Confirmer le paiement' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Succès -->
+      <div class="success-card" *ngIf="success">
+        <span class="material-icons">check_circle</span>
+        <p>{{ success }}</p>
+        <button (click)="reset()">Nouveau paiement</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -29,8 +29,10 @@ public class CashDrawer {
     @Column(nullable = false)
     private CashDrawerStatus status;
 
+    @Column(name = "openingtime")
     private LocalDateTime openingTime;
 
+    @Column(name = "closingtime")
     private LocalDateTime closingTime;
 
     public enum CashDrawerStatus {

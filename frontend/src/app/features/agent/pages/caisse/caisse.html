@@ -1,1 +1,72 @@
-<p>caisse works!</p>
+<div class="page-layout">
+  <app-navbar />
+  <div class="main-content">
+    <div class="container">
+      <h2>Gestion de Caisse</h2>
+
+      <!-- Solde -->
+      <div class="balance-card">
+        <span class="material-icons">account_balance_wallet</span>
+        <div>
+          <p>Solde actuel</p>
+          <h3>{{ balance | number:'1.2-2' }} MAD</h3>
+        </div>
+        <button class="btn-refresh" (click)="loadBalance()">↻ Actualiser</button>
+      </div>
+
+      <!-- Opérations du jour -->
+      <div class="operations-card">
+        <h3>Opérations du {{ today | date:'dd/MM/yyyy' }}</h3>
+        <table *ngIf="operations.length > 0">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Bénéficiaire</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Heure</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let op of operations">
+              <td>{{ op.referenceCode }}</td>
+              <td>{{ op.beneficiary?.fullName }}</td>
+              <td>{{ op.amountSent }} MAD</td>
+              <td><span class="badge" [class]="op.status">{{ op.status }}</span></td>
+              <td>{{ op.createdAt | date:'HH:mm' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p *ngIf="operations.length === 0" class="empty">Aucune opération aujourd'hui</p>
+      </div>
+
+      <!-- Clôture de caisse -->
+      <div class="close-card">
+        <h3>Clôture de caisse</h3>
+        <div class="close-form">
+          <label>Montant compté (MAD)</label>
+          <input type="number" [(ngModel)]="countedAmount" />
+          <button class="btn-close" (click)="closeCaisse()">Clôturer la caisse</button>
+        </div>
+
+        <div class="reconciliation" *ngIf="closeResult">
+          <h4>Réconciliation</h4>
+          <div><span>Solde système :</span> {{ closeResult.systemBalance }} MAD</div>
+          <div><span>Montant compté :</span> {{ closeResult.countedAmount }} MAD</div>
+          <div [class]="closeResult.hasDiscrepancy ? 'error' : 'ok'">
+            <span>Écart :</span> {{ closeResult.difference }} MAD
+          </div>
+
+          <div *ngIf="closeResult.hasDiscrepancy" class="discrepancy-form">
+            <h4>Signaler l'écart</h4>
+            <textarea [(ngModel)]="discrepancyReason" placeholder="Motif de l'écart..."></textarea>
+            <button (click)="reportDiscrepancy()">Signaler l'écart</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="error" *ngIf="error">{{ error }}</div>
+      <div class="success" *ngIf="success">{{ success }}</div>
+    </div>
+  </div>
+</div>

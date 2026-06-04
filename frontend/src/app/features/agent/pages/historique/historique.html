@@ -1,0 +1,62 @@
+<div class="page-layout">
+  <app-navbar />
+  <div class="main-content">
+    <div class="container">
+      <h2>Historique des Transferts</h2>
+
+      <!-- Filtres -->
+      <div class="filters-card">
+        <select [(ngModel)]="filters.status">
+          <option value="">Tous les statuts</option>
+          <option value="PENDING">EN ATTENTE</option>
+          <option value="PAID">PAYÉ</option>
+          <option value="CANCELLED">ANNULÉ</option>
+          <option value="EXPIRED">EXPIRÉ</option>
+        </select>
+        <input type="date" [(ngModel)]="filters.startDate" placeholder="Date début" />
+        <input type="date" [(ngModel)]="filters.endDate" placeholder="Date fin" />
+        <button (click)="search()">Filtrer</button>
+        <button class="btn-reset" (click)="reset()">Réinitialiser</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+      <table *ngIf="transfers.length > 0">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Bénéficiaire</th>
+            <th>Montant envoyé</th>
+            <th>Montant reçu</th>
+            <th>Frais</th>
+            <th>Corridor</th>
+            <th>Statut</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of transfers">
+            <td><strong>{{ t.referenceCode }}</strong></td>
+            <td>{{ t.beneficiary?.fullName }}</td>
+            <td>{{ t.amountSent }} MAD</td>
+            <td>{{ t.amountReceived }}</td>
+            <td>{{ t.fees }} MAD</td>
+            <td>{{ t.corridor?.sourceCountry }} → {{ t.corridor?.destinationCountry }}</td>
+            <td><span class="badge" [class]="t.status.toLowerCase()">{{ t.status }}</span></td>
+            <td>{{ t.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p *ngIf="transfers.length === 0" class="empty">Aucun transfert trouvé</p>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="totalPages > 1">
+        <button (click)="prevPage()" [disabled]="currentPage === 0">← Précédent</button>
+        <span>Page {{ currentPage + 1 }} / {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Suivant →</button>
+      </div>
+    </div>
+  </div>
+</div>

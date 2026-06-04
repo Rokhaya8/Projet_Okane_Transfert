@@ -15,7 +15,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "fullname", nullable = false)
     private String fullName;
 
     @Column(nullable = false, unique = true)
@@ -30,9 +30,10 @@ public class User {
     @Column(nullable = false)
     private boolean active = true;
 
-    @Column(nullable = false)
+    @Column(name = "createdat", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(name = "lastlogin")
     private LocalDateTime lastLogin;
 
     @Enumerated(EnumType.STRING)
