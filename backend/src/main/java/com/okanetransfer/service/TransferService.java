@@ -35,6 +35,7 @@ public class TransferService {
                 transfer.getCorridor().getSourceCountry(),
                 transfer.getBeneficiary().getCountry()
         );
+        transfer.setCorridor(corridor);
 
         // 2. Calculer les frais automatiquement
         BigDecimal fees = feeService.calculateFees(

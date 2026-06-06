@@ -26,10 +26,9 @@ public class Transfer {
     @Column(nullable = false)
     private BigDecimal fees;
 
-    @Column(nullable = false)
     private BigDecimal commissionAgency;
 
-    @Column(nullable = false)
+
     private BigDecimal commissionCentral;
 
     @Enumerated(EnumType.STRING)
@@ -60,7 +59,7 @@ public class Transfer {
     @JoinColumn(name = "client_id")
     private User client; // nullable
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "beneficiary_id")
     private Beneficiary beneficiary;
 

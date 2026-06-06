@@ -25,3 +25,7 @@ replay_pid*
 
 # application.properties avec mot de passe
 backend/src/main/resources/application.properties
+
+# Maven build output
+target/
+
