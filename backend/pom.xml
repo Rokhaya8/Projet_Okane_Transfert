@@ -13,11 +13,10 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring.version>6.1.0</spring.version>
+        <spring.version>6.1.4</spring.version>
     </properties>
 
     <dependencies>
-
         <!-- Spring MVC -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -29,26 +28,26 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>6.1.0</version>
+            <version>6.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>6.1.0</version>
+            <version>6.2.2</version>
         </dependency>
 
         <!-- Spring Data JPA -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>3.1.0</version>
+            <version>3.2.0</version>
         </dependency>
 
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.2.0.Final</version>
+            <version>6.4.4.Final</version>
         </dependency>
 
         <!-- PostgreSQL -->
@@ -101,18 +100,9 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.28</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Swagger SpringDoc -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-
-
     </dependencies>
 
     <build>
@@ -124,5 +114,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
