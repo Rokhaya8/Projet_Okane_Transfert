@@ -39,6 +39,10 @@ public class TransferService {
                 .orElseThrow(() -> new RuntimeException("Agent introuvable"));
         transfer.setAgent(agent);
         transfer.setAgency(agent.getAgency());   // l'agence vient de l'agent
+        // Le pays de l'expéditeur = le pays de l'agence de l'agent
+        if (transfer.getSender() != null && agent.getAgency() != null) {
+            transfer.getSender().setCountry(agent.getAgency().getCountry());
+        }
 
         // 1. Trouver le corridor
         TransferCorridor corridor = feeService.findCorridor(
