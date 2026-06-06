@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import com.okanetransfer.dto.SimulationDTO;
 
 @Service
 @Transactional
@@ -140,5 +141,32 @@ public class TransferService {
         }
 
         cashDrawerRepository.save(cashDrawer);
+    }
+
+    // Simuler le calcul des frais SANS créer le transfert
+    public SimulationDTO simulateTransfer(String sourceCountry, String destinationCountry, BigDecimal amountSent) {
+
+        // 1. Trouver le corridor
+        TransferCorridor corridor = feeService.findCorridor(sourceCountry, destinationCountry);
+
+        // 2. Calculer les frais
+        BigDecimal fees = feeService.calculateFees(corridor.getId(), amountSent);
+
+        // 3. Convertir le montant
+        BigDecimal amountReceived = exchangeRateService.convert(
+                corridor.getDestinationCurrency().getId(), amountSent);
+
+        // 4. Total à payer
+        BigDecimal total = amountSent.add(fees);
+
+        // 5. Construire le résultat (sans rien sauvegarder)
+        SimulationDTO result = new SimulationDTO();
+        result.setAmountSent(amountSent);
+        result.setFees(fees);
+        result.setTotalToPay(total);
+        result.setAmountReceived(amountReceived);
+        result.setSourceCurrency(corridor.getSourceCurrency() != null ? corridor.getSourceCurrency().getCode() : null);
+        result.setDestinationCurrency(corridor.getDestinationCurrency() != null ? corridor.getDestinationCurrency().getCode() : null);
+        return result;
     }
 }

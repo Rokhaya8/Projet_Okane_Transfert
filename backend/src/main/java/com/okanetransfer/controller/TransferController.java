@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.okanetransfer.dto.SimulationDTO;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/agent/transfers")
@@ -52,5 +54,15 @@ public class TransferController {
                 .map(TransferDTO::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
+    }
+
+    // Simulation des frais (pour l'étape Récapitulatif, sans créer le transfert)
+    @GetMapping("/simulate")
+    public ResponseEntity<SimulationDTO> simulate(
+            @RequestParam String sourceCountry,
+            @RequestParam String destinationCountry,
+            @RequestParam BigDecimal amountSent) {
+        SimulationDTO result = transferService.simulateTransfer(sourceCountry, destinationCountry, amountSent);
+        return ResponseEntity.ok(result);
     }
 }
