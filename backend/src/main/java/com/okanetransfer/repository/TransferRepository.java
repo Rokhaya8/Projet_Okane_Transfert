@@ -18,8 +18,8 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
     // Chercher les transferts d'un agent
     List<Transfer> findByAgentId(Long agentId);
 
-    // Chercher les transferts d'un client
-    List<Transfer> findByClientId(Long clientId);
+    // Chercher les transferts d'un expéditeur
+    List<Transfer> findBySenderId(Long senderId);
 
     // Chercher par statut
     List<Transfer> findByStatus(Transfer.TransferStatus status);

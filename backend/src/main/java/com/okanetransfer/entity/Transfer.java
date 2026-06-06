@@ -35,6 +35,10 @@ public class Transfer {
     @Column(nullable = false)
     private TransferStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReceptionMode receptionMode;
+
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -55,9 +59,9 @@ public class Transfer {
     @JoinColumn(name = "corridor_id")
     private TransferCorridor corridor;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private User client; // nullable
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "sender_id")
+    private Sender sender;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "beneficiary_id")
@@ -68,5 +72,10 @@ public class Transfer {
         PAID,
         CANCELLED,
         EXPIRED
+    }
+
+    public enum ReceptionMode {
+        CASH_AGENCE,
+        MOBILE_MONEY
     }
 }

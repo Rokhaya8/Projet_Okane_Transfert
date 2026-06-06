@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "beneficiaries")
-public class Beneficiary {
+@Table(name = "senders")
+public class Sender {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +20,10 @@ public class Beneficiary {
 
     @Column(nullable = false)
     private String country;
-    
-    private String identityNumber;
 
     @Column(nullable = false)
-    private boolean watchlistFlag = false;
+    private String identityType;    // CIN, Passeport... (champ présent dans ton formulaire expéditeur)
+
+    @Column(nullable = false)
+    private String identityNumber;
 }

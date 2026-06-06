@@ -39,6 +39,10 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name = "agency_id")
+    private Agency agency;
+
     public enum Role {
         ROLE_ADMIN,
         ROLE_MANAGER,
