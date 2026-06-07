@@ -1,19 +1,16 @@
-# Backend
+# Maven
 backend/target/
+
+# IntelliJ / IDE
+.idea/
+*.iml
+
+# Tomcat / plugins
+backend/.smarttomcat/
 
 # Frontend
 frontend/node_modules/
 frontend/dist/
-frontend/.angular/
-
-# IDE
-.idea/
-*.iml
-.vscode/
 
 # Logs
 *.log
-
-# OS
-.DS_Store
-Thumbs.db
