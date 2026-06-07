@@ -1,1 +1,172 @@
-<p>agences works!</p>
+<div class="page">
+
+  <!-- En-tête -->
+  <div class="header">
+    <h1>Gestion des agences</h1>
+    <button class="btn-create" (click)="creerAgence()">
+      <mat-icon>add</mat-icon>
+      Créer une agence
+    </button>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filtres">
+    <div class="search-wrap">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        placeholder="Rechercher une agence..."
+        (input)="onRecherche($event)"
+      />
+    </div>
+
+    <select (change)="onFiltreStatut($event)">
+      <option value="">Tous les statuts</option>
+      <option value="Actif">Actif</option>
+      <option value="Inactif">Inactif</option>
+    </select>
+
+    <select (change)="onFiltreCountry($event)">
+      <option value="">Tous les pays</option>
+      <option *ngFor="let p of pays" [value]="p">{{ p }}</option>
+    </select>
+  </div>
+
+  <!-- Tableau -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom de l'agence</th>
+          <th>Adresse</th>
+          <th>Pays</th>
+          <th>Responsable</th>
+          <th>Limite journalière</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let agence of agencesFiltrees">
+
+          <td><span class="agency-name">{{ agence.name }}</span></td>
+
+          <td>
+            <div class="cell-icon-text">
+              <mat-icon class="icon-orange">location_on</mat-icon>
+              <span>{{ agence.address }}</span>
+            </div>
+          </td>
+
+          <td>
+            <div class="cell-icon-text">
+              <mat-icon class="icon-orange">flag</mat-icon>
+              <span>{{ agence.country }}</span>
+            </div>
+          </td>
+
+          <td>
+            <div class="cell-icon-text">
+              <mat-icon class="icon-orange">person</mat-icon>
+              <span>{{ agence.managerName ?? '—' }}</span>
+            </div>
+          </td>
+
+          <td>{{ agence.dailyLimit | number }} MAD</td>
+
+          <td>
+            <span class="badge" [ngClass]="agence.active ? 'badge-actif' : 'badge-inactif'">
+              {{ agence.active ? 'Actif' : 'Inactif' }}
+            </span>
+          </td>
+
+          <td>
+            <div class="actions">
+              <button class="btn-action btn-modifier" (click)="modifierAgence(agence)" title="Modifier">
+                <mat-icon>edit</mat-icon>
+                Modifier
+              </button>
+              <button class="btn-action btn-supprimer" (click)="supprimerAgence(agence)" title="Supprimer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+
+        </tr>
+
+        <tr *ngIf="agencesFiltrees.length === 0">
+          <td colspan="7" class="empty-state">
+            <mat-icon>search_off</mat-icon>
+            <p>Aucune agence trouvée</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ── Modale Création / Édition ───────────────────────── -->
+<div class="modal-overlay" *ngIf="afficherModal" (click)="fermerModal()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>{{ modeEdition ? 'Modifier l\'agence' : 'Nouvelle agence' }}</h2>
+      <button class="btn-close" (click)="fermerModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Erreur -->
+      <div class="alert-error" *ngIf="erreurMessage">
+        <mat-icon>error_outline</mat-icon>
+        {{ erreurMessage }}
+      </div>
+
+      <!-- Nom -->
+      <div class="form-group">
+        <label>Nom de l'agence <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="formulaire.name" placeholder="Ex: Agence Casablanca Centre" />
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-group">
+        <label>Adresse <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="formulaire.address" placeholder="Ex: 12 Rue Mohammed V" />
+      </div>
+
+      <!-- Pays -->
+      <div class="form-group">
+        <label>Pays <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="formulaire.country" placeholder="Ex: Maroc" />
+      </div>
+
+      <!-- Limite journalière -->
+      <div class="form-group">
+        <label>Limite journalière (MAD) <span class="required">*</span></label>
+        <input type="number" [(ngModel)]="formulaire.dailyLimit" placeholder="Ex: 50000" min="0" />
+      </div>
+
+      <!-- Statut -->
+      <div class="form-group">
+        <label>Statut</label>
+        <select [(ngModel)]="formulaire.active">
+          <option [ngValue]="true">Actif</option>
+          <option [ngValue]="false">Inactif</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-annuler" (click)="fermerModal()">Annuler</button>
+      <button class="btn-soumettre" (click)="soumettre()" [disabled]="chargement">
+        <mat-icon *ngIf="chargement">hourglass_empty</mat-icon>
+        {{ chargement ? 'Enregistrement...' : (modeEdition ? 'Mettre à jour' : 'Créer') }}
+      </button>
+    </div>
+
+  </div>
+</div>

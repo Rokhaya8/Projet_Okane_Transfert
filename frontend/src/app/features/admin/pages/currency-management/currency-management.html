@@ -1,0 +1,201 @@
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">Gestion des devises</h1>
+    <button class="btn-add" (click)="openAddModal()">
+      <span class="btn-icon">+</span> Ajouter une devise
+    </button>
+  </div>
+
+  <!-- Toast notifications -->
+  <div class="toast toast-success" *ngIf="successMessage">
+    <span class="toast-icon">✓</span> {{ successMessage }}
+  </div>
+  <div class="toast toast-error" *ngIf="errorMessage && !showModal">
+    <span class="toast-icon">✕</span> {{ errorMessage }}
+  </div>
+
+  <!-- Currencies Table Card -->
+  <div class="card">
+    <h2 class="card-title">Devises disponibles</h2>
+    <div class="table-wrapper">
+      <table class="currencies-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Nom</th>
+            <th>Symbole</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let currency of currencies" class="table-row">
+            <td><span class="currency-code">{{ currency.code }}</span></td>
+            <td class="currency-name">{{ currency.name }}</td>
+            <td class="currency-symbol">{{ currency.symbol }}</td>
+            <td>
+              <span class="badge" [ngClass]="currency.active ? 'badge-active' : 'badge-inactive'">
+                {{ currency.active ? 'Actif' : 'Inactif' }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-action btn-edit" (click)="openEditModal(currency)">Modifier</button>
+              <button class="btn-action btn-delete" (click)="confirmDelete(currency)">Supprimer</button>
+            </td>
+          </tr>
+          <tr *ngIf="currencies.length === 0">
+            <td colspan="5" class="empty-state">Aucune devise trouvée.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Corridors Card -->
+  <div class="card corridors-card">
+    <h2 class="card-title">Corridors de transfert</h2>
+
+    <!-- Loader -->
+    <div class="corridors-loader" *ngIf="corridorsLoading">
+      <span class="loader-dot"></span>
+      <span class="loader-dot"></span>
+      <span class="loader-dot"></span>
+    </div>
+
+    <!-- Empty state -->
+    <p class="corridors-empty" *ngIf="!corridorsLoading && corridors.length === 0">
+      Aucun corridor configuré.
+    </p>
+
+    <!-- Grid dynamique depuis la BDD -->
+    <div class="corridors-grid" *ngIf="!corridorsLoading && corridors.length > 0">
+      <div
+        class="corridor-tile"
+        *ngFor="let corridor of corridors"
+        [ngClass]="{ 'corridor-inactive': !corridor.active }"
+      >
+        <!-- Ex: EUR → MAD -->
+        <div class="corridor-label">
+          {{ corridor.sourceCurrencyCode }} → {{ corridor.destinationCurrencyCode }}
+        </div>
+
+        <div class="corridor-status-row">
+          <span class="corridor-status-text">
+            {{ corridor.active ? 'Actif' : 'Inactif' }}
+          </span>
+
+          <button
+            class="toggle-btn"
+            [ngClass]="{
+              'toggle-on':      corridor.active && !isToggleLoading(corridor.id),
+              'toggle-off':     !corridor.active && !isToggleLoading(corridor.id),
+              'toggle-loading': isToggleLoading(corridor.id)
+            }"
+            (click)="toggleCorridor(corridor)"
+            [disabled]="isToggleLoading(corridor.id)"
+          >
+            <span class="toggle-knob"></span>
+          </button>
+        </div>
+
+        <!-- Pays : sourceCountry → destinationCountry -->
+        <div class="corridor-countries">
+          {{ corridor.sourceCountry }} → {{ corridor.destinationCountry }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== ADD / EDIT MODAL ===================== -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h3 class="modal-title">{{ isEditMode ? 'Modifier la devise' : 'Ajouter une devise' }}</h3>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-error" *ngIf="formError">{{ formError }}</div>
+
+      <div class="form-group">
+        <label class="form-label">Code <span class="required">*</span></label>
+        <input
+          class="form-input"
+          type="text"
+          [(ngModel)]="formData.code"
+          placeholder="ex: USD"
+          maxlength="10"
+          [disabled]="isEditMode"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nom <span class="required">*</span></label>
+        <input
+          class="form-input"
+          type="text"
+          [(ngModel)]="formData.name"
+          placeholder="ex: Dollar américain"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Symbole <span class="required">*</span></label>
+        <input
+          class="form-input"
+          type="text"
+          [(ngModel)]="formData.symbol"
+          placeholder="ex: $"
+          maxlength="10"
+        />
+      </div>
+
+      <div class="form-group form-group-inline">
+        <label class="form-label">Statut actif</label>
+        <button
+          class="toggle-btn"
+          [ngClass]="{ 'toggle-on': formData.active, 'toggle-off': !formData.active }"
+          (click)="formData.active = !formData.active"
+        >
+          <span class="toggle-knob"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">Annuler</button>
+      <button class="btn-save" (click)="saveForm()">
+        {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DELETE CONFIRM MODAL ===================== -->
+<div class="modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
+  <div class="modal modal-sm" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h3 class="modal-title">Confirmer la suppression</h3>
+      <button class="modal-close" (click)="cancelDelete()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <p class="delete-message">
+        Êtes-vous sûr de vouloir supprimer la devise
+        <strong>{{ currencyToDeleteName }}</strong> ?
+        Cette action est irréversible.
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="cancelDelete()">Annuler</button>
+      <button class="btn-danger" (click)="executeDelete()">Supprimer</button>
+    </div>
+  </div>
+</div>
