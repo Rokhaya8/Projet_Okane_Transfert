@@ -1,1 +1,43 @@
-<p>header works!</p>
+<header class="top-header">
+  <div class="header-left">
+    <button
+      type="button"
+      class="mobile-menu-btn"
+      (click)="toggleMobileMenu()"
+      [attr.aria-label]="isMobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'">
+      <span class="material-icons">{{ isMobileMenuOpen ? 'close' : 'menu' }}</span>
+    </button>
+
+    <!-- Titre de la page dynamique -->
+    <div class="header-title">
+      <h2>{{ pageTitle }}</h2>
+    </div>
+  </div>
+
+  <!-- Zone profil à droite -->
+  <div class="header-profile-zone">
+    
+    <!-- Cloche de notification -->
+    <button class="icon-btn">
+      <span class="material-icons">notifications</span>
+      <span class="notification-badge"></span>
+    </button>
+
+    <!-- Infos textuelles -->
+    <div class="user-info-block">
+      <span class="user-name">{{ userName }}</span>
+      <span class="user-email">{{ userEmail }}</span>
+    </div>
+
+    <!-- Avatar rond avec initiales dynamiques -->
+    <div class="user-avatar">
+      {{ getUserInitials() }}
+    </div>
+
+    <!-- Bouton déconnexion -->
+    <button class="icon-btn logout-btn" (click)="onLogout()">
+      <span class="material-icons">logout</span>
+    </button>
+    
+  </div>
+</header>
