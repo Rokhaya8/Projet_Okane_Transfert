@@ -63,6 +63,15 @@ public class Transfer {
     @JoinColumn(name = "beneficiary_id")
     private Beneficiary beneficiary;
 
+    // Agent qui a effectué le paiement (retrait)
+    @ManyToOne
+    @JoinColumn(name = "paying_agent_id")
+    private User payingAgent;
+
+    // Pièce d'identité du bénéficiaire (chiffrée AES-256)
+    @Column(name = "beneficiary_id_doc")
+    private String beneficiaryIdDoc;
+
     public enum TransferStatus {
         PENDING,
         PAID,

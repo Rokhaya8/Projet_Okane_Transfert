@@ -1,0 +1,175 @@
+# Application Configuration - Okane Transfer Backend
+# Copier ce fichier vers application.properties et configurer selon votre environnement
+
+# ============================================
+# Database Configuration
+# ============================================
+spring.datasource.url=jdbc:postgresql://localhost:5432/okane_db
+spring.datasource.username=okane_user
+spring.datasource.password=your_db_password
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA/Hibernate
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+
+# ============================================
+# Security Configuration
+# ============================================
+# JWT Secret Key (minimum 256 bits)
+jwt.secret=YourVerySecureJWTSecretKeyHere123456789012345678901234567890
+jwt.expiration=86400000
+
+# AES Encryption Key (exactly 32 characters for AES-256)
+encryption.aes.secret.key=YourSecure32CharacterKeyHere!
+
+# ============================================
+# Server Configuration
+# ============================================
+server.port=8080
+server.servlet.context-path=/okane
+
+# ============================================
+# Cash Management Configuration
+# ============================================
+# Durée de validité d'un transfert en jours
+transfer.expiry.days=30
+
+# Devise par défaut (peut être surchargée par agence)
+cash.default.currency=MAD
+
+# Limite quotidienne de retrait (optionnel)
+cash.daily.withdrawal.limit=50000.00
+
+# ============================================
+# Audit Configuration
+# ============================================
+# Activer la journalisation des audits
+audit.enabled=true
+
+# Conserver les logs d'audit pendant (jours)
+audit.retention.days=365
+
+# ============================================
+# API Documentation (Swagger)
+# ============================================
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.enabled=true
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.api-docs.path=/api-docs
+
+# ============================================
+# Logging Configuration
+# ============================================
+logging.level.root=INFO
+logging.level.com.okanetransfer=DEBUG
+logging.level.org.springframework.security=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
+
+# Format des logs
+logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %msg%n
+logging.pattern.file=%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+
+# Fichier de logs
+logging.file.name=logs/okane-transfer.log
+logging.file.max-size=10MB
+logging.file.max-history=30
+
+# ============================================
+# Jackson Configuration
+# ============================================
+spring.jackson.serialization.write-dates-as-timestamps=false
+spring.jackson.time-zone=UTC
+spring.jackson.default-property-inclusion=non_null
+
+# ============================================
+# Validation Configuration
+# ============================================
+spring.validation.enabled=true
+
+# ============================================
+# Transaction Configuration
+# ============================================
+spring.jpa.properties.hibernate.enable_lazy_load_no_trans=false
+
+# ============================================
+# Pool de connexions (HikariCP)
+# ============================================
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.idle-timeout=600000
+spring.datasource.hikari.max-lifetime=1800000
+
+# ============================================
+# Performance et Monitoring
+# ============================================
+# Activer les métriques
+management.endpoints.web.exposure.include=health,info,metrics
+management.endpoint.health.show-details=when-authorized
+
+# ============================================
+# CORS Configuration
+# ============================================
+cors.allowed.origins=http://localhost:3000,http://localhost:4200
+cors.allowed.methods=GET,POST,PUT,DELETE,OPTIONS
+cors.allowed.headers=*
+cors.allow.credentials=true
+
+# ============================================
+# Email Configuration (pour notifications futures)
+# ============================================
+# spring.mail.host=smtp.gmail.com
+# spring.mail.port=587
+# spring.mail.username=noreply@okane.com
+# spring.mail.password=your_email_password
+# spring.mail.properties.mail.smtp.auth=true
+# spring.mail.properties.mail.smtp.starttls.enable=true
+
+# ============================================
+# Cache Configuration (optionnel)
+# ============================================
+# spring.cache.type=redis
+# spring.redis.host=localhost
+# spring.redis.port=6379
+
+# ============================================
+# File Upload Configuration
+# ============================================
+spring.servlet.multipart.enabled=true
+spring.servlet.multipart.max-file-size=5MB
+spring.servlet.multipart.max-request-size=10MB
+
+# ============================================
+# Custom Business Rules
+# ============================================
+# Montant minimum pour un transfert
+transfer.min.amount=10.00
+
+# Montant maximum pour un transfert
+transfer.max.amount=100000.00
+
+# Nombre maximum de tentatives de paiement avant blocage
+transfer.max.payout.attempts=3
+
+# Alerter si écart de caisse supérieur à
+cash.discrepancy.alert.threshold=100.00
+
+# ============================================
+# Production Settings (à activer en production)
+# ============================================
+# spring.jpa.show-sql=false
+# logging.level.root=WARN
+# logging.level.com.okanetransfer=INFO
+# management.endpoint.health.show-details=never
+
+# ============================================
+# Notes de Configuration
+# ============================================
+# 1. IMPORTANT: Ne jamais commiter les vraies valeurs de mots de passe et secrets
+# 2. Utiliser des variables d'environnement en production
+# 3. Changer toutes les clés par défaut avant déploiement
+# 4. Activer HTTPS en production
+# 5. Configurer un firewall pour limiter l'accès à la base de données

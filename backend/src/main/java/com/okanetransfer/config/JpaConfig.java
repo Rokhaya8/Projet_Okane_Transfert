@@ -23,7 +23,7 @@ public class JpaConfig {
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl("jdbc:postgresql://localhost:5432/okane_transfer");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("Ensa2026"); //à modifier quand je vais push 
+        dataSource.setPassword("soufia2004"); //à modifier quand je vais push
         return dataSource;
     }
 
@@ -46,10 +46,11 @@ public class JpaConfig {
 
     private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        properties.setProperty("hibernate.hbm2ddl.auto", "none");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         properties.setProperty("hibernate.show_sql", "true");
         properties.setProperty("hibernate.format_sql", "true");
+        properties.setProperty("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
         return properties;
     }
 }
