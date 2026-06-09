@@ -52,13 +52,17 @@ public class CashService {
 
     /**
      * Récupère les opérations de caisse pour une date donnée.
+     * Si aucune date n'est fournie, retourne les opérations du jour.
      */
     public List<OperationCaisseDTO> getOperations(Long agentId, LocalDate date) {
         CashDrawer cashDrawer = cashDrawerRepository.findByAgentId(agentId)
                 .orElseThrow(() -> new IllegalStateException("Aucune caisse trouvée pour cet agent"));
 
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        // Si aucune date n'est spécifiée, prendre la date du jour
+        LocalDate effectiveDate = date != null ? date : LocalDate.now();
+        
+        LocalDateTime startOfDay = effectiveDate.atStartOfDay();
+        LocalDateTime endOfDay = effectiveDate.atTime(LocalTime.MAX);
 
         List<CashOperation> operations = cashOperationRepository
                 .findByCashDrawerIdAndOperationDateBetweenOrderByOperationDateDesc(

@@ -96,7 +96,7 @@ public class AgentPayoutController {
         LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
         LocalDateTime endDateTime = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = PageRequest.of(page, size, Sort.unsorted());
         
         Page<TransferHistoryDTO> history = payoutService.getTransferHistory(
                 userId, status, startDateTime, endDateTime, corridor, search, pageable

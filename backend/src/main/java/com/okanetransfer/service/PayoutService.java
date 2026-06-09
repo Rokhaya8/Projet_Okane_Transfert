@@ -7,6 +7,7 @@ import com.okanetransfer.repository.*;
 import com.okanetransfer.util.EncryptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ public class PayoutService {
 
     /**
      * Recherche un transfert par code ou téléphone bénéficiaire
+     * Si aucun critère n'est fourni, retourne tous les transferts EN_ATTENTE des dernières 24h
      */
     public List<TransferSearchDTO> searchTransfer(String code, String telephoneBeneficiaire) {
         List<Transfer> transfers;
@@ -42,7 +44,9 @@ public class PayoutService {
         } else if (telephoneBeneficiaire != null && !telephoneBeneficiaire.isEmpty()) {
             transfers = transferRepository.findByBeneficiaryPhoneAndStatus(telephoneBeneficiaire, Transfer.TransferStatus.EN_ATTENTE);
         } else {
-            return List.of();
+            // Par défaut, retourner tous les transferts EN_ATTENTE des dernières 24h
+            LocalDateTime last24Hours = LocalDateTime.now().minusHours(24);
+            transfers = transferRepository.findByStatusAndCreatedAtAfter(Transfer.TransferStatus.EN_ATTENTE, last24Hours);
         }
 
         return transfers.stream()
@@ -145,11 +149,27 @@ public class PayoutService {
                                                         String corridor,
                                                         String search,
                                                         Pageable pageable) {
-        Page<Transfer> transfers = transferRepository.findHistoryByAgent(
-                agentId, status, startDate, endDate, search, corridor, pageable
+        String statusStr = status != null ? status.name() : null;
+        
+        // Si startDate est null, prendre les dernières 24h par défaut
+        LocalDateTime effectiveStartDate = startDate != null ? startDate : LocalDateTime.now().minusHours(24);
+        
+        int offset = (int) pageable.getOffset();
+        int limit = pageable.getPageSize();
+        
+        List<Transfer> transfers = transferRepository.findHistoryByAgent(
+                agentId, statusStr, effectiveStartDate, endDate, search, corridor, limit, offset
         );
-
-        return transfers.map(this::mapToHistoryDTO);
+        
+        long total = transferRepository.countHistoryByAgent(
+                agentId, statusStr, effectiveStartDate, endDate, search, corridor
+        );
+        
+        List<TransferHistoryDTO> content = transfers.stream()
+                .map(this::mapToHistoryDTO)
+                .collect(Collectors.toList());
+        
+        return new PageImpl<>(content, pageable, total);
     }
 
     private TransferSearchDTO mapToSearchDTO(Transfer transfer) {

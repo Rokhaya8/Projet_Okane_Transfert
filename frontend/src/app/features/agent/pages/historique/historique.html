@@ -1,0 +1,107 @@
+<div class="page-layout">
+  <app-navbar />
+
+  <div class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <h2><span class="material-icons">history</span> Historique des transferts</h2>
+        <span class="total-badge">{{ totalElements }} transfert(s)</span>
+      </div>
+
+      <!-- Filtres -->
+      <div class="filters-card">
+        <div class="filters-grid">
+          <div class="form-group">
+            <label>Recherche</label>
+            <input type="text" placeholder="Code, nom, téléphone..." [(ngModel)]="filterSearch" (keyup.enter)="applyFilters()" />
+          </div>
+          <div class="form-group">
+            <label>Statut</label>
+            <select [(ngModel)]="filterStatus">
+              <option value="">Tous</option>
+              <option value="EN_ATTENTE">En attente</option>
+              <option value="PAYÉ">Payé</option>
+              <option value="ANNULÉ">Annulé</option>
+              <option value="EXPIRÉ">Expiré</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Du</label>
+            <input type="date" [(ngModel)]="filterStart" />
+          </div>
+          <div class="form-group">
+            <label>Au</label>
+            <input type="date" [(ngModel)]="filterEnd" />
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="btn-secondary" (click)="resetFilters()">
+            <span class="material-icons">clear</span> Réinitialiser
+          </button>
+          <button class="btn-primary" (click)="applyFilters()">
+            <span class="material-icons">filter_list</span> Filtrer
+          </button>
+        </div>
+      </div>
+
+      <!-- Tableau -->
+      <div class="table-card">
+        @if (loading) {
+          <div class="loading">Chargement...</div>
+        } @else if (items.length === 0) {
+          <div class="empty">Aucun transfert trouvé.</div>
+        } @else {
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Bénéficiaire</th>
+                <th>Pays</th>
+                <th>Montant envoyé</th>
+                <th>Montant reçu</th>
+                <th>Frais</th>
+                <th>Statut</th>
+                <th>Date envoi</th>
+                <th>Date paiement</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (t of items; track t.id) {
+                <tr>
+                  <td><span class="code-cell">{{ t.codeRetrait }}</span></td>
+                  <td>
+                    <div>{{ t.nomBeneficiaire }}</div>
+                    <div class="sub">{{ t.telephoneBeneficiaire }}</div>
+                  </td>
+                  <td>{{ t.paysBeneficiaire }}</td>
+                  <td>{{ t.montantEnvoye | number:'1.2-2' }} {{ t.deviseSource }}</td>
+                  <td>{{ t.montantRecu | number:'1.2-2' }} {{ t.deviseCible }}</td>
+                  <td>{{ t.frais | number:'1.2-2' }} {{ t.deviseSource }}</td>
+                  <td><span class="badge" [ngClass]="statutClass(t.statut)">{{ t.statut }}</span></td>
+                  <td>{{ t.dateEnvoi | date:'dd/MM/yy HH:mm' }}</td>
+                  <td>{{ t.datePaiement ? (t.datePaiement | date:'dd/MM/yy HH:mm') : '—' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          @if (totalPages > 1) {
+            <div class="pagination">
+              <button class="page-btn" [disabled]="page === 0" (click)="goPage(page - 1)">
+                <span class="material-icons">chevron_left</span>
+              </button>
+              @for (p of pages(); track p) {
+                <button class="page-btn" [class.active]="p === page" (click)="goPage(p)">{{ p + 1 }}</button>
+              }
+              <button class="page-btn" [disabled]="page === totalPages - 1" (click)="goPage(page + 1)">
+                <span class="material-icons">chevron_right</span>
+              </button>
+            </div>
+          }
+        }
+      </div>
+
+    </div>
+  </div>
+</div>

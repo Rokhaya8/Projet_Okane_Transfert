@@ -1,1 +1,144 @@
-<p>payer-transfert works!</p>
+<div class="page-layout">
+  <app-navbar />
+
+  <div class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <h2><span class="material-icons">payments</span> Payer un retrait</h2>
+      </div>
+
+      <!-- ÉTAPE 1 : Recherche -->
+      @if (!found && !receipt) {
+        <div class="card">
+          <h3>Rechercher le transfert</h3>
+          <div class="search-grid">
+            <div class="form-group">
+              <label>Code de retrait</label>
+              <input type="text" placeholder="Ex: AB4X9K2M" [(ngModel)]="searchCode" (keyup.enter)="search()" />
+            </div>
+            <div class="form-group">
+              <label>Téléphone bénéficiaire</label>
+              <input type="text" placeholder="+221 7X XXX XX XX" [(ngModel)]="searchTel" (keyup.enter)="search()" />
+            </div>
+          </div>
+          @if (error) {
+            <div class="alert-error">{{ error }}</div>
+          }
+          <div class="form-actions">
+            <button class="btn-primary" (click)="search()" [disabled]="loading">
+              <span class="material-icons">search</span>
+              {{ loading ? 'Recherche...' : 'Rechercher' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ÉTAPE 2 : Confirmation -->
+      @if (found && !receipt) {
+        <div class="card">
+          <h3>Vérification du transfert</h3>
+
+          <div class="transfer-info">
+            <div class="info-row">
+              <span class="info-label">Code de retrait</span>
+              <span class="info-value code">{{ found.codeRetrait }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Bénéficiaire</span>
+              <span class="info-value">{{ found.nomBeneficiaire }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Téléphone</span>
+              <span class="info-value">{{ found.telephoneBeneficiaire }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Montant à payer</span>
+              <span class="info-value amount">{{ found.montantRecu | number:'1.2-2' }} {{ found.deviseCible }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Statut</span>
+              <span class="badge" [ngClass]="statutClass(found.statut)">{{ found.statut }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Expiration</span>
+              <span class="info-value">{{ found.dateExpiration | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-group">
+            <label>Pièce d'identité du bénéficiaire <span class="required">*</span></label>
+            <input type="text" placeholder="N° CIN / Passeport" [(ngModel)]="pieceIdentite" />
+          </div>
+
+          @if (error) {
+            <div class="alert-error">{{ error }}</div>
+          }
+
+          <div class="form-actions">
+            <button class="btn-secondary" (click)="reset()">
+              <span class="material-icons">arrow_back</span> Retour
+            </button>
+            <button class="btn-primary" (click)="pay()" [disabled]="loading || !pieceIdentite.trim()">
+              <span class="material-icons">check_circle</span>
+              {{ loading ? 'Paiement...' : 'Confirmer le paiement' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ÉTAPE 3 : Reçu -->
+      @if (receipt) {
+        <div class="card receipt-card">
+          <div class="receipt-header">
+            <span class="material-icons receipt-icon">task_alt</span>
+            <h3>Paiement effectué avec succès !</h3>
+          </div>
+
+          <div class="receipt-body">
+            <div class="receipt-row">
+              <span>Code retrait</span>
+              <strong>{{ receipt.codeRetrait }}</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Bénéficiaire</span>
+              <strong>{{ receipt.nomBeneficiaire }}</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Téléphone</span>
+              <strong>{{ receipt.telephoneBeneficiaire }}</strong>
+            </div>
+            <div class="receipt-row highlight">
+              <span>Montant payé</span>
+              <strong>{{ receipt.montantPaye | number:'1.2-2' }} {{ receipt.devise }}</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Frais</span>
+              <strong>{{ receipt.frais | number:'1.2-2' }} {{ receipt.devise }}</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Agence</span>
+              <strong>{{ receipt.agenceNom }}</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Agent</span>
+              <strong>{{ receipt.nomAgentPaiement }}</strong>
+            </div>
+            <div class="receipt-row">
+              <span>Date</span>
+              <strong>{{ receipt.datePaiement | date:'dd/MM/yyyy HH:mm' }}</strong>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-primary" (click)="reset()">
+              <span class="material-icons">add</span> Nouveau paiement
+            </button>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>
