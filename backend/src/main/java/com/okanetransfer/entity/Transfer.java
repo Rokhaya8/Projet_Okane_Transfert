@@ -44,7 +44,7 @@ public class Transfer {
 
     // Relations
     @ManyToOne
-    @JoinColumn(name = "agent_id")
+    @JoinColumn(name = "agent_id", insertable = false, updatable = false)
     private User agent;
 
     @ManyToOne
@@ -57,25 +57,56 @@ public class Transfer {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private User client; // nullable
+    private User client;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "beneficiary_id")
     private Beneficiary beneficiary;
 
-    // Agent qui a effectué le paiement (retrait)
     @ManyToOne
-    @JoinColumn(name = "paying_agent_id")
+    @JoinColumn(name = "paying_agent_id", insertable = false, updatable = false)
     private User payingAgent;
 
-    // Pièce d'identité du bénéficiaire (chiffrée AES-256)
+    @Column(name = "agent_id")
+    private Long agentId;
+
+    @Column(name = "paying_agent_id")
+    private Long payingAgentId;
+
     @Column(name = "beneficiary_id_doc")
-    private String beneficiaryIdDoc;
+    private String beneficiaryIdDocument;
+
+    @Column(name = "sent_amount", nullable = false)
+    private BigDecimal sentAmount;
+
+    @Column(name = "received_amount", nullable = false)
+    private BigDecimal receivedAmount;
+
+    @Column(name = "source_currency")
+    private String sourceCurrency;
+
+    @Column(name = "destination_currency")
+    private String destinationCurrency;
+
+    @Column(name = "source_country")
+    private String sourceCountry;
+
+    @Column(name = "destination_country")
+    private String destinationCountry;
+
+    @Column(name = "beneficiary_name")
+    private String beneficiaryName;
+
+    @Column(name = "beneficiary_phone")
+    private String beneficiaryPhone;
+
+    @Column(name = "payment_date")
+    private LocalDateTime paymentDate;
 
     public enum TransferStatus {
-        PENDING,
-        PAID,
-        CANCELLED,
-        EXPIRED
+        EN_ATTENTE,
+        PAYE,
+        ANNULE,
+        EXPIRE
     }
 }

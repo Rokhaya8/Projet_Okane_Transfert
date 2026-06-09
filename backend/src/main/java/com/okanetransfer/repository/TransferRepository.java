@@ -16,7 +16,9 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
 
     Optional<Transfer> findByReferenceCode(String referenceCode);
 
-    List<Transfer> findByBeneficiaryPhone(String phone);
+    Optional<Transfer> findByReferenceCodeAndStatus(String referenceCode, Transfer.TransferStatus status);
+
+    List<Transfer> findByBeneficiaryPhoneAndStatus(String phone, Transfer.TransferStatus status);
 
     List<Transfer> findByAgentId(Long agentId);
 
