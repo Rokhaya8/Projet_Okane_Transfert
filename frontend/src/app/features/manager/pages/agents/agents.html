@@ -1,1 +1,78 @@
-<p>agents works!</p>
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">Gestion des agents</h2>
+      <p class="page-subtitle">Agents de votre agence</p>
+    </div>
+    <a mat-flat-button color="primary" routerLink="/manager/agents/new">
+      <mat-icon>person_add</mat-icon>
+      Nouvel agent
+    </a>
+  </div>
+
+  @if (error) {
+    <div class="error-alert">{{ error }}</div>
+  }
+
+  <div class="content-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Rechercher</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Nom, email, téléphone..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    @if (loading) {
+      <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+    } @else if (dataSource.data.length === 0) {
+      <app-empty-state title="Aucun agent" message="Ajoutez votre premier agent." />
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Nom</th>
+            <td mat-cell *matCellDef="let a">{{ a.fullName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+            <td mat-cell *matCellDef="let a">{{ a.email }}</td>
+          </ng-container>
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>Téléphone</th>
+            <td mat-cell *matCellDef="let a">{{ a.phone }}</td>
+          </ng-container>
+          <ng-container matColumnDef="active">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let a">
+              <app-badge-statut [status]="a.active ? 'ACTIVE' : 'CANCELLED'" />
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="totalTransfers">
+            <th mat-header-cell *matHeaderCellDef>Transferts</th>
+            <td mat-cell *matCellDef="let a">{{ a.totalTransfers ?? '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="lastLogin">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Dernière connexion</th>
+            <td mat-cell *matCellDef="let a">{{ formatDate(a.lastLogin) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let a">
+              <a mat-icon-button [routerLink]="['/manager/agents', a.id]" aria-label="Consulter">
+                <mat-icon>visibility</mat-icon>
+              </a>
+              <a mat-icon-button [routerLink]="['/manager/agents', a.id]" [queryParams]="{edit: true}" aria-label="Modifier">
+                <mat-icon>edit</mat-icon>
+              </a>
+              <button mat-icon-button (click)="toggleStatus(a)" [attr.aria-label]="a.active ? 'Désactiver' : 'Activer'">
+                <mat-icon>{{ a.active ? 'block' : 'check_circle' }}</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons />
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,38 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.5rem;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  min-height: 64px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.header-right .user-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #374151;
+}
+
+.menu-user-info {
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 0.25rem;
+}
+
+.menu-user-info .small {
+  font-size: 0.8rem;
+}

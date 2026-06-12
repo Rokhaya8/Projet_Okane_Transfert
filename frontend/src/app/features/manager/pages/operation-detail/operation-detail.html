@@ -1,0 +1,77 @@
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">Détail opération</h2>
+      <p class="page-subtitle">{{ operation?.referenceCode ?? '' }}</p>
+    </div>
+    <a mat-stroked-button routerLink="/manager/operations">
+      <mat-icon>arrow_back</mat-icon>
+      Retour
+    </a>
+  </div>
+
+  @if (error) {
+    <div class="error-alert">{{ error }}</div>
+  }
+
+  @if (loading) {
+    <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else if (operation) {
+    <div class="content-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Transaction</h3>
+        <app-badge-statut [status]="operation.status" />
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Référence</label><span>{{ operation.referenceCode }}</span></div>
+        <div class="detail-item"><label>Agent</label><span>{{ operation.agentName ?? '—' }}</span></div>
+        <div class="detail-item">
+          <label>Montant envoyé</label>
+          <span>{{ formatAmount(operation.amountSent, operation.sentCurrencyCode) }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Montant reçu</label>
+          <span>{{ formatAmount(operation.amountReceived, operation.receivedCurrencyCode) }}</span>
+        </div>
+        <div class="detail-item"><label>Frais</label><span>{{ formatAmount(operation.fees) }}</span></div>
+        <div class="detail-item">
+          <label>Commission agence</label>
+          <span>{{ formatAmount(operation.commissionAgency) }}</span>
+        </div>
+        <div class="detail-item"><label>Créé le</label><span>{{ formatDate(operation.createdAt) }}</span></div>
+        <div class="detail-item"><label>Payé le</label><span>{{ formatDate(operation.paidAt) }}</span></div>
+        <div class="detail-item">
+          <label>Agence source</label>
+          <span>{{ operation.sourceAgencyName ?? '—' }}</span>
+        </div>
+        <div class="detail-item">
+          <label>Agence destination</label>
+          <span>{{ operation.destinationAgencyName ?? '—' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="content-card">
+          <h3>Expéditeur</h3>
+          <div class="detail-grid">
+            <div class="detail-item"><label>Nom</label><span>{{ operation.senderName ?? '—' }}</span></div>
+            <div class="detail-item"><label>Téléphone</label><span>{{ operation.senderPhone ?? '—' }}</span></div>
+            <div class="detail-item"><label>Email</label><span>{{ operation.senderEmail ?? '—' }}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="content-card">
+          <h3>Bénéficiaire</h3>
+          <div class="detail-grid">
+            <div class="detail-item"><label>Nom</label><span>{{ operation.beneficiaryName ?? '—' }}</span></div>
+            <div class="detail-item"><label>Téléphone</label><span>{{ operation.beneficiaryPhone ?? '—' }}</span></div>
+            <div class="detail-item"><label>Pays</label><span>{{ operation.beneficiaryCountry ?? '—' }}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

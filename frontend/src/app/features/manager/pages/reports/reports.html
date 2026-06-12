@@ -1,0 +1,104 @@
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">Rapports</h2>
+      <p class="page-subtitle">Analyse de l'activité de l'agence</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <button mat-stroked-button (click)="exportExcel()">
+        <mat-icon>table_view</mat-icon>
+        Export Excel
+      </button>
+      <button mat-stroked-button (click)="exportPdf()">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Export PDF
+      </button>
+    </div>
+  </div>
+
+  @if (error) {
+    <div class="error-alert">{{ error }}</div>
+  }
+
+  <div class="content-card">
+    <form [formGroup]="filterForm" class="filters-row" (ngSubmit)="load()">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Période</mat-label>
+        <mat-select formControlName="period">
+          @for (p of periods; track p) {
+            <mat-option [value]="p">{{ p }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Date début</mat-label>
+        <input matInput type="date" formControlName="from" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Date fin</mat-label>
+        <input matInput type="date" formControlName="to" />
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">
+        <mat-icon>analytics</mat-icon>
+        Générer
+      </button>
+    </form>
+  </div>
+
+  @if (loading) {
+    <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else if (report && performance) {
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">Transactions</div><div class="kpi-value">{{ report.transactionCount }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Payées</div><div class="kpi-value">{{ report.paidCount }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">En attente</div><div class="kpi-value">{{ report.pendingCount }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Annulées</div><div class="kpi-value">{{ report.cancelledCount }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Volume total</div><div class="kpi-value">{{ formatAmount(report.totalVolume) }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Frais totaux</div><div class="kpi-value">{{ formatAmount(report.totalFees) }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Commission agence</div><div class="kpi-value">{{ formatAmount(report.totalCommissionAgency) }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Revenus</div><div class="kpi-value">{{ formatAmount(report.totalRevenue) }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Agents actifs</div><div class="kpi-value">{{ performance.activeAgents }}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Taux de succès</div><div class="kpi-value">{{ performance.successRate }}%</div></div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-lg-6">
+        <div class="content-card">
+          <h3>Performance des agents</h3>
+          @if (agentPerf.length === 0) {
+            <app-empty-state message="Aucune donnée agent." />
+          } @else {
+            <div class="chart-bars">
+              @for (agent of agentPerf; track agent.agentId) {
+                <div class="chart-bar-item">
+                  <div class="chart-bar-value">{{ formatAmount(agent.totalAmount) }}</div>
+                  <div
+                    class="chart-bar"
+                    [style.height.px]="getAgentBarHeight(agent.totalAmount)"
+                  ></div>
+                  <div class="chart-bar-label">{{ agent.agentName }}</div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="content-card">
+          <h3>Répartition par statut</h3>
+          @for (item of statusDistribution; track item.label) {
+            <div class="status-bar-row">
+              <div class="d-flex justify-content-between">
+                <span>{{ item.label }}</span>
+                <span>{{ item.count }} ({{ item.pct | number:'1.0-0' }}%)</span>
+              </div>
+              <div class="status-bar-track">
+                <div class="status-bar-fill" [style.width.%]="item.pct"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

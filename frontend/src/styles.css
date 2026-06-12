@@ -1,1 +1,44 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+:root {
+  --okane-primary: #1e3a8a;
+  --okane-primary-light: #3b82f6;
+  --okane-bg: #f3f4f6;
+  --okane-surface: #ffffff;
+  --okane-text: #111827;
+  --okane-muted: #6b7280;
+  --okane-border: #e5e7eb;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--okane-bg);
+  color: var(--okane-text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 8px;
+}
+
+.mat-mdc-unelevated-button.mat-primary {
+  --mdc-filled-button-container-color: var(--okane-primary);
+}
+
+.mat-mdc-outlined-button {
+  --mdc-outlined-button-outline-color: var(--okane-border);
+}
+
+a {
+  text-decoration: none;
+}

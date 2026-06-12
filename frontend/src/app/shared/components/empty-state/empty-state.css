@@ -1,0 +1,23 @@
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #6b7280;
+}
+
+.empty-state mat-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  color: #9ca3af;
+  margin-bottom: 0.75rem;
+}
+
+.empty-state h3 {
+  margin: 0 0 0.5rem;
+  color: #374151;
+  font-size: 1.1rem;
+}
+
+.empty-state p {
+  margin: 0;
+}

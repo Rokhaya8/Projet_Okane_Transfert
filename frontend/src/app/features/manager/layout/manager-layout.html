@@ -1,0 +1,17 @@
+<div class="manager-layout">
+  <div class="sidebar-overlay" [class.show]="sidebarOpen()" (click)="toggleSidebar()"></div>
+  <div class="sidebar-wrapper" [class.open]="sidebarOpen()">
+    <app-sidebar
+      title="Okane Transfer"
+      subtitle="Responsable d'agence"
+      [navItems]="navItems"
+    />
+  </div>
+
+  <div class="main-wrapper">
+    <app-header pageTitle="Espace Responsable" (menuToggle)="toggleSidebar()" />
+    <main class="main-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

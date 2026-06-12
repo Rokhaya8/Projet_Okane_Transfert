@@ -1,0 +1,87 @@
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">Détail agent</h2>
+      <p class="page-subtitle">{{ agent?.fullName ?? 'Chargement...' }}</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a mat-stroked-button routerLink="/manager/agents">
+        <mat-icon>arrow_back</mat-icon>
+        Retour
+      </a>
+      @if (agent && !editing) {
+        <button mat-flat-button color="primary" (click)="toggleEdit()">
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (error) {
+    <div class="error-alert">{{ error }}</div>
+  }
+
+  @if (loading) {
+    <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else if (agent) {
+    @if (editing) {
+      <div class="content-card">
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Nom complet</mat-label>
+                <input matInput formControlName="fullName" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Téléphone</mat-label>
+                <input matInput formControlName="phone" />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button mat-flat-button color="primary" type="submit" [disabled]="submitting">Enregistrer</button>
+            <button mat-stroked-button type="button" (click)="toggleEdit()">Annuler</button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <div class="content-card">
+      <h3>Informations</h3>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Nom</label><span>{{ agent.fullName }}</span></div>
+        <div class="detail-item"><label>Email</label><span>{{ agent.email }}</span></div>
+        <div class="detail-item"><label>Téléphone</label><span>{{ agent.phone }}</span></div>
+        <div class="detail-item">
+          <label>Statut</label>
+          <span><app-badge-statut [status]="agent.active ? 'ACTIVE' : 'CANCELLED'" /></span>
+        </div>
+        <div class="detail-item"><label>Créé le</label><span>{{ formatDate(agent.createdAt) }}</span></div>
+        <div class="detail-item"><label>Dernière connexion</label><span>{{ formatDate(agent.lastLogin) }}</span></div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h3>Performance</h3>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Total transferts</label><span>{{ agent.totalTransfers }}</span></div>
+        <div class="detail-item"><label>Transferts payés</label><span>{{ agent.paidTransfers }}</span></div>
+        <div class="detail-item"><label>En attente</label><span>{{ agent.pendingTransfers }}</span></div>
+        <div class="detail-item">
+          <label>Montant traité</label>
+          <span>{{ formatAmount(agent.totalAmountProcessed) }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

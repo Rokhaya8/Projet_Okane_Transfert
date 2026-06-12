@@ -2,6 +2,7 @@ package com.okanetransfer.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -38,6 +39,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agency_id")
+    private Agency agency;
 
     public enum Role {
         ROLE_ADMIN,

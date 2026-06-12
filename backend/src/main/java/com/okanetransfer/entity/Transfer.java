@@ -2,6 +2,7 @@ package com.okanetransfer.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -43,24 +44,27 @@ public class Transfer {
 
     private LocalDateTime expiryDate;
 
-    // Relations
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id")
     private User agent;
 
-    @ManyToOne
-    @JoinColumn(name = "agency_id")
-    private Agency agency;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_agency_id")
+    private Agency sourceAgency;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_agency_id")
+    private Agency destinationAgency;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "corridor_id")
     private TransferCorridor corridor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
-    private User client; // nullable
+    private User client;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "beneficiary_id")
     private Beneficiary beneficiary;
 

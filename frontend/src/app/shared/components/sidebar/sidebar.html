@@ -1,1 +1,25 @@
-<p>sidebar works!</p>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <mat-icon>account_balance</mat-icon>
+    </div>
+    <div>
+      <h2>{{ title }}</h2>
+      <span>{{ subtitle }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (item of navItems; track item.route) {
+      <a
+        class="nav-link"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.route === '/manager/dashboard' }"
+      >
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+</aside>
