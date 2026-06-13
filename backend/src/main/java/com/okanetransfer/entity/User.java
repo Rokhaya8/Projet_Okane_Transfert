@@ -40,9 +40,6 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agency_id")
-    private Agency agency;
 
     public enum Role {
         ROLE_ADMIN,
