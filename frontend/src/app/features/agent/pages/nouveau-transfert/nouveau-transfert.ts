@@ -37,7 +37,7 @@ export class NouveauTransfert implements OnInit {
 
   // Constantes de configuration pour éviter de modifier ces valeurs par erreur
   readonly paysAgence = 'Maroc';
-  deviseAgence = 'MAD';   // valeur par défaut le temps que l'API charge
+  deviseAgence = '';   // valeur par défaut le temps que l'API charge
 
   // Dictionnaire qui fait le lien entre un pays et son indicatif téléphonique
   private readonly indicateurs: { [key: string]: string } = {
