@@ -1,1 +1,77 @@
-<p>historique works!</p>
+<div class="history-container">
+
+  <div class="filter-card">
+    <div class="search-box">
+      <span class="material-icons">search</span>
+      <input
+        type="text"
+        placeholder="Rechercher par référence, bénéficiaire..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event); onFilterChange()" />
+    </div>
+    <div class="select-box">
+      <label for="statusFilter">Statut :</label>
+      <select id="statusFilter" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event); onFilterChange()">
+        <option value="ALL">Tous les transferts</option>
+        <option value="PENDING">En attente</option>
+        <option value="PAID">Payés</option>
+        <option value="CANCELLED">Annulés</option>
+      </select>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="empty-card">
+      <span class="material-icons">hourglass_empty</span>
+      <h4>Chargement...</h4>
+    </div>
+  } @else if (paginatedTransfers().length > 0) {
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date & Heure</th>
+              <th>Référence</th>
+              <th>Bénéficiaire</th>
+              <th>Montant Envoyé</th>
+              <th>Frais</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trx of paginatedTransfers()">
+              <td class="date-cell">{{ parseDate(trx.createdAt) | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="ref-cell">{{ trx.referenceCode }}</td>
+              <td>{{ trx.beneficiary?.fullName || 'Inconnu' }}</td>
+              <td class="amount-cell">{{ trx.amountSent | number:'1.2-2' }} MAD</td>
+              <td class="fees-cell">{{ trx.fees | number:'1.2-2' }} MAD</td>
+              <td>
+                <span class="status-badge" [ngClass]="trx.status.toLowerCase()">
+                  {{ trx.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar" *ngIf="totalPages() > 1">
+        <button class="page-btn" [disabled]="currentPage() === 1" (click)="changePage(currentPage() - 1)">
+          <span class="material-icons">chevron_left</span>
+        </button>
+        <span class="page-info">Page {{ currentPage() }} sur {{ totalPages() }}</span>
+        <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="changePage(currentPage() + 1)">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-card">
+      <span class="material-icons">history_toggle_off</span>
+      <h4>Aucun transfert trouvé</h4>
+      <p>Aucun enregistrement ne correspond à vos critères de recherche.</p>
+    </div>
+  }
+
+</div>

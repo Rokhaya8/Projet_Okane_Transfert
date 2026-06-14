@@ -1,0 +1,343 @@
+/* ==========================================================================
+   CONTENEUR GLOBAL ET STRUCTURE
+   ========================================================================== */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Base commune pour toutes les boîtes/cartes de l'interface */
+.search-section-card, 
+.result-section, 
+.no-result-card {
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.4s ease-out;
+}
+
+/* ==========================================================================
+   SECTION 1 : BARRE DE RECHERCHE
+   ========================================================================== */
+.search-section-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c2c2c;
+}
+
+.search-instruction {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: #777777;
+  line-height: 1.5;
+}
+
+.search-bar-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.input-with-icon {
+  position: relative;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0a0a0;
+  font-size: 22px;
+}
+
+.input-with-icon input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px 0 52px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  background-color: #f8fafc;
+  font-size: 15px;
+  font-weight: 500;
+  color: #334155;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+
+.input-with-icon input:focus {
+  border-color: #e8541a; /* Bordure orange au focus */
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(232, 84, 26, 0.1);
+}
+
+.btn-search {
+  height: 52px;
+  padding: 0 28px;
+  margin: 20px 5px 5px 0;
+  background-color: rgb(105, 41, 22); /* Ton marron chocolat */
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-search:hover {
+  background-color: #521f11;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background-color: #fef2f2;
+  border-left: 4px solid #ef4444;
+  border-radius: 6px;
+  color: #991b1b;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error-banner span {
+  font-size: 18px;
+}
+
+/* ==========================================================================
+   SECTION 2 : RÉSULTATS DU TRANSFERT
+   ========================================================================== */
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* En-tête de la fiche de résultat */
+.transfer-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 20px;
+}
+
+.ref-block .label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.ref-block .code-text {
+  margin: 4px 0 0 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: rgb(105, 41, 22);
+}
+
+/* Badges de statuts dynamiques */
+.status-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* États alignés avec l'enum JPA TransferStatus (String.toLowerCase()) */
+.status-badge-wrapper.pending { background-color: #fef3c7; color: #d97706; }
+.status-badge-wrapper.pending .status-dot { background-color: #d97706; }
+
+.status-badge-wrapper.paid { background-color: #dcfce7; color: #15803d; }
+.status-badge-wrapper.paid .status-dot { background-color: #15803d; }
+
+.status-badge-wrapper.cancelled { background-color: #fee2e2; color: #b91c1c; }
+.status-badge-wrapper.cancelled .status-dot { background-color: #b91c1c; }
+
+.status-badge-wrapper.expired { background-color: #f1f5f9; color: #64748b; }
+.status-badge-wrapper.expired .status-dot { background-color: #64748b; }
+
+/* Grille d'informations sous forme de sous-cartes */
+.transfer-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.info-card {
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.info-card.full-width {
+  grid-column: span 2;
+}
+
+.card-title-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 10px;
+}
+
+.card-title-area span {
+  font-size: 20px;
+  color: #e8541a; /* Icônes en orange vif */
+}
+
+.card-title-area h5 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-body-area p {
+  margin: 10px 0;
+  font-size: 14.5px;
+  color: #334155;
+}
+
+.card-body-area strong {
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Zone financière */
+.financial-row-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  text-align: center;
+}
+
+.fin-box {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 16px;
+  border-radius: 10px;
+}
+
+.fin-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.fin-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.price-orange { color: #e8541a; }
+.price-chocolate { color: rgb(105, 41, 22); font-size: 20px; }
+
+/* Zone dates */
+.dates-flex-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dates-flex-row p {
+  margin: 0;
+  font-size: 14px;
+  color: #334155;
+}
+
+/* ==========================================================================
+   AUCUN RÉSULTAT TROUVÉ
+   ========================================================================== */
+.no-result-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.warning-big-icon {
+  font-size: 48px;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+
+.no-result-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.no-result-card p {
+  margin: 0;
+  max-width: 460px;
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   ANIMATIONS & RESPONSIVE
+   ========================================================================== */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .transfer-details-grid {
+    grid-template-columns: 1fr;
+  }
+  .info-card.full-width {
+    grid-column: span 1;
+  }
+  .financial-row-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .dates-flex-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .search-bar-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-search {
+    width: 100%;
+  }
+}

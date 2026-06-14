@@ -1,1 +1,100 @@
-<p>detail-transfert works!</p>
+<div class="page-container">
+    <div class="search-section-card">
+        <h3>Suivie de transaction en temps réel</h3>
+        <p class="search-instruction">Entrez le code de référence unique de votre transfert pour vérifier instantanément son statut.</p>
+
+        <div class="search-bar-gro">
+            <div class="input-with-icon">
+                <span class="material-icons search-icon">search</span>
+                <input 
+                type="text" placeholder="Ex: TRX-8987" [(ngModel)]="searchReference" (keyup.enter)="rechercheLeTransfert()"/>
+            </div>
+            <button class="btn-search" (click)="rechercheLeTransfert()" [disabled]="isLoading">
+              {{ isLoading ? 'Recherche...' : 'Rechercher' }}
+            </button>
+        </div>
+        
+        <div class="error-banner" *ngIf="errorMessage">
+            <span class="material-icons">error_outline</span> {{ errorMessage }}
+        </div>
+    </div>
+
+    <div class="result-section" *ngIf="transfertTrouve">
+        <div class="tranfer-card-header">
+            <div class="ref-block">
+                <span class="label">RÉFÉRENCE</span>
+                <h4 class="code-text">{{ transfertTrouve.referenceCode }}</h4>
+            </div>
+            <div class="status-badge-wrapper" [ngClass]="transfertTrouve.status.toLowerCase()">
+                <span class="status-dot"></span>
+                <span class="status-text">{{ transfertTrouve.status }}</span>
+            </div>
+        </div>
+        <div class="transfer-details-grid">
+      <div class="info-card">
+        <div class="card-title-area">
+          <span class="material-icons">account_circle</span>
+          <h5>Émetteur</h5>
+        </div>
+        <div class="card-body-area">
+          <p><strong>Nom complet :</strong> {{ transfertTrouve.client?.fullName || 'Client Anonyme' }}</p>
+          <p><strong>Téléphone :</strong> {{ transfertTrouve.client?.phone || 'Non renseigné' }}</p>
+          <p><strong>Email :</strong> {{ transfertTrouve.client?.email || 'Non renseigné' }}</p>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="card-title-area">
+          <span class="material-icons">person_pin</span>
+          <h5>Bénéficiaire</h5>
+        </div>
+        <div class="card-body-area">
+          <p><strong>Nom complet :</strong> {{ transfertTrouve.beneficiary?.fullName || 'Inconnu' }}</p>
+          <p><strong>Téléphone :</strong> {{ transfertTrouve.beneficiary?.phone || 'Non renseigné' }}</p>
+        </div>
+      </div>
+
+      <div class="info-card full-width">
+        <div class="card-title-area">
+          <span class="material-icons">payments</span>
+          <h5>Détails du paiement</h5>
+        </div>
+        <div class="financial-row-grid">
+          <div class="fin-box">
+            <span class="fin-label">Montant Envoyé</span>
+            <span class="fin-value price-orange">{{ transfertTrouve.amountSent | number:'1.2-2' }} MAD</span>
+          </div>
+          <div class="fin-box">
+            <span class="fin-label">Frais de Service</span>
+                <span class="fin-value">{{ transfertTrouve.fees | number:'1.2-3' }} MAD</span>
+            </div>
+            <div class="fin-box">
+                <span class="fin-label">Montant à Recevoir</span>
+                <span class="fin-value price-chocolate">{{ transfertTrouve.amountReceived | number:'1.2-2' }} MAD</span>
+            </div>
+            </div>
+        </div>
+
+        <div class="info-card full-width">
+            <div class="card-title-area">
+            <span class="material-icons">event_note</span>
+            <h5>Dates Clés</h5>
+            </div>
+            <div class="dates-flex-row">
+            <p><strong>Créé le :</strong> {{ transfertTrouve.createdAt | date:'dd/MM/yyyy à HH:mm' }}</p>
+            <p *ngIf="transfertTrouve.paidAt"><strong>Payé le :</strong> {{ transfertTrouve.paidAt | date:'dd/MM/yyyy à HH:mm' }}</p>
+            <p><strong>Date d'expiration :</strong> {{ transfertTrouve.expiryDate | date:'dd/MM/yyyy' }}</p>
+            </div>
+        </div>
+        </div>
+
+    </div>
+
+    <div class="no-result-card" *ngIf="hasSearched && !transfertTrouve && !errorMessage">
+        <span class="material-icons warning-big-icon">search_off</span>
+        <h4>Aucun transfert trouvé</h4>
+        <p>Le code de référence renseigné ne correspond à aucun transfert enregistré dans notre système. Veuillez vérifier votre saisie.</p>
+
+    </div>
+
+</div>
