@@ -38,6 +38,10 @@ export const managerRoutes: Routes = [
         loadComponent: () => import('./pages/validations/validations').then((m) => m.Validations),
       },
       {
+        path: 'cash-drawers',
+        loadComponent: () => import('./pages/cash-drawers/cash-drawers').then((m) => m.CashDrawers),
+      },
+      {
         path: 'reports',
         loadComponent: () => import('./pages/reports/reports').then((m) => m.Reports),
       },

@@ -1,0 +1,9 @@
+.loading-center {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.summary-kpis {
+  margin-bottom: 1.5rem;
+}

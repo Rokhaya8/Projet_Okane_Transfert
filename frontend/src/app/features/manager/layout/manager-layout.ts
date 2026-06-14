@@ -17,6 +17,7 @@ export class ManagerLayout {
     { label: 'Agents', icon: 'groups', route: '/manager/agents' },
     { label: 'Opérations', icon: 'swap_horiz', route: '/manager/operations' },
     { label: 'Validations', icon: 'verified', route: '/manager/validations' },
+    { label: 'Caisses', icon: 'point_of_sale', route: '/manager/cash-drawers' },
     { label: 'Rapports', icon: 'assessment', route: '/manager/reports' },
     { label: 'Profil', icon: 'person', route: '/manager/profile' },
   ];

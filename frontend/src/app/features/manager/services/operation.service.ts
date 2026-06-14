@@ -14,6 +14,7 @@ export class OperationService {
     if (filters?.status) params = params.set('status', filters.status);
     if (filters?.from) params = params.set('from', filters.from);
     if (filters?.to) params = params.set('to', filters.to);
+    if (filters?.agentId) params = params.set('agentId', filters.agentId);
     return this.http.get<Operation[]>(this.base, { params });
   }
 

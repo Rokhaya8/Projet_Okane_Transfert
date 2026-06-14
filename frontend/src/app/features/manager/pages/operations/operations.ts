@@ -90,14 +90,11 @@ export class Operations implements OnInit {
         from: f.from || undefined,
         to: f.to || undefined,
         status: f.status || undefined,
+        agentId: f.agentId ?? undefined,
       })
       .subscribe({
         next: (ops) => {
-          let filtered = ops;
-          if (f.agentId) {
-            filtered = ops.filter((o) => o.agentId === f.agentId);
-          }
-          this.dataSource.data = filtered;
+          this.dataSource.data = ops;
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           this.loading = false;

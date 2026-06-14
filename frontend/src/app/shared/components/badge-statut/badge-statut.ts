@@ -15,6 +15,7 @@ export class BadgeStatut {
       case 'PAID':
       case 'APPROVED':
       case 'ACTIVE':
+      case 'OPEN':
         return 'badge-success';
       case 'PENDING':
         return 'badge-warning';
@@ -22,6 +23,8 @@ export class BadgeStatut {
       case 'REJECTED':
       case 'EXPIRED':
         return 'badge-danger';
+      case 'CLOSED':
+        return 'badge-neutral';
       default:
         return 'badge-neutral';
     }
@@ -35,6 +38,9 @@ export class BadgeStatut {
       EXPIRED: 'Expiré',
       APPROVED: 'Approuvé',
       REJECTED: 'Rejeté',
+      OPEN: 'Ouverte',
+      CLOSED: 'Fermée',
+      ACTIVE: 'Actif',
     };
     return labels[this.status?.toUpperCase()] ?? this.status;
   }
