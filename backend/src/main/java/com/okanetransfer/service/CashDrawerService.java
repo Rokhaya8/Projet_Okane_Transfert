@@ -1,10 +1,16 @@
 package com.okanetransfer.service;
 
+import com.okanetransfer.entity.Agency;
 import com.okanetransfer.entity.CashDrawer;
+import com.okanetransfer.entity.User;
+import com.okanetransfer.exception.BusinessException;
+import com.okanetransfer.exception.ResourceNotFoundException;
+import com.okanetransfer.repository.AgencyRepository;
 import com.okanetransfer.repository.CashDrawerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.okanetransfer.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,28 +19,46 @@ import java.util.List;
 @Transactional
 public class CashDrawerService {
 
-    @Autowired
-    private CashDrawerRepository cashDrawerRepository;
+    private final CashDrawerRepository cashDrawerRepository;
+    private final UserRepository userRepository;
+    private final AgencyRepository agencyRepository;
 
-    // Ouvrir la caisse en début de journée
+    public CashDrawerService(CashDrawerRepository cashDrawerRepository,
+                              UserRepository userRepository,
+                              AgencyRepository agencyRepository) {
+        this.cashDrawerRepository = cashDrawerRepository;
+        this.userRepository = userRepository;
+        this.agencyRepository = agencyRepository;
+    }
+
     public CashDrawer openCashDrawer(Long agentId, Long agencyId, BigDecimal initialBalance) {
+        User agent = userRepository.findById(agentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agent introuvable"));
+        Agency agency = agencyRepository.findById(agencyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence introuvable"));
+
+        cashDrawerRepository.findByAgentId(agentId).ifPresent(existing -> {
+            if (existing.getStatus() == CashDrawer.CashDrawerStatus.OPEN) {
+                throw new BusinessException("Une caisse est deja ouverte pour cet agent");
+            }
+        });
+
         CashDrawer cashDrawer = new CashDrawer();
+        cashDrawer.setAgent(agent);
+        cashDrawer.setAgency(agency);
         cashDrawer.setBalance(initialBalance);
         cashDrawer.setStatus(CashDrawer.CashDrawerStatus.OPEN);
         cashDrawer.setOpeningTime(LocalDateTime.now());
         return cashDrawerRepository.save(cashDrawer);
     }
 
-    // Clôturer la caisse en fin de journée
     public CashDrawer closeCashDrawer(Long agentId, BigDecimal countedAmount) {
         CashDrawer cashDrawer = cashDrawerRepository.findByAgentId(agentId)
-                .orElseThrow(() -> new RuntimeException("Caisse introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Caisse introuvable"));
 
-        // Vérifier s'il y a un écart
         BigDecimal difference = cashDrawer.getBalance().subtract(countedAmount);
         if (difference.compareTo(BigDecimal.ZERO) != 0) {
-            // Signaler l'écart
-            System.out.println("Écart détecté : " + difference + " MAD");
+            System.out.println("Ecart detecte : " + difference + " MAD");
         }
 
         cashDrawer.setStatus(CashDrawer.CashDrawerStatus.CLOSED);
@@ -42,14 +66,14 @@ public class CashDrawerService {
         return cashDrawerRepository.save(cashDrawer);
     }
 
-    // Voir le solde actuel
+    @Transactional(readOnly = true)
     public BigDecimal getCurrentBalance(Long agentId) {
         CashDrawer cashDrawer = cashDrawerRepository.findByAgentId(agentId)
-                .orElseThrow(() -> new RuntimeException("Caisse introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Caisse introuvable"));
         return cashDrawer.getBalance();
     }
 
-    // Voir les caisses d'une agence
+    @Transactional(readOnly = true)
     public List<CashDrawer> getAgencyCashDrawers(Long agencyId) {
         return cashDrawerRepository.findByAgencyId(agencyId);
     }

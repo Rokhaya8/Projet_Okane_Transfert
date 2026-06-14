@@ -1,0 +1,83 @@
+<div class="page-layout">
+  <app-navbar></app-navbar>
+
+  <main class="main-content">
+    <section class="page-header">
+      <div>
+        <p class="eyebrow">{{ context.agencyName }}</p>
+        <h1>Historique agent</h1>
+      </div>
+      <button class="secondary-button" type="button" (click)="loadHistory()">Actualiser</button>
+    </section>
+
+    <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+
+    <section class="toolbar">
+      <div class="tabs">
+        <button type="button" [class.active]="activeTab === 'payments'" (click)="activeTab = 'payments'">Retraits payes</button>
+        <button type="button" [class.active]="activeTab === 'cash'" (click)="activeTab = 'cash'">Operations caisse</button>
+      </div>
+      <input type="search" name="search" placeholder="Rechercher..." [(ngModel)]="search" />
+    </section>
+
+    <section class="panel">
+      <table *ngIf="activeTab === 'payments'">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Recu</th>
+            <th>Code</th>
+            <th>Beneficiaire</th>
+            <th>Piece</th>
+            <th>Montant</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="loading">
+            <td colspan="6" class="empty">Chargement...</td>
+          </tr>
+          <tr *ngIf="!loading && filteredPayments.length === 0">
+            <td colspan="6" class="empty">Aucun retrait paye.</td>
+          </tr>
+          <tr *ngFor="let payment of filteredPayments">
+            <td>{{ payment.paidAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ payment.receiptNumber }}</td>
+            <td>{{ payment.referenceCode }}</td>
+            <td>{{ payment.beneficiaryName }}</td>
+            <td>{{ payment.beneficiaryIdentityNumber }}</td>
+            <td>{{ payment.paidAmount | number: '1.2-2' }} MAD</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table *ngIf="activeTab === 'cash'">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Reference</th>
+            <th>Montant</th>
+            <th>Avant</th>
+            <th>Apres</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="loading">
+            <td colspan="6" class="empty">Chargement...</td>
+          </tr>
+          <tr *ngIf="!loading && filteredOperations.length === 0">
+            <td colspan="6" class="empty">Aucune operation caisse.</td>
+          </tr>
+          <tr *ngFor="let operation of filteredOperations">
+            <td>{{ operation.operationDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ operationLabel(operation) }}</td>
+            <td>{{ operation.reference || '-' }}</td>
+            <td>{{ operation.amount | number: '1.2-2' }} MAD</td>
+            <td>{{ operation.balanceBefore | number: '1.2-2' }} MAD</td>
+            <td>{{ operation.balanceAfter | number: '1.2-2' }} MAD</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</div>

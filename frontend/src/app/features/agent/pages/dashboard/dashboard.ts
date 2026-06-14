@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { NavbarComponent } from '../../components/navbar/navbar';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, DatePipe, NavbarComponent],
+  imports: [DatePipe, NavbarComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

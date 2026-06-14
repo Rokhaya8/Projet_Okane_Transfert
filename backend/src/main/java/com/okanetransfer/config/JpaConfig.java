@@ -19,12 +19,12 @@ public class JpaConfig {
 
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/okane_transfer");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("Ensa2026"); //à modifier quand je vais push 
-        return dataSource;
+        DriverManagerDataSource ds = new DriverManagerDataSource();
+        ds.setDriverClassName("org.postgresql.Driver");
+        ds.setUrl(System.getProperty("db.url", "jdbc:postgresql://localhost:5432/okane_transfer"));
+        ds.setUsername(System.getProperty("db.username", "postgres"));
+        ds.setPassword(System.getProperty("db.password", "soufia2004"));
+        return ds;
     }
 
     @Bean
@@ -39,17 +39,19 @@ public class JpaConfig {
 
     @Bean
     public JpaTransactionManager transactionManager() {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-        return transactionManager;
+        JpaTransactionManager tm = new JpaTransactionManager();
+        tm.setEntityManagerFactory(entityManagerFactory().getObject());
+        return tm;
     }
 
     private Properties hibernateProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        properties.setProperty("hibernate.show_sql", "true");
-        properties.setProperty("hibernate.format_sql", "true");
-        return properties;
+        Properties p = new Properties();
+        p.setProperty("hibernate.hbm2ddl.auto", "update");
+        p.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        p.setProperty("hibernate.show_sql", "true");
+        p.setProperty("hibernate.format_sql", "true");
+        p.setProperty("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
+        return p;
     }
 }

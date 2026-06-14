@@ -1,10 +1,15 @@
 package com.okanetransfer.service;
 
+import com.okanetransfer.dto.*;
 import com.okanetransfer.entity.*;
-import com.okanetransfer.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.okanetransfer.exception.BusinessException;
+import com.okanetransfer.exception.ResourceNotFoundException;
+import com.okanetransfer.repository.TransferPaymentRepository;
+import com.okanetransfer.repository.TransferRepository;
+import com.okanetransfer.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,116 +20,210 @@ import java.util.UUID;
 @Transactional
 public class TransferService {
 
-    @Autowired
-    private TransferRepository transferRepository;
+    private final TransferRepository transferRepository;
+    private final TransferPaymentRepository transferPaymentRepository;
+    private final UserRepository userRepository;
+    private final FeeService feeService;
+    private final ExchangeRateService exchangeRateService;
+    private final AgentCashSessionService cashSessionService;
 
-    @Autowired
-    private CashDrawerRepository cashDrawerRepository;
+    public TransferService(
+            TransferRepository transferRepository,
+            TransferPaymentRepository transferPaymentRepository,
+            UserRepository userRepository,
+            FeeService feeService,
+            ExchangeRateService exchangeRateService,
+            AgentCashSessionService cashSessionService
+    ) {
+        this.transferRepository = transferRepository;
+        this.transferPaymentRepository = transferPaymentRepository;
+        this.userRepository = userRepository;
+        this.feeService = feeService;
+        this.exchangeRateService = exchangeRateService;
+        this.cashSessionService = cashSessionService;
+    }
 
-    @Autowired
-    private FeeService feeService;
-
-    @Autowired
-    private ExchangeRateService exchangeRateService;
-
-    // Enregistrer un envoi
     public Transfer registerTransfer(Transfer transfer, Long agentId) {
+        User agent = userRepository.findById(agentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agent introuvable"));
+        AgentCashSession session = cashSessionService.getOpenSessionForUpdate(agentId);
 
-        // 1. Trouver le corridor
         TransferCorridor corridor = feeService.findCorridor(
                 transfer.getCorridor().getSourceCountry(),
                 transfer.getBeneficiary().getCountry()
         );
         transfer.setCorridor(corridor);
 
-        // 2. Calculer les frais automatiquement
-        BigDecimal fees = feeService.calculateFees(
-                corridor.getId(),
-                transfer.getAmountSent()
-        );
+        BigDecimal fees = feeService.calculateFees(corridor.getId(), transfer.getAmountSent());
         transfer.setFees(fees);
 
-        // 3. Convertir le montant dans la devise destination
         BigDecimal amountReceived = exchangeRateService.convert(
                 corridor.getDestinationCurrency().getId(),
                 transfer.getAmountSent()
         );
         transfer.setAmountReceived(amountReceived);
 
-        // 4. Générer le code de retrait unique
-        transfer.setReferenceCode(generateReferenceCode());
-
-        // 5. Définir statut et expiration
-        transfer.setStatus(Transfer.TransferStatus.PENDING);
+        transfer.setReferenceCode(generateUniqueReferenceCode());
+        transfer.setStatus(Transfer.TransferStatus.EN_ATTENTE);
         transfer.setExpiryDate(LocalDateTime.now().plusDays(7));
+        transfer.setAgent(agent);
+        transfer.setAgency(session.getAgency());
 
-        // 6. Sauvegarder
         Transfer savedTransfer = transferRepository.save(transfer);
-
-        // 7. Mettre à jour la caisse
-        updateCashDrawer(agentId, transfer.getAmountSent(), true);
-
+        cashSessionService.applyTransferSent(agentId, savedTransfer);
         return savedTransfer;
     }
 
-    // Payer un retrait
-    public Transfer payTransfer(String referenceCode, Long agentId) {
+    public TransferPaymentResponse payTransfer(PayTransferRequest request) {
+        Transfer transfer = transferRepository.findByReferenceCode(request.referenceCode())
+                .orElseThrow(() -> new ResourceNotFoundException("Transfert introuvable"));
 
-        // 1. Trouver le transfert
-        Transfer transfer = transferRepository.findByReferenceCode(referenceCode)
-                .orElseThrow(() -> new RuntimeException("Transfert introuvable"));
+        validatePayableTransfer(transfer);
 
-        // 2. Vérifier le statut
-        if (transfer.getStatus() != Transfer.TransferStatus.PENDING) {
-            throw new RuntimeException("Ce transfert ne peut pas être payé");
-        }
+        User agent = userRepository.findById(request.agentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Agent introuvable"));
 
-        // 3. Vérifier l'expiration
-        if (transfer.getExpiryDate().isBefore(LocalDateTime.now())) {
-            transfer.setStatus(Transfer.TransferStatus.EXPIRED);
-            transferRepository.save(transfer);
-            throw new RuntimeException("Ce transfert est expiré");
-        }
+        AgentCashSession session = cashSessionService.applyTransferPaid(request.agentId(), transfer);
 
-        // 4. Mettre à jour le statut
-        transfer.setStatus(Transfer.TransferStatus.PAID);
+        transfer.setStatus(Transfer.TransferStatus.PAYE);
         transfer.setPaidAt(LocalDateTime.now());
+        transfer.setPayingAgent(agent);
+        transfer.setPayingAgency(session.getAgency());
+        Transfer paidTransfer = transferRepository.save(transfer);
 
-        // 5. Mettre à jour la caisse
-        updateCashDrawer(agentId, transfer.getAmountReceived(), false);
+        TransferPayment payment = new TransferPayment();
+        payment.setTransfer(paidTransfer);
+        payment.setAgent(agent);
+        payment.setAgency(session.getAgency());
+        payment.setBeneficiaryIdentityNumber(request.beneficiaryIdentityNumber());
+        payment.setPaidAmount(paidTransfer.getAmountReceived());
+        payment.setPaidAt(paidTransfer.getPaidAt());
+        payment.setReceiptNumber(generateReceiptNumber());
 
-        return transferRepository.save(transfer);
+        return toPaymentResponse(transferPaymentRepository.save(payment));
     }
 
-    // Chercher par code de retrait
+    @Transactional(readOnly = true)
     public Optional<Transfer> findByReferenceCode(String referenceCode) {
         return transferRepository.findByReferenceCode(referenceCode);
     }
 
-    // Transferts d'un agent
+    @Transactional(readOnly = true)
+    public TransferSearchResponse searchPayableByReferenceCode(String referenceCode) {
+        Transfer transfer = transferRepository.findByReferenceCode(referenceCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Transfert introuvable"));
+        return toSearchResponse(transfer);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TransferSearchResponse> searchPayableByBeneficiaryPhone(String phone) {
+        return transferRepository.findByBeneficiaryPhone(phone)
+                .stream()
+                .map(this::toSearchResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TransferPaymentResponse> getPaymentHistory(Long agentId) {
+        return transferPaymentRepository.findByAgentIdOrderByPaidAtDesc(agentId)
+                .stream()
+                .map(this::toPaymentResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ReceiptResponse getReceipt(Long paymentId) {
+        TransferPayment payment = transferPaymentRepository.findById(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Paiement introuvable"));
+        Transfer transfer = payment.getTransfer();
+        Beneficiary beneficiary = transfer.getBeneficiary();
+        return new ReceiptResponse(
+                payment.getReceiptNumber(),
+                transfer.getReferenceCode(),
+                payment.getAgent().getFullName(),
+                payment.getAgency().getName(),
+                beneficiary.getFullName(),
+                beneficiary.getPhone(),
+                payment.getBeneficiaryIdentityNumber(),
+                payment.getPaidAmount(),
+                payment.getPaidAt()
+        );
+    }
+
+    @Transactional(readOnly = true)
     public List<Transfer> getAgentTransfers(Long agentId) {
         return transferRepository.findByAgentId(agentId);
     }
 
-    // Générer code de retrait unique (8 caractères)
-    private String generateReferenceCode() {
-        return UUID.randomUUID().toString()
-                .replace("-", "")
-                .substring(0, 8)
-                .toUpperCase();
-    }
-
-    // Mettre à jour la caisse
-    private void updateCashDrawer(Long agentId, BigDecimal amount, boolean isCredit) {
-        CashDrawer cashDrawer = cashDrawerRepository.findByAgentId(agentId)
-                .orElseThrow(() -> new RuntimeException("Caisse introuvable"));
-
-        if (isCredit) {
-            cashDrawer.setBalance(cashDrawer.getBalance().add(amount));
-        } else {
-            cashDrawer.setBalance(cashDrawer.getBalance().subtract(amount));
+    private void validatePayableTransfer(Transfer transfer) {
+        if (transfer.getStatus() != Transfer.TransferStatus.EN_ATTENTE) {
+            throw new BusinessException("Ce transfert ne peut pas etre paye");
         }
 
-        cashDrawerRepository.save(cashDrawer);
+        if (transfer.getExpiryDate() != null && transfer.getExpiryDate().isBefore(LocalDateTime.now())) {
+            transfer.setStatus(Transfer.TransferStatus.EXPIRE);
+            transferRepository.save(transfer);
+            throw new BusinessException("Ce transfert est expire");
+        }
+    }
+
+    private TransferSearchResponse toSearchResponse(Transfer transfer) {
+        Beneficiary beneficiary = transfer.getBeneficiary();
+        return new TransferSearchResponse(
+                transfer.getId(),
+                transfer.getReferenceCode(),
+                transfer.getAmountSent(),
+                transfer.getAmountReceived(),
+                transfer.getStatus(),
+                transfer.getCreatedAt(),
+                transfer.getPaidAt(),
+                transfer.getExpiryDate(),
+                beneficiary == null ? null : beneficiary.getFullName(),
+                beneficiary == null ? null : beneficiary.getPhone(),
+                beneficiary == null ? null : beneficiary.getCountry(),
+                isPayable(transfer)
+        );
+    }
+
+    private boolean isPayable(Transfer transfer) {
+        return transfer.getStatus() == Transfer.TransferStatus.EN_ATTENTE
+                && (transfer.getExpiryDate() == null || !transfer.getExpiryDate().isBefore(LocalDateTime.now()));
+    }
+
+    private TransferPaymentResponse toPaymentResponse(TransferPayment payment) {
+        Transfer transfer = payment.getTransfer();
+        Beneficiary beneficiary = transfer.getBeneficiary();
+        return new TransferPaymentResponse(
+                payment.getId(),
+                transfer.getId(),
+                transfer.getReferenceCode(),
+                payment.getAgent().getId(),
+                payment.getAgent().getFullName(),
+                payment.getAgency().getId(),
+                payment.getAgency().getName(),
+                beneficiary == null ? null : beneficiary.getFullName(),
+                payment.getBeneficiaryIdentityNumber(),
+                payment.getPaidAmount(),
+                payment.getPaidAt(),
+                payment.getReceiptNumber()
+        );
+    }
+
+    private String generateUniqueReferenceCode() {
+        String code;
+        do {
+            code = UUID.randomUUID().toString()
+                    .replace("-", "")
+                    .substring(0, 8)
+                    .toUpperCase();
+        } while (transferRepository.findByReferenceCode(code).isPresent());
+        return code;
+    }
+
+    private String generateReceiptNumber() {
+        return "RCT-" + UUID.randomUUID().toString()
+                .replace("-", "")
+                .substring(0, 10)
+                .toUpperCase();
     }
 }

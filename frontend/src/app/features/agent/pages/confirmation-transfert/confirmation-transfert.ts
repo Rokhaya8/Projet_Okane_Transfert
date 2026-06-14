@@ -4,6 +4,7 @@ import { NavbarComponent } from '../../components/navbar/navbar';
 import { DatePipe } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'app-confirmation-transfert',
   imports: [RouterLink, NavbarComponent, DatePipe],
   templateUrl: './confirmation-transfert.html',

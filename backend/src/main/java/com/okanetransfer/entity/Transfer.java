@@ -48,8 +48,16 @@ public class Transfer {
     private User agent;
 
     @ManyToOne
+    @JoinColumn(name = "paying_agent_id")
+    private User payingAgent;
+
+    @ManyToOne
     @JoinColumn(name = "agency_id")
     private Agency agency;
+
+    @ManyToOne
+    @JoinColumn(name = "paying_agency_id")
+    private Agency payingAgency;
 
     @ManyToOne
     @JoinColumn(name = "corridor_id")
@@ -64,9 +72,9 @@ public class Transfer {
     private Beneficiary beneficiary;
 
     public enum TransferStatus {
-        PENDING,
-        PAID,
-        CANCELLED,
-        EXPIRED
+        EN_ATTENTE,
+        PAYE,
+        ANNULE,
+        EXPIRE
     }
 }
