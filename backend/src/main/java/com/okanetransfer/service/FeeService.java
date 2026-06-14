@@ -32,7 +32,7 @@ public class FeeService {
         return feeTier.getFixedFee().add(percentageFee);
     }
 
-    // Trouver le corridor selon pays source et destination
+    //Trouver le corridor selon pays source et destination
     public TransferCorridor findCorridor(String sourceCountry, String destinationCountry) {
         return corridorRepository
                 .findBySourceCountryAndDestinationCountry(sourceCountry, destinationCountry)

@@ -1,0 +1,126 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width, clamp(240px, 20vw, 280px));
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 18px;
+  background: linear-gradient(180deg, #7c341f 0%, #5b2416 100%);
+  color: white;
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+}
+
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 0 14px;
+  font-size: 1.55rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.brand-okane {
+  color: #ffb28e;
+}
+
+.brand-transfer {
+  color: #ffffff;
+}
+
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-links a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-links a:hover {
+  transform: translateX(3px);
+  font-size: 1.2rem;
+  background-color: #ba908345;
+}
+
+.sidebar-links a.active {
+  background: #e8541a;
+  color: white;
+}
+
+.sidebar-links .material-icons {
+  font-size: 20px;
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.agent-name {
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.btn-logout {
+  width: 100%;
+  background: transparent;
+  border: 2px solid #ffb28e;
+  color: #ffb28e;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-logout:hover {
+  background: #ffb28e;
+  color: #5b2416;
+  transform: translateY(-1px);
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: min(82vw, 320px);
+    left: calc(-1 * min(82vw, 320px));
+    transition: left 0.3s ease-in-out;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 14, 20, 0.45);
+    z-index: 900;
+  }
+}

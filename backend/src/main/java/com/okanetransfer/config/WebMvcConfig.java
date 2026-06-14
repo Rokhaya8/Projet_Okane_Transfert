@@ -17,10 +17,11 @@ import java.util.List;
 @ComponentScan(basePackages = "com.okanetransfer")
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    //Connexion avec le front
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:4200")
+                .allowedOrigins("http://localhost:4200") //LIEN DU FRONTEND 
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
@@ -34,4 +35,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
+
+
 }

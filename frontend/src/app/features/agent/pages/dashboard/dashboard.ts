@@ -1,28 +1,24 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
-import { NavbarComponent } from '../../components/navbar/navbar';
+import { DatePipe, AsyncPipe, NgIf } from '@angular/common'; // <-- AJOUTEZ NgIf ICI
+import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
+import { Header } from '../../../../shared/components/header/header';
+import { Observable, timer } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink, DatePipe, NavbarComponent],
+  // AJOUTEZ NgIf dans le tableau des imports ci-dessous :
+  imports: [RouterLink, DatePipe, AsyncPipe, NgIf, Sidebar, Header],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard implements OnInit, OnDestroy {
-  today = new Date();
-  private timer: any;
-
-  constructor(private cdr: ChangeDetectorRef) {}
+export class Dashboard implements OnInit {
+  clock$: Observable<Date> | undefined;
 
   ngOnInit() {
-    this.timer = setInterval(() => {
-      this.today = new Date();
-      this.cdr.detectChanges();
-    }, 1000);
-  }
-
-  ngOnDestroy() {
-    clearInterval(this.timer);
+    this.clock$ = timer(0, 1000).pipe(
+      map(() => new Date())
+    );
   }
 }

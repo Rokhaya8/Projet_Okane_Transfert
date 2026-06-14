@@ -3,10 +3,10 @@ package com.okanetransfer.config;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[] { };
+        // En remettant null ou un tableau vide, tu désactives le chargement du contexte racine
+        return null;
     }
 
     @Override

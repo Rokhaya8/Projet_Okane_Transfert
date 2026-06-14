@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import com.okanetransfer.dto.SimulationDTO;
+import com.okanetransfer.entity.Agent;
 
 @Service
 @Transactional
@@ -36,7 +37,7 @@ public class TransferService {
     public Transfer registerTransfer(Transfer transfer, Long agentId) {
 
         // 0. Récupérer l'agent et le rattacher au transfert
-        User agent = userRepository.findById(agentId)
+        Agent agent = (Agent) userRepository.findById(agentId)
                 .orElseThrow(() -> new RuntimeException("Agent introuvable"));
         transfer.setAgent(agent);
         transfer.setAgency(agent.getAgency());   // l'agence vient de l'agent

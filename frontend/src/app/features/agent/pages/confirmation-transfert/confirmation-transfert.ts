@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NavbarComponent } from '../../components/navbar/navbar';
+import { Sidebar } from '../../../../shared/components/sidebar/sidebar'; // <-- VERIFIEZ CE CHEMIN
 import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-confirmation-transfert',
-  imports: [RouterLink, NavbarComponent, DatePipe],
+  imports: [RouterLink, Sidebar, DatePipe], // On retire le Header d'ici
   templateUrl: './confirmation-transfert.html',
   styleUrl: './confirmation-transfert.css',
 })

@@ -7,16 +7,15 @@
   flex: 1;
   min-height: 100vh;
   background: #f5d5c0;
+  display: flex;
+  flex-direction: column;
 }
 
 .transfert-container {
+  margin-top: 90px; /* Laisse l'espace nécessaire pour le Header fixe */
   padding: 32px 48px;
-}
-
-.page-header h2 {
-  font-size: 28px;
-  color: #2c1810;
-  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Stepper */

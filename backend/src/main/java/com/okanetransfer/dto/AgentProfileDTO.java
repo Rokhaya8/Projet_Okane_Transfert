@@ -1,20 +1,15 @@
 package com.okanetransfer.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AgentProfileDTO {
-
     private Long id;
     private String fullName;
     private String agencyName;
     private String country;
-
-    // Constructeur pour construire le DTO facilement
-    public AgentProfileDTO(Long id, String fullName, String agencyName, String country) {
-        this.id = id;
-        this.fullName = fullName;
-        this.agencyName = agencyName;
-        this.country = country;
-    }
 }
