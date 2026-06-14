@@ -25,6 +25,7 @@ D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\controller\AuthController.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\dto\CashDrawerDTO.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\entity\TransferCorridor.java
+D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\entity\Manager.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\entity\SensitiveOperation.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\repository\CashDrawerRepository.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\dto\response\LoginResponse.java
@@ -41,6 +42,7 @@ D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\dto\AgentDetailDTO.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\dto\SensitiveOperationDTO.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\config\WebAppInitializer.java
+D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\entity\Agent.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\enums\IdentityType.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\service\ManagerService.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\dto\AgentPerformanceDTO.java
@@ -50,6 +52,7 @@ D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\config\WebMvcConfig.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\entity\Agency.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\security\JwtTokenProvider.java
+D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\repository\AgentRepository.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\config\JpaConfig.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\dto\UserDTO.java
 D:\S4\JEE\projet\Projet_Okane_Transfert\backend\src\main\java\com\okanetransfer\controller\ManagerController.java

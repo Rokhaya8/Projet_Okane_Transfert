@@ -46,7 +46,7 @@ public class Transfer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id")
-    private User agent;
+    private Agent agent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_agency_id")

@@ -95,10 +95,11 @@ public class ManagerController {
 
     @GetMapping("/operations")
     public List<OperationDTO> getOperations(
-            @RequestParam(value = "status",required = false) Transfer.TransferStatus status,
-            @RequestParam(value = "from",required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam(value = "to",required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        return managerService.getOperations(status, from, to);
+            @RequestParam(value = "status", required = false) Transfer.TransferStatus status,
+            @RequestParam(value = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(value = "agentId", required = false) Long agentId) {
+        return managerService.getOperations(status, from, to, agentId);
     }
 
     @GetMapping("/operations/{id}")

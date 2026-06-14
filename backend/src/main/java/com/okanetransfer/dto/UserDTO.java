@@ -1,5 +1,7 @@
 package com.okanetransfer.dto;
 
+import com.okanetransfer.entity.Agent;
+import com.okanetransfer.entity.Manager;
 import com.okanetransfer.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,13 @@ public class UserDTO {
     private LocalDateTime lastLogin;
 
     public static UserDTO fromEntity(User user) {
+        Long agencyId = null;
+        if (user instanceof Agent agent) {
+            agencyId = agent.getAgency() != null ? agent.getAgency().getId() : null;
+        } else if (user instanceof Manager manager) {
+            agencyId = manager.getAgency() != null ? manager.getAgency().getId() : null;
+        }
+
         return UserDTO.builder()
                 .id(user.getId())
                 .fullName(user.getFullName())
@@ -32,7 +41,7 @@ public class UserDTO {
                 .phone(user.getPhone())
                 .active(user.isActive())
                 .role(user.getRole() != null ? user.getRole().name() : null)
-                .agencyId(user.getAgency() != null ? user.getAgency().getId() : null)
+                .agencyId(agencyId)
                 .createdAt(user.getCreatedAt())
                 .lastLogin(user.getLastLogin())
                 .build();

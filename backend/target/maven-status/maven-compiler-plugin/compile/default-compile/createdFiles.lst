@@ -15,6 +15,7 @@ com\okanetransfer\entity\TransferCorridor.class
 com\okanetransfer\entity\Agency.class
 com\okanetransfer\security\SecurityUtils.class
 com\okanetransfer\service\ManagerService$1.class
+com\okanetransfer\entity\Agent.class
 com\okanetransfer\exception\GlobalExceptionHandler.class
 com\okanetransfer\repository\AgencyRepository.class
 com\okanetransfer\dto\AgentPerformanceDTO.class
@@ -32,6 +33,7 @@ com\okanetransfer\entity\Transfer.class
 com\okanetransfer\repository\TransferRepository.class
 com\okanetransfer\dto\request\LoginRequest.class
 com\okanetransfer\entity\Beneficiary.class
+com\okanetransfer\entity\Manager.class
 com\okanetransfer\enums\SensitiveOperationType.class
 com\okanetransfer\service\AuthService.class
 com\okanetransfer\service\ManagerService.class
@@ -68,5 +70,6 @@ com\okanetransfer\dto\OperationDetailDTO$OperationDetailDTOBuilder.class
 com\okanetransfer\dto\response\LoginResponse$LoginResponseBuilder.class
 com\okanetransfer\dto\ManagerProfileDTO.class
 com\okanetransfer\entity\User.class
+com\okanetransfer\repository\AgentRepository.class
 com\okanetransfer\entity\User$Role.class
 com\okanetransfer\dto\UserDTO.class

@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 public class ManagerService {
 
     private final UserRepository userRepository;
+    private final AgentRepository agentRepository;
     private final AgencyRepository agencyRepository;
     private final TransferRepository transferRepository;
     private final CashDrawerRepository cashDrawerRepository;
@@ -47,7 +48,7 @@ public class ManagerService {
     @Transactional(readOnly = true)
     public List<UserDTO> getAgents() {
         Agency agency = resolveManagerAgency();
-        return userRepository.findByAgencyIdAndRole(agency.getId(), User.Role.ROLE_AGENT)
+        return agentRepository.findByAgencyId(agency.getId())
                 .stream()
                 .map(UserDTO::fromEntity)
                 .toList();
@@ -60,43 +61,42 @@ public class ManagerService {
             throw new BusinessException("Un utilisateur avec cet email existe deja");
         }
 
-        User agent = new User();
+        Agent agent = new Agent();
         agent.setFullName(request.getFullName());
         agent.setEmail(request.getEmail());
         agent.setPassword(passwordEncoder.encode(request.getPassword()));
         agent.setPhone(request.getPhone());
-        agent.setRole(User.Role.ROLE_AGENT);
         agent.setAgency(agency);
         agent.setActive(true);
 
-        User saved = userRepository.save(agent);
+        Agent saved = agentRepository.save(agent);
         logAudit("ADD_AGENT", "User", saved.getId(), "Agent ajoute: " + saved.getEmail());
         return UserDTO.fromEntity(saved);
     }
 
     public UserDTO suspendAgent(Long agentId) {
         Agency agency = resolveManagerAgency();
-        User agent = getAgencyAgent(agentId, agency);
+        Agent agent = getAgencyAgent(agentId, agency);
 
         agent.setActive(false);
-        User saved = userRepository.save(agent);
+        Agent saved = agentRepository.save(agent);
         logAudit("SUSPEND_AGENT", "User", saved.getId(), "Agent suspendu: " + saved.getEmail());
         return UserDTO.fromEntity(saved);
     }
 
     public UserDTO activateAgent(Long agentId) {
         Agency agency = resolveManagerAgency();
-        User agent = getAgencyAgent(agentId, agency);
+        Agent agent = getAgencyAgent(agentId, agency);
 
         agent.setActive(true);
-        User saved = userRepository.save(agent);
+        Agent saved = agentRepository.save(agent);
         logAudit("ACTIVATE_AGENT", "User", saved.getId(), "Agent active: " + saved.getEmail());
         return UserDTO.fromEntity(saved);
     }
 
     public UserDTO updateAgent(Long agentId, UpdateAgentRequest request) {
         Agency agency = resolveManagerAgency();
-        User agent = getAgencyAgent(agentId, agency);
+        Agent agent = getAgencyAgent(agentId, agency);
 
         userRepository.findByEmail(request.getEmail())
                 .filter(existing -> !existing.getId().equals(agent.getId()))
@@ -108,7 +108,7 @@ public class ManagerService {
         agent.setEmail(request.getEmail());
         agent.setPhone(request.getPhone());
 
-        User saved = userRepository.save(agent);
+        Agent saved = agentRepository.save(agent);
         logAudit("UPDATE_AGENT", "User", saved.getId(), "Agent modifie: " + saved.getEmail());
         return UserDTO.fromEntity(saved);
     }
@@ -116,7 +116,7 @@ public class ManagerService {
     @Transactional(readOnly = true)
     public AgentDetailDTO getAgentDetail(Long agentId) {
         Agency agency = resolveManagerAgency();
-        User agent = getAgencyAgent(agentId, agency);
+        Agent agent = getAgencyAgent(agentId, agency);
         List<Transfer> transfers = transferRepository.findByAgentIdOrderByCreatedAtDesc(agent.getId());
 
         long paidTransfers = transfers.stream()
@@ -245,19 +245,23 @@ public class ManagerService {
         LocalDateTime fromDateTime = from != null ? from.atStartOfDay() : LocalDate.now().minusMonths(1).atStartOfDay();
         LocalDateTime toDateTime = to != null ? to.atTime(LocalTime.MAX) : LocalDateTime.now();
 
-        return transferRepository.findAgencyTransactions(agency.getId(), status, fromDateTime, toDateTime)
+        return transferRepository.findAgencyTransactions(agency.getId(), status, null, fromDateTime, toDateTime)
                 .stream()
                 .map(TransferDTO::fromEntity)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<OperationDTO> getOperations(Transfer.TransferStatus status, LocalDate from, LocalDate to) {
+    public List<OperationDTO> getOperations(Transfer.TransferStatus status, LocalDate from, LocalDate to, Long agentId) {
         Agency agency = resolveManagerAgency();
         LocalDateTime fromDateTime = from != null ? from.atStartOfDay() : LocalDate.now().minusMonths(1).atStartOfDay();
         LocalDateTime toDateTime = to != null ? to.atTime(LocalTime.MAX) : LocalDateTime.now();
 
-        return transferRepository.findAgencyTransactions(agency.getId(), status, fromDateTime, toDateTime)
+        if (agentId != null) {
+            getAgencyAgent(agentId, agency);
+        }
+
+        return transferRepository.findAgencyTransactions(agency.getId(), status, agentId, fromDateTime, toDateTime)
                 .stream()
                 .map(OperationDTO::fromEntity)
                 .toList();
@@ -302,7 +306,7 @@ public class ManagerService {
         return AgencyPerformanceDTO.builder()
                 .agencyId(agency.getId())
                 .agencyName(agency.getName())
-                .activeAgents(userRepository.countByAgencyIdAndRoleAndActiveTrue(agency.getId(), User.Role.ROLE_AGENT))
+                .activeAgents(agentRepository.countByAgencyIdAndActiveTrue(agency.getId()))
                 .openCashDrawers(cashDrawerRepository.countByAgencyIdAndStatus(agency.getId(), CashDrawerStatus.OPEN))
                 .pendingValidations(sensitiveOperationRepository.countByAgencyIdAndStatus(
                         agency.getId(), SensitiveOperationStatus.PENDING))
@@ -320,7 +324,7 @@ public class ManagerService {
         LocalDateTime fromDateTime = from != null ? from.atStartOfDay() : LocalDate.now().minusMonths(1).atStartOfDay();
         LocalDateTime toDateTime = to != null ? to.atTime(LocalTime.MAX) : LocalDateTime.now();
 
-        List<User> agents = userRepository.findByAgencyIdAndRole(agency.getId(), User.Role.ROLE_AGENT);
+        List<Agent> agents = agentRepository.findByAgencyId(agency.getId());
         List<Transfer> transfers = transferRepository.findAgencyTransfersInPeriod(agency.getId(), fromDateTime, toDateTime);
         Map<Long, List<Transfer>> transfersByAgent = transfers.stream()
                 .filter(transfer -> transfer.getAgent() != null)
@@ -444,12 +448,11 @@ public class ManagerService {
         return manager;
     }
 
-    private User getAgencyAgent(Long agentId, Agency agency) {
-        User agent = userRepository.findById(agentId)
+    private Agent getAgencyAgent(Long agentId, Agency agency) {
+        Agent agent = agentRepository.findById(agentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Agent introuvable"));
 
-        if (agent.getRole() != User.Role.ROLE_AGENT
-                || agent.getAgency() == null
+        if (agent.getAgency() == null
                 || !agent.getAgency().getId().equals(agency.getId())) {
             throw new BusinessException("Cet agent n'appartient pas a votre agence");
         }
@@ -457,7 +460,7 @@ public class ManagerService {
         return agent;
     }
 
-    private AgentPerformanceDTO buildAgentPerformance(User agent, List<Transfer> transfers) {
+    private AgentPerformanceDTO buildAgentPerformance(Agent agent, List<Transfer> transfers) {
         long paid = transfers.stream()
                 .filter(transfer -> transfer.getStatus() == Transfer.TransferStatus.PAID)
                 .count();

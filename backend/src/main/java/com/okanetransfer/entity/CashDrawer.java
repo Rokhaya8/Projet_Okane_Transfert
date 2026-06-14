@@ -18,7 +18,7 @@ public class CashDrawer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id", nullable = false)
-    private User agent;
+    private Agent agent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_id", nullable = false)

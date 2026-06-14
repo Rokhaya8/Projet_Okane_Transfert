@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@DiscriminatorValue("MANAGER")
+@DiscriminatorValue("ROLE_MANAGER")
 public class Manager extends User {
 
     @ManyToOne(fetch = FetchType.LAZY)

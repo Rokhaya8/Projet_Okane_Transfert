@@ -15,6 +15,7 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
             SELECT t FROM Transfer t
             WHERE (t.sourceAgency.id = :agencyId OR t.destinationAgency.id = :agencyId)
               AND (:status IS NULL OR t.status = :status)
+              AND (:agentId IS NULL OR t.agent.id = :agentId)
               AND t.createdAt >= :from
               AND t.createdAt <= :to
             ORDER BY t.createdAt DESC
@@ -22,6 +23,7 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
     List<Transfer> findAgencyTransactions(
             @Param("agencyId") Long agencyId,
             @Param("status") Transfer.TransferStatus status,
+            @Param("agentId") Long agentId,
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to);
 
