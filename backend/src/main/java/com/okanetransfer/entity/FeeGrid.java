@@ -11,18 +11,18 @@ public class FeeGrid {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;                    // identifiant unique de la grille
 
     @ManyToOne
     @JoinColumn(name = "corridor_id")
-    private TransferCorridor corridor;
+    private TransferCorridor corridor;  // le corridor auquel cette grille s'applique (ex: Maroc → Sénégal)
 
     @Column(nullable = false)
-    private LocalDateTime validFrom;
+    private LocalDateTime validFrom;    // date à partir de laquelle la grille est valable
 
     @Column(nullable = false)
-    private LocalDateTime validTo;
+    private LocalDateTime validTo;      // date jusqu'à laquelle la grille est valable
 
     @Column(nullable = false)
-    private boolean active = true;
+    private boolean active = true;      // grille active (true) ou désactivée (false)
 }
