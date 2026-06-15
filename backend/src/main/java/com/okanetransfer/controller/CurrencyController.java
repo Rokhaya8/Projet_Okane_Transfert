@@ -38,9 +38,9 @@ public class CurrencyController {
         return currencyService.getCurrency(id);
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCurrency(@PathVariable("id") Long id) {
-        currencyService.deleteCurrency(id);
+    public void deactivateCurrency(@PathVariable("id") Long id) {
+        currencyService.deactivateCurrency(id);
     }
 }

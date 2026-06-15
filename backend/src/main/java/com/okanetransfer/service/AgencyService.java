@@ -1,5 +1,6 @@
 package com.okanetransfer.service;
 
+import com.okanetransfer.annotation.Auditable;
 import com.okanetransfer.dto.request.AgencyRequest;
 import com.okanetransfer.dto.response.AgencyResponse;
 import com.okanetransfer.entity.Agency;
@@ -41,7 +42,7 @@ public class AgencyService {
                 .orElseThrow(() -> new AgencyNotFoundException("Agency not found"));
         return toResponse(agency);
     }
-
+    @Auditable(action = "CREATE_AGENCY", entityType = "Agency")
     public AgencyResponse createAgency(AgencyRequest request) {
         if (request.getDailyLimit() == null || request.getDailyLimit().doubleValue() <= 0) {
             throw new InvalidDailyLimitException("Daily limit must be greater than 0");
@@ -49,7 +50,7 @@ public class AgencyService {
         Agency agency = toEntity(request);
         return toResponse(agencyRepository.save(agency));
     }
-
+    @Auditable(action = "UPDATE_AGENCY", entityType = "Agency")
     public AgencyResponse updateAgency(Long id, AgencyRequest request) {
         Agency agency = agencyRepository.findById(id)
                 .orElseThrow(() -> new AgencyNotFoundException("Agency not found"));
@@ -72,14 +73,26 @@ public class AgencyService {
 
         return toResponse(agencyRepository.save(agency));
     }
-
-    public void deleteAgency(Long id) {
-        if (!agencyRepository.existsById(id)) {
-            throw new AgencyNotFoundException("Agency not found");
-        }
-        agencyRepository.deleteById(id);
+    @Auditable(action = "DEACTIVATE_AGENCY", entityType = "Agency")
+    public boolean deactivateAgency(Long id) {
+        Agency agency = agencyRepository.findById(id)
+                .orElseThrow(() -> new AgencyNotFoundException("Agency not found"));
+        agency.setActive(false);
+        agencyRepository.save(agency);
+        return true;
     }
+    @Auditable(action = "ACTIVATE_AGENCY", entityType = "Agency")
+    public boolean activateAgency(Long id) {
 
+        Agency agency = agencyRepository.findById(id)
+                .orElseThrow(() -> new AgencyNotFoundException("Agency not found"));
+
+        agency.setActive(true);
+
+        agencyRepository.save(agency);
+
+        return true;
+    }
     // ---- Mappers ----
     private AgencyResponse toResponse(Agency agency) {
         AgencyResponse response = new AgencyResponse();

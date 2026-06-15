@@ -86,8 +86,15 @@
                 <mat-icon>edit</mat-icon>
                 Modifier
               </button>
-              <button class="btn-action btn-supprimer" (click)="supprimerAgence(agence)" title="Supprimer">
-                <mat-icon>delete</mat-icon>
+              <button *ngIf="agence.active" class="btn-action btn-desactiver" (click)="deactivateAgence(agence)"
+                     title="Désactiver">
+                    <mat-icon>block</mat-icon>
+              </button>
+              <button *ngIf="!agence.active"
+                     class="btn-action btn-activer"
+                     (click)="activateAgence(agence)"
+                    title="Activer">
+                  <mat-icon>check_circle</mat-icon>
               </button>
             </div>
           </td>

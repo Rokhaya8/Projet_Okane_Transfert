@@ -1,5 +1,6 @@
 package com.okanetransfer.service;
 
+import com.okanetransfer.annotation.Auditable;
 import com.okanetransfer.dto.request.CurrencyRequest;
 import com.okanetransfer.dto.response.CurrencyResponse;
 import com.okanetransfer.entity.Currency;
@@ -29,7 +30,7 @@ public class CurrencyService {
                 .orElseThrow(() -> new CurrencyNotFoundException("Currency not found"));
         return toResponse(currency);
     }
-
+    @Auditable(action = "CREATE_CURRENCY", entityType = "Currency")
     public CurrencyResponse createCurrency(CurrencyRequest request) {
         if (request.getCode() == null || request.getCode().isBlank()) {
             throw new IllegalArgumentException("Currency code is required");
@@ -41,6 +42,7 @@ public class CurrencyService {
         return toResponse(currencyRepository.save(currency));
     }
 
+    @Auditable(action = "UPDATE_CURRENCY", entityType = "Currency")
     public CurrencyResponse updateCurrency(Long id, CurrencyRequest request) {
         Currency currency = currencyRepository.findById(id)
                 .orElseThrow(() -> new CurrencyNotFoundException("Currency not found"));
@@ -58,12 +60,13 @@ public class CurrencyService {
 
         return toResponse(currencyRepository.save(currency));
     }
-
-    public void deleteCurrency(Long id) {
-        if (!currencyRepository.existsById(id)) {
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-        currencyRepository.deleteById(id);
+    @Auditable(action = "DEACTIVATE_CURRENCY", entityType = "Currency")
+    public boolean deactivateCurrency(Long id) {
+        Currency currency = currencyRepository.findById(id)
+                .orElseThrow(() -> new CurrencyNotFoundException("Currency not found"));
+        currency.setActive(false);
+        currencyRepository.save(currency);
+        return true;
     }
 
     // ---- Mappers ----

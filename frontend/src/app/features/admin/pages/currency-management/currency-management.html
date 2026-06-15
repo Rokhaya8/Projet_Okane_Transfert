@@ -42,7 +42,7 @@
             </td>
             <td class="actions-cell">
               <button class="btn-action btn-edit" (click)="openEditModal(currency)">Modifier</button>
-              <button class="btn-action btn-delete" (click)="confirmDelete(currency)">Supprimer</button>
+              <button class="btn-action btn-delete" (click)="confirmDesactivate(currency)">desactivate</button>
             </td>
           </tr>
           <tr *ngIf="currencies.length === 0">
@@ -177,25 +177,25 @@
 </div>
 
 <!-- ===================== DELETE CONFIRM MODAL ===================== -->
-<div class="modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
+<div class="modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelDesactivate()">
   <div class="modal modal-sm" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
-      <h3 class="modal-title">Confirmer la suppression</h3>
-      <button class="modal-close" (click)="cancelDelete()">✕</button>
+      <h3 class="modal-title">Confirmer la desactivation</h3>
+      <button class="modal-close" (click)="cancelDesactivate()">✕</button>
     </div>
 
     <div class="modal-body">
       <p class="delete-message">
-        Êtes-vous sûr de vouloir supprimer la devise
+        Êtes-vous sûr de vouloir desactiver la devise
         <strong>{{ currencyToDeleteName }}</strong> ?
         Cette action est irréversible.
       </p>
     </div>
 
     <div class="modal-footer">
-      <button class="btn-cancel" (click)="cancelDelete()">Annuler</button>
-      <button class="btn-danger" (click)="executeDelete()">Supprimer</button>
+      <button class="btn-cancel" (click)="cancelDesactivate()">Annuler</button>
+      <button class="btn-danger" (click)="executeDesactivate()">désactiver</button>
     </div>
   </div>
 </div>

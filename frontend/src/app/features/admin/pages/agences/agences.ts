@@ -155,26 +155,63 @@ export class Agences implements OnInit {
     }
   }
 
-  supprimerAgence(agence: Agence): void {
-    if (!confirm(`Supprimer l'agence "${agence.name}" ?`)) return;
+ deactivateAgence(agence: Agence): void {
+  if (!confirm(`Désactiver l'agence "${agence.name}" ?`)) return;
 
-    console.log('Supprimer agence', agence.id);
-    this.agenceService.supprimer(agence.id).subscribe({
-      next: (response) => {
-        console.log('Suppression réponse', response.status);
-        if (response.status === 204 || response.status === 200) {
-          this.agences = this.agences.filter(a => a.id !== agence.id);
-          this.appliquerFiltres();
-          this.cdr.detectChanges();
-        } else {
-          console.error('Suppression inattendue', response);
-          this.erreurMessage = 'Échec suppression : statut inattendu ' + response.status;
+  console.log('Désactivation agence', agence.id);
+
+  this.agenceService.desactiver(agence.id).subscribe({
+    next: (response) => {
+      console.log('Réponse désactivation', response.status);
+
+      if (response.status === 204 || response.status === 200) {
+        this.agences = this.agences.filter(a => a.id !== agence.id);
+        this.appliquerFiltres();
+        this.cdr.detectChanges();
+      } else {
+        console.error('Réponse inattendue', response);
+        this.erreurMessage =
+          'Échec de la désactivation : statut inattendu ' + response.status;
+      }
+    },
+
+    error: (err) => {
+      console.error('Erreur désactivation', err);
+      this.erreurMessage =
+        err?.error?.message || 'Erreur lors de la désactivation.';
+    },
+  });
+}
+activateAgence(agence: Agence): void {
+  if (!confirm(`Activer l'agence "${agence.name}" ?`)) return;
+
+  console.log('Activation agence', agence.id);
+
+  this.agenceService.activer(agence.id).subscribe({
+    next: (response) => {
+      console.log('Réponse activation', response.status);
+
+      if (response.status === 204 || response.status === 200) {
+        // mettre à jour localement
+        const index = this.agences.findIndex(a => a.id === agence.id);
+        if (index !== -1) {
+          this.agences[index].active = true;
         }
-      },
-      error: (err) => {
-        console.error('Erreur suppression', err);
-        this.erreurMessage = err?.error?.message || 'Erreur lors de la suppression.';
-      },
-    });
-  }
+
+        this.appliquerFiltres();
+        this.cdr.detectChanges();
+      } else {
+        console.error('Réponse inattendue', response);
+        this.erreurMessage =
+          'Échec de l’activation : statut inattendu ' + response.status;
+      }
+    },
+
+    error: (err) => {
+      console.error('Erreur activation', err);
+      this.erreurMessage =
+        err?.error?.message || 'Erreur lors de l’activation.';
+    }
+  });
+}
 }

@@ -48,11 +48,14 @@ public class AgencyController {
         return agencyService.updateAgency(id, request);
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAgency(@PathVariable("id") Long id) {
-        log.info("Suppression agence demandée id={}", id);
-        agencyService.deleteAgency(id);
-        log.info("Suppression agence terminée id={}", id);
+    public void deactivateAgency(@PathVariable("id") Long id) {
+        agencyService.deactivateAgency(id);
+    }
+    @PatchMapping("/{id}/activate")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public boolean activateAgency(@PathVariable("id") Long id) {
+        return agencyService.activateAgency(id);
     }
 }

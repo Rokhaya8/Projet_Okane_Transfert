@@ -1,5 +1,6 @@
 package com.okanetransfer.service;
 
+import com.okanetransfer.annotation.Auditable;
 import com.okanetransfer.dto.request.TransferCorridorRequest;
 import com.okanetransfer.dto.response.TransferCorridorResponse;
 import com.okanetransfer.entity.Currency;
@@ -45,7 +46,7 @@ public class TransferCorridorService {
         return toResponse(corridor);
     }
 
-    // ── Créer un corridor ──────────────────────────────────────────────────
+    @Auditable(action = "CREATE_CORRIDOR", entityType = "TransferCorridor")
     public TransferCorridorResponse createCorridor(TransferCorridorRequest request) {
         // Vérifier doublon
         if (corridorRepository.existsBySourceCurrencyIdAndDestinationCurrencyId(
@@ -69,7 +70,8 @@ public class TransferCorridorService {
         return toResponse(corridorRepository.save(corridor));
     }
 
-    // ── Mettre à jour un corridor ──────────────────────────────────────────
+
+    @Auditable(action = "UPDATE_CORRIDOR", entityType = "TransferCorridor")
     public TransferCorridorResponse updateCorridor(Long id, TransferCorridorRequest request) {
         TransferCorridor corridor = findOrThrow(id);
 
@@ -85,20 +87,20 @@ public class TransferCorridorService {
         return toResponse(corridorRepository.save(corridor));
     }
 
-    // ── Activer / Désactiver (toggle) ──────────────────────────────────────
+    @Auditable(action = "TOGGLE_CORRIDOR", entityType = "TransferCorridor")
     public TransferCorridorResponse toggleCorridor(Long id) {
         TransferCorridor corridor = findOrThrow(id);
         corridor.setActive(!corridor.isActive());
         return toResponse(corridorRepository.save(corridor));
     }
 
-    // ── Supprimer un corridor ──────────────────────────────────────────────
+    @Auditable(action = "DELETE_CORRIDOR", entityType = "TransferCorridor")
     public void deleteCorridor(Long id) {
         findOrThrow(id);
         corridorRepository.deleteById(id);
     }
 
-    // ── Helpers privés ─────────────────────────────────────────────────────
+
     private TransferCorridor findOrThrow(Long id) {
         return corridorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(

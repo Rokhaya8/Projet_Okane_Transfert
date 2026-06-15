@@ -49,7 +49,18 @@ export class AgenceService {
     return this.http.put<Agence>(`${this.apiUrl}/${id}`, data, { observe: 'response' });
   }
 
-  supprimer(id: number): Observable<HttpResponse<void>> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { observe: 'response' });
-  }
+  desactiver(id: number): Observable<HttpResponse<void>> {
+  return this.http.patch<void>(
+    `${this.apiUrl}/${id}/deactivate`,
+    {},
+    { observe: 'response' }
+  );
+}
+activer(id: number): Observable<HttpResponse<void>> {
+  return this.http.patch<void>(
+    `${this.apiUrl}/${id}/activate`,
+    {},
+    { observe: 'response' }
+  );
+}
 }

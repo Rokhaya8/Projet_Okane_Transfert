@@ -206,12 +206,16 @@ tbody td {
 }
 .btn-modifier:hover { background: var(--yellow); color: var(--white); }
 
-.btn-supprimer {
+.btn-desactiver {
   background: #fbeae5;
   color: var(--orange);
 }
-.btn-supprimer:hover { background: var(--orange); color: var(--white); }
-
+.btn-desactiver:hover { background: var(--orange); color: var(--white); }
+.btn-activer{
+   background: #fbeae5;
+  color: var(--orange);
+}
+.btn-desactiver:hover { background: var(--orange); color: var(--white); }
 /* ── Empty state ─────────────────────────────── */
 .empty-state {
   text-align: center;

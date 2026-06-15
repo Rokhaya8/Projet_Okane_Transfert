@@ -42,7 +42,7 @@ export class CurrencyService {
     return this.http.put<CurrencyResponse>(`${this.baseUrl}/${id}`, request);
   }
 
-  deleteCurrency(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  }
+  deactivateCurrency(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/deactivate`, {});
+}
 }

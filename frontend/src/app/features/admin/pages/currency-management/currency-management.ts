@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CurrencyService, CurrencyResponse, CurrencyRequest } from '../../../../core/services/currency.service';
@@ -40,7 +40,8 @@ export class CurrencyManagementComponent implements OnInit {
 
   constructor(
     private currencyService: CurrencyService,
-    private corridorService: CorridorService
+    private corridorService: CorridorService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -54,9 +55,18 @@ export class CurrencyManagementComponent implements OnInit {
 
   loadCurrencies(): void {
     this.currencyService.getAllCurrencies().subscribe({
-      next: (data) => this.currencies = data,
+      next: (data) => {
+        this.currencies = data;
+        this.cdr.detectChanges();
+        setTimeout(() => this.drawCharts(), 100);
+      },
       error: () => this.showError('Erreur lors du chargement des devises.')
     });
+  }
+
+  private drawCharts(): void {
+    // Placeholder pour la logique de dessin éventuelle.
+    // Si la page n'utilise pas de graphiques, cette méthode peut rester vide.
   }
 
   openAddModal(): void {
@@ -103,23 +113,23 @@ export class CurrencyManagementComponent implements OnInit {
     }
   }
 
-  confirmDelete(currency: CurrencyResponse): void {
+  confirmDesactivate(currency: CurrencyResponse): void {
     this.currencyToDeleteId = currency.id;
     this.currencyToDeleteName = currency.name;
     this.showDeleteConfirm = true;
   }
 
-  cancelDelete(): void {
+  cancelDesactivate(): void {
     this.showDeleteConfirm = false;
     this.currencyToDeleteId = null;
     this.currencyToDeleteName = '';
   }
 
-  executeDelete(): void {
+  executeDesactivate(): void {
     if (this.currencyToDeleteId === null) return;
-    this.currencyService.deleteCurrency(this.currencyToDeleteId).subscribe({
-      next: () => { this.cancelDelete(); this.loadCurrencies(); this.showSuccess('Devise supprimée.'); },
-      error: () => { this.cancelDelete(); this.showError('Erreur lors de la suppression.'); }
+    this.currencyService.deactivateCurrency(this.currencyToDeleteId).subscribe({
+      next: () => { this.cancelDesactivate(); this.loadCurrencies(); this.showSuccess('Devise supprimée.'); },
+      error: () => { this.cancelDesactivate(); this.showError('Erreur lors de la suppression.'); }
     });
   }
 

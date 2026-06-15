@@ -104,7 +104,19 @@
             <version>1.18.28</version>
             <scope>provided</scope>
         </dependency>
+        <!-- AOP -->
+        <!-- AOP -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>6.1.0</version>  <!-- même version que spring.version -->
+        </dependency>
 
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.21</version>
+        </dependency>
         <!-- Swagger SpringDoc -->
         <dependency>
             <groupId>org.springdoc</groupId>

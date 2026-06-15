@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
 import { Agences } from './features/admin/pages/agences/agences';
 import { CurrencyManagementComponent } from './features/admin/pages/currency-management/currency-management';
-
+import { DashboardComponent } from './features/admin/pages/dashboard/dashboard';
+import { AuditLogComponent } from './features/admin/pages/audit/audit';
 export const routes: Routes = [
 
   {
@@ -18,6 +19,11 @@ export const routes: Routes = [
   {
     path: 'admin/devises',
     component: CurrencyManagementComponent
+  },
+   { path: 'admin/dashboard', component: DashboardComponent },
+    {
+    path: 'admin/audit',
+    component: AuditLogComponent
   }
 
 ];
