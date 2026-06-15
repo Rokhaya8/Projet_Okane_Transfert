@@ -1,5 +1,7 @@
 package com.okanetransfer.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
@@ -39,12 +41,16 @@ public class Transfer {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime paidAt;
 
+    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime expiryDate;
 
     // Relations
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id")
     private User agent;
 
@@ -56,11 +62,12 @@ public class Transfer {
     @JoinColumn(name = "corridor_id")
     private TransferCorridor corridor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
-    private User client; // nullable
+    @JsonIgnoreProperties({"password", "createdAt", "lastLogin"}) // Sécurité : on évite d'exposer le hash du mot de passe dans le JSON
+    private User client;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "beneficiary_id")
     private Beneficiary beneficiary;
 
