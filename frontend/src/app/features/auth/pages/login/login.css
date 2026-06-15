@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #7c341f 0%, #e8541a 100%);
   padding: 1.5rem;
 }
 
@@ -25,7 +25,7 @@
   font-size: 48px;
   width: 48px;
   height: 48px;
-  color: var(--okane-primary, #1e3a8a);
+  color: var(--okane-primary, #7c341f);
 }
 
 .login-brand h1 {

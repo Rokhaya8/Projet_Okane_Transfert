@@ -9,10 +9,12 @@ export function formatAmount(value: number | undefined | null, currency = ''): s
 
 export function formatDate(value: string | undefined | null): string {
   if (!value) return '—';
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return '—';
   return new Intl.DateTimeFormat('fr-FR', {
     dateStyle: 'short',
     timeStyle: 'short',
-  }).format(new Date(value));
+  }).format(date);
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

@@ -1,7 +1,7 @@
 .sidebar {
   width: 260px;
   min-height: 100vh;
-  background: var(--okane-primary, #1e3a8a);
+  background: linear-gradient(180deg, var(--okane-primary, #7c341f) 0%, #5a2516 100%);
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -20,7 +20,7 @@
   width: 42px;
   height: 42px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(232, 84, 26, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,7 +61,7 @@
 }
 
 .nav-link.active {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--okane-primary-light, #e8541a);
   color: #fff;
   font-weight: 600;
 }

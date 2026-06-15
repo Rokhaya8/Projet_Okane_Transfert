@@ -16,6 +16,7 @@
         [routerLink]="item.route"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: item.route === '/manager/dashboard' }"
+        (click)="navClick.emit()"
       >
         <mat-icon>{{ item.icon }}</mat-icon>
         <span>{{ item.label }}</span>

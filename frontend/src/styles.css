@@ -1,8 +1,8 @@
 @import '@angular/material/prebuilt-themes/azure-blue.css';
 
 :root {
-  --okane-primary: #1e3a8a;
-  --okane-primary-light: #3b82f6;
+  --okane-primary: #7c341f;
+  --okane-primary-light: #e8541a;
   --okane-bg: #f3f4f6;
   --okane-surface: #ffffff;
   --okane-text: #111827;
@@ -31,12 +31,32 @@ body {
   --mdc-outlined-text-field-container-shape: 8px;
 }
 
-.mat-mdc-unelevated-button.mat-primary {
+/* Override Angular Material azure-blue → okane marron/orange */
+.mat-mdc-unelevated-button.mat-primary,
+.mat-mdc-raised-button.mat-primary {
   --mdc-filled-button-container-color: var(--okane-primary);
+  --mdc-filled-button-label-text-color: #fff;
+}
+
+.mat-mdc-outlined-button.mat-primary {
+  --mdc-outlined-button-label-text-color: var(--okane-primary);
+  --mdc-outlined-button-outline-color: var(--okane-primary);
 }
 
 .mat-mdc-outlined-button {
   --mdc-outlined-button-outline-color: var(--okane-border);
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--okane-primary);
+}
+
+.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: var(--okane-primary);
+}
+
+.mat-mdc-tab-header .mdc-tab-indicator__content--underline {
+  border-color: var(--okane-primary);
 }
 
 a {

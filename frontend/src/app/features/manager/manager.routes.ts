@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
 import { managerGuard } from '../../core/guards/manager-guard';
+import { ManagerLayout } from './layout/manager-layout';
 
 export const managerRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./layout/manager-layout').then((m) => m.ManagerLayout),
+    component: ManagerLayout,
     canActivate: [managerGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

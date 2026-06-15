@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -19,4 +19,5 @@ export class Sidebar {
   @Input() title = 'Okane Transfer';
   @Input() subtitle = 'Espace Responsable';
   @Input() navItems: NavItem[] = [];
+  @Output() navClick = new EventEmitter<void>();
 }

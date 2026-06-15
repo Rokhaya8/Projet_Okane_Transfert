@@ -49,12 +49,12 @@
 .kpi-card .kpi-value {
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--okane-primary, #1e3a8a);
+  color: var(--okane-primary, #7c341f);
 }
 
 .kpi-card .kpi-icon {
   float: right;
-  color: #93c5fd;
+  color: var(--okane-primary-light, #e8541a);
 }
 
 .content-card {
@@ -92,7 +92,7 @@
 .chart-bar {
   width: 100%;
   max-width: 48px;
-  background: linear-gradient(180deg, #3b82f6, var(--okane-primary, #1e3a8a));
+  background: linear-gradient(180deg, var(--okane-primary-light, #e8541a), var(--okane-primary, #7c341f));
   border-radius: 6px 6px 0 0;
   min-height: 4px;
   transition: height 0.3s;

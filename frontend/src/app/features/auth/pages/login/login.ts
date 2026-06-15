@@ -44,7 +44,7 @@ export class Login {
     this.error = '';
     this.auth.login(this.form.getRawValue()).subscribe({
       next: () => {
-        this.router.navigate(['/manager/dashboard']);
+        this.router.navigate(['/manager']);
       },
       error: (err) => {
         this.error = err?.error?.message ?? 'Identifiants invalides';
