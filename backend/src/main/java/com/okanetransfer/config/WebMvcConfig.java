@@ -17,14 +17,15 @@ import java.util.List;
 @ComponentScan(basePackages = "com.okanetransfer")
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    // CORS is handled exclusively by SecurityConfig.corsConfigurationSource()
-
+    // CORS géré par SecurityConfig.corsConfigurationSource()
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        // Serialize LocalDateTime as ISO-8601 strings, not arrays
+        // Dates en format ISO lisible (pas en tableau de nombres)
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // Évite le crash sur les proxys Hibernate vides (relations lazy)
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
 }

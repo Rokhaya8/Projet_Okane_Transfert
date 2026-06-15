@@ -1,7 +1,7 @@
 <div class="dashboard-wrapper">
   
   <header class="dashboard-header">
-    <h1>Bonjour, <span class="highlight">{{ clientName }}</span> 👋</h1>
+    <h1>Bonjour, <span class="highlight">{{ clientName }}</span> .</h1>
     <p class="subtitle">Ravi de vous revoir sur votre espace Okane Transfer.</p>
   </header>
 
@@ -12,7 +12,7 @@
       </div>
       <div class="stat-info">
         <h3>Total Envoyé</h3>
-        <p class="stat-value">{{ totalEnvoye | number }} MAD</p>
+        <p class="stat-value">{{ totalEnvoye | number:'1.2-2' }} MAD</p>
       </div>
     </div>
 
@@ -42,7 +42,7 @@
     <div class="content-card chart-card">
       <div class="card-header">
         <h2>Aperçu de vos dépenses</h2>
-        <span class="text-muted">6 derniers mois</span>
+        <span class="text-muted">Dernières transactions</span>
       </div>
       <div class="chart-container">
         <canvas #statsChart></canvas>
@@ -52,7 +52,7 @@
     <div class="content-card table-card">
       <div class="card-header">
         <h2>Transferts récents</h2>
-        <a href="/client/historique" class="btn-link">Voir tout</a>
+        <a [routerLink]="'/client/' + currentClientId + '/historique'" class="btn-link">Voir tout</a>
       </div>
       
       <div class="table-responsive">
@@ -67,13 +67,18 @@
           </thead>
           <tbody>
             <tr *ngFor="let trx of recentTransferts">
-              <td class="text-bold">{{ trx.reference }}</td>
-              <td>{{ trx.beneficiaire }}</td>
-              <td class="text-bold">{{ trx.montant }} {{ trx.devise }}</td>
+              <td class="text-bold">{{ trx.referenceCode }}</td>
+              <td>{{ trx.beneficiary?.fullName || 'Inconnu' }}</td>
+              <td class="text-bold">{{ trx.amountSent | number:'1.2-2' }} MAD</td>
               <td>
-                <span class="badge" [ngClass]="getStatutClass(trx.statut)">
-                  {{ trx.statut }}
+                <span class="badge" [ngClass]="getStatutClass(trx.status)">
+                  {{ getStatutLabel(trx.status) }}
                 </span>
+              </td>
+            </tr>
+            <tr *ngIf="recentTransferts.length === 0">
+              <td colspan="4" style="text-align: center; color: var(--text-muted);">
+                Aucun transfert récent trouvé.
               </td>
             </tr>
           </tbody>

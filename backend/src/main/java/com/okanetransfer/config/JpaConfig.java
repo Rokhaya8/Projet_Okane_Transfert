@@ -1,7 +1,10 @@
 package com.okanetransfer.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -13,17 +16,21 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@EnableTransactionManagement
+@PropertySource("classpath:application.properties")
 @EnableJpaRepositories(basePackages = "com.okanetransfer.repository")
+@EnableTransactionManagement
 public class JpaConfig {
+
+    @Autowired
+    private Environment env;
 
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName("org.postgresql.Driver");
-        ds.setUrl(System.getProperty("db.url", "jdbc:postgresql://localhost:5432/okane_transfer"));
-        ds.setUsername(System.getProperty("db.username", "postgres"));
-        ds.setPassword(System.getProperty("db.password", "soufia2004"));
+        ds.setUrl(env.getProperty("spring.datasource.url"));
+        ds.setUsername(env.getProperty("spring.datasource.username"));
+        ds.setPassword(env.getProperty("spring.datasource.password"));
         return ds;
     }
 
@@ -33,7 +40,12 @@ public class JpaConfig {
         em.setDataSource(dataSource());
         em.setPackagesToScan("com.okanetransfer.entity");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        em.setJpaProperties(hibernateProperties());
+
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        em.setJpaProperties(properties);
         return em;
     }
 
@@ -42,16 +54,5 @@ public class JpaConfig {
         JpaTransactionManager tm = new JpaTransactionManager();
         tm.setEntityManagerFactory(entityManagerFactory().getObject());
         return tm;
-    }
-
-    private Properties hibernateProperties() {
-        Properties p = new Properties();
-        p.setProperty("hibernate.hbm2ddl.auto", "update");
-        p.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        p.setProperty("hibernate.show_sql", "true");
-        p.setProperty("hibernate.format_sql", "true");
-        p.setProperty("hibernate.physical_naming_strategy",
-                "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
-        return p;
     }
 }

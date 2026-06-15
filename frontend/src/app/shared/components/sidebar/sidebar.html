@@ -24,13 +24,13 @@
     </ng-container>
 
     <ng-container *ngIf="userRole === 'CLIENT'">
-      <a routerLink="/client/dashboard" routerLinkActive="active" (click)="closeMenu()">
+      <a [routerLink]="clientDashboardLink" routerLinkActive="active" (click)="closeMenu()">
         <span class="material-icons">dashboard</span> Mon Dashboard
       </a>
-      <a routerLink="/client/suivre-transfert" routerLinkActive="active" (click)="closeMenu()">
+      <a [routerLink]="clientSuivreLink" routerLinkActive="active" (click)="closeMenu()">
         <span class="material-icons">track_changes</span> Suivre un transfert
       </a>
-      <a routerLink="/client/historique" routerLinkActive="active" (click)="closeMenu()">
+      <a [routerLink]="clientHistoriqueLink" routerLinkActive="active" (click)="closeMenu()">
         <span class="material-icons">history</span> Mon Historique
       </a>
     </ng-container>

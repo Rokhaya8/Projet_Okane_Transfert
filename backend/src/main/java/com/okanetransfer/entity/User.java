@@ -1,5 +1,6 @@
 package com.okanetransfer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 // Colonne technique qui permet à Hibernate de distinguer le type d'entité (ex: 'AGENT')
 @DiscriminatorColumn(name = "user_type")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     // Identifiant unique généré automatiquement par la base

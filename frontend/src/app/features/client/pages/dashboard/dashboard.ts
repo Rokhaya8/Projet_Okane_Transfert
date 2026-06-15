@@ -1,66 +1,76 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { ClientApiService } from '../../../../core/services/client';
+import { ClientStateService } from '../../../../core/services/client-state';
+import { ClientProfile, Transfer } from '../../../../core/models/client-dashboard.model';
 import { Chart, registerables } from 'chart.js';
 
-// Enregistrement des composants essentiels de Chart.js
 Chart.register(...registerables);
-
-interface Transfert {
-  reference: string;
-  beneficiaire: string;
-  montant: number;
-  devise: string;
-  statut: 'EN_ATTENTE' | 'PAYÉ' | 'ANNULÉ' | 'EXPIRÉ';
-  date: string;
-}
 
 @Component({
   selector: 'app-client-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
-export class ClientDashboardComponent implements OnInit, AfterViewInit {
-  
-  // Informations fictives du client connecté
-  clientName: string = 'Zineb Chaouch';
-  clientEmail: string = 'zineb.chaouch@email.com';
-  
-  // Statistiques rapides
-  totalEnvoye: number = 14500;
-  transfertsActifsCount: number = 1;
+export class ClientDashboardComponent implements OnInit {
+  private clientApi = inject(ClientApiService);
+  private clientState = inject(ClientStateService);
+  private route = inject(ActivatedRoute);
 
-  // Liste des transferts récents (Mock Data conformes aux statuts du CDC)
-  recentTransferts: Transfert[] = [
-    { reference: 'TRX-849201', beneficiaire: 'Ahmed Alami', montant: 4500, devise: 'MAD', statut: 'EN_ATTENTE', date: '06/06/2026' },
-    { reference: 'TRX-732104', beneficiaire: 'Marie Dupont', montant: 300, devise: 'EUR', statut: 'PAYÉ', date: '28/05/2026' },
-    { reference: 'TRX-610923', beneficiaire: 'John Doe', montant: 500, devise: 'USD', statut: 'PAYÉ', date: '15/05/2026' },
-    { reference: 'TRX-504112', beneficiaire: 'Youssef Benani', montant: 2000, devise: 'MAD', statut: 'ANNULÉ', date: '02/05/2026' }
-  ];
+  currentClientId!: number;
+  totalEnvoye = 0;
+  transfertsActifsCount = 0;
+  recentTransferts: Transfer[] = [];
 
-  // Référence vers l'élément HTML <canvas> pour Chart.js
+  get clientName(): string { return this.clientState.currentClient()?.fullName ?? ''; }
+  get clientEmail(): string { return this.clientState.currentClient()?.email ?? ''; }
+
   @ViewChild('statsChart') statsChartCanvas!: ElementRef;
-  chart: any;
+  private chart: any;
 
-  constructor() {}
-
-  ngOnInit(): void {}
-
-  ngAfterViewInit(): void {
-    this.initChart();
+  ngOnInit(): void {
+    const id = this.clientState.resolveClientId(this.route.snapshot);
+    if (id) {
+      this.currentClientId = id;
+      this.loadDashboardData();
+    }
   }
 
-  // Initialisation du graphique Chart.js requis par le CDC
-  initChart() {
+  loadDashboardData(): void {
+    this.clientApi.getDashboardData(this.currentClientId).subscribe({
+      next: (data) => {
+        this.totalEnvoye = data.totalMoneySent;
+        this.transfertsActifsCount = data.pendingTransfersCount;
+        this.recentTransferts = data.recentTransfers;
+
+        const clientInfo = data.recentTransfers[0]?.client;
+        if (clientInfo) {
+          this.clientState.currentClient.set(clientInfo as ClientProfile);
+        }
+
+        this.initChart();
+      },
+      error: (err) => console.error('Erreur dashboard:', err)
+    });
+  }
+
+  private initChart(): void {
+    if (this.chart) this.chart.destroy();
+
+    const montants = this.recentTransferts.map(t => t.amountSent).reverse();
+    const labels = this.recentTransferts.map(t => t.referenceCode).reverse();
+
     this.chart = new Chart(this.statsChartCanvas.nativeElement, {
-      type: 'bar', // Type de graphique (Barres)
+      type: 'bar',
       data: {
-        labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+        labels: labels.length > 0 ? labels : ['Aucun transfert'],
         datasets: [{
-          label: 'Montant total envoyé (en MAD équivalent)',
-          data: [2000, 1500, 4000, 0, 2500, 4500],
-          backgroundColor: '#e8541a', // Ton orange dynamique Okane Transfer
+          label: 'Montant de la transaction (MAD)',
+          data: montants.length > 0 ? montants : [0],
+          backgroundColor: '#e8541a',
           borderRadius: 6,
           borderWidth: 0
         }]
@@ -68,23 +78,27 @@ export class ClientDashboardComponent implements OnInit, AfterViewInit {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          y: { beginAtZero: true }
-        }
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
       }
     });
   }
 
-  // Méthode utilitaire pour attribuer une couleur CSS selon le statut du transfert
   getStatutClass(statut: string): string {
-    switch(statut) {
-      case 'PAYÉ': return 'badge-success';
-      case 'EN_ATTENTE': return 'badge-warning';
-      case 'ANNULÉ': return 'badge-danger';
+    switch (statut) {
+      case 'PAID': return 'badge-success';
+      case 'PENDING': return 'badge-warning';
+      case 'CANCELLED': return 'badge-danger';
       default: return 'badge-secondary';
+    }
+  }
+
+  getStatutLabel(statut: string): string {
+    switch (statut) {
+      case 'PAID': return 'PAYÉ';
+      case 'PENDING': return 'EN ATTENTE';
+      case 'CANCELLED': return 'ANNULÉ';
+      default: return statut;
     }
   }
 }

@@ -1,5 +1,7 @@
 package com.okanetransfer.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
@@ -28,7 +30,6 @@ public class Transfer {
 
     private BigDecimal commissionAgency;
 
-
     private BigDecimal commissionCentral;
 
     @Enumerated(EnumType.STRING)
@@ -42,12 +43,16 @@ public class Transfer {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime paidAt;
 
+    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime expiryDate;
 
     // Relations
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id")
     private User agent;
 
@@ -71,6 +76,11 @@ public class Transfer {
     @JoinColumn(name = "sender_id")
     private Sender sender;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    @JsonIgnoreProperties({"password", "createdAt", "lastLogin"})
+    private User client;
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "beneficiary_id")
     private Beneficiary beneficiary;
@@ -82,10 +92,8 @@ public class Transfer {
         EXPIRE
     }
 
-
     public enum ReceptionMode {
         CASH_AGENCE,
         MOBILE_MONEY
     }
 }
-
