@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { ApiService } from './services/api'; // Importe le service
 
 @Component({
+  standalone: true,
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',

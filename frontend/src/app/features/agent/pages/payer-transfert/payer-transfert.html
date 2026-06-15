@@ -1,1 +1,66 @@
-<p>payer-transfert works!</p>
+<div class="page-layout">
+  <app-navbar></app-navbar>
+
+  <main class="main-content">
+    <section class="page-header">
+      <div>
+        <p class="eyebrow">{{ context.agencyName }}</p>
+        <h1>Payer un retrait</h1>
+      </div>
+    </section>
+
+    <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+
+    <section class="panel">
+      <div class="search-row">
+        <label>
+          <input type="radio" name="searchType" value="code" [(ngModel)]="searchType" /> Code de retrait
+        </label>
+        <label>
+          <input type="radio" name="searchType" value="phone" [(ngModel)]="searchType" /> Numéro bénéficiaire
+        </label>
+      </div>
+
+      <div class="form-group">
+        <input
+          type="text"
+          placeholder="Saisir le code ou le numéro"
+          [(ngModel)]="searchTerm"
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" type="button" (click)="search()" [disabled]="loading">Rechercher</button>
+      </div>
+
+      <div *ngIf="searchResults.length > 1" class="result-list">
+        <h3>Résultats</h3>
+        <ul>
+          <li *ngFor="let transfer of searchResults" (click)="selectTransfer(transfer)">
+            {{ transfer.referenceCode }} - {{ transfer.beneficiaryName || 'Bénéficiaire inconnu' }} - {{ transfer.amountReceived | number:'1.2-2' }}
+          </li>
+        </ul>
+      </div>
+
+      <div *ngIf="selectedTransfer" class="transfer-card">
+        <h3>Détails du transfert</h3>
+        <div class="detail-row"><span>Code :</span> {{ selectedTransfer.referenceCode }}</div>
+        <div class="detail-row"><span>Bénéficiaire :</span> {{ selectedTransfer.beneficiaryName || 'N/A' }}</div>
+        <div class="detail-row"><span>Téléphone :</span> {{ selectedTransfer.beneficiaryPhone || 'N/A' }}</div>
+        <div class="detail-row"><span>Montant reçu :</span> {{ selectedTransfer.amountReceived | number:'1.2-2' }} MAD</div>
+        <div class="detail-row"><span>Status :</span> {{ selectedTransfer.status }}</div>
+
+        <div class="form-group">
+          <label>Numéro d'identité du bénéficiaire</label>
+          <input type="text" [(ngModel)]="beneficiaryIdentityNumber" [disabled]="loading" />
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" type="button" (click)="pay()" [disabled]="loading">Payer le retrait</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

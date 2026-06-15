@@ -4,6 +4,7 @@ import { Sidebar } from '../../../../shared/components/sidebar/sidebar'; // <-- 
 import { DatePipe } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'app-confirmation-transfert',
   imports: [RouterLink, Sidebar, DatePipe], // On retire le Header d'ici
   templateUrl: './confirmation-transfert.html',

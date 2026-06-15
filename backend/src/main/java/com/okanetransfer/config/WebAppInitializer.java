@@ -5,12 +5,13 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        // En remettant null ou un tableau vide, tu désactives le chargement du contexte racine
-        return null;
+        // JpaConfig and SecurityConfig must be in root context (parent)
+        return new Class<?>[] { JpaConfig.class, SecurityConfig.class };
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
+        // WebMvcConfig is the DispatcherServlet (child) context
         return new Class<?>[] { WebMvcConfig.class };
     }
 

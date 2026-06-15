@@ -8,10 +8,9 @@ import { Header } from '../../../../shared/components/header/header';
 import { AgentService } from '../../../../services/agent';
 
 // --- 2. CONFIGURATION DU COMPOSANT : La carte d'identité ---
-// On définit ici le nom de la balise, les fichiers HTML/CSS liés et les modules nécessaires
 @Component({
-  selector: 'app-nouveau-transfert',
   standalone: true,
+  selector: 'app-nouveau-transfert',
   imports: [RouterLink, FormsModule, Sidebar, Header],
   templateUrl: './nouveau-transfert.html',
   styleUrl: './nouveau-transfert.css',
@@ -19,7 +18,6 @@ import { AgentService } from '../../../../services/agent';
 export class NouveauTransfert implements OnInit {
 
   // --- 3. INJECTIONS : Les outils externes nécessaires ---
-  // inject() permet d'accéder aux services Angular sans passer par un constructeur
   private readonly agentService = inject(AgentService); // Pour communiquer avec l'API
   private readonly cdr = inject(ChangeDetectorRef);     // Pour forcer la mise à jour de l'affichage
   private readonly router = inject(Router);             // Pour changer de page après confirmation
@@ -29,7 +27,6 @@ export class NouveauTransfert implements OnInit {
   telephoneSaisie = '';         // Stocke le numéro saisi par l'agent
   montant = 0;                  // Stocke le montant à transférer
   modeReception = 'CASH';       // Stocke le choix du mode de retrait
-
 
   // Objets pour regrouper les données saisies par l'utilisateur
   expediteur = { nom: '', prenom: '', typeIdentite: 'CIN', numIdentite: '', telephone: '', pays: '' };
@@ -47,36 +44,35 @@ export class NouveauTransfert implements OnInit {
     'Belgique': '+32', 'Espagne': '+34', 'Italie': '+39'
   };
 
-  // Dans les propriétés (section 4)
-  paysReception: any[] = [];   // ← la liste qui vient de l'AP
+  // La liste des pays de réception qui vient de l'API
+  paysReception: any[] = [];
+
   // --- 5. INITIALISATION : Le point de démarrage ---
-  // Méthode appelée automatiquement par Angular dès que le composant est prêt
   ngOnInit(): void {
     this.chargerProfilAgent(); // On lance le chargement des données dès l'ouverture
   }
 
   // --- 6. LOGIQUE MÉTIER : Les outils de calcul ---
-  // Fonction dédiée pour isoler l'appel réseau
-  //Ici id=1 CE SERA LA CHOSE A MODIFIER POUR FAIRE QUE C'EST DIRECT QUAND AGENT SE CONNECTE
+  // Ici id=1 : À MODIFIER quand l'agent se connectera (l'id viendra du token JWT)
   private chargerProfilAgent(): void {
     this.agentService.getAgentProfile(1).subscribe({
       next: (data: any) => {
         this.expediteur.pays = data.country;
-        this.chargerPaysReception(data.country);  // ← enchaîne avec le country reçu
+        this.chargerPaysReception(data.country);  // enchaîne avec le country reçu
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Erreur lors du chargement du profil:', err)
     });
   }
 
-  // Nouvelle méthode
+  // Charge les pays de réception disponibles depuis le pays de l'agent
   private chargerPaysReception(sourceCountry: string): void {
     this.agentService.getReceptionCountries(sourceCountry).subscribe({
       next: (data: any[]) => {
         this.paysReception = data;
         // La devise d'envoi est la même pour tous les corridors → prends le 1er
         if (data.length > 0) {
-          this.deviseAgence = data[0].sourceCurrencyCode;  // ← "MAD"
+          this.deviseAgence = data[0].sourceCurrencyCode;
         }
         this.cdr.detectChanges();
       },
@@ -84,31 +80,26 @@ export class NouveauTransfert implements OnInit {
     });
   }
 
-  // Pour l'expéditeur (pays de l'agent) — garde ton dictionnaire
+  // Pour l'expéditeur (pays de l'agent) — utilise le dictionnaire
   getIndicatif(): string {
     return this.indicateurs[this.expediteur.pays] || '';
   }
 
   // Pour le bénéficiaire (pays de réception choisi) — utilise l'API
-  // Permet d'afficher dynamiquement l'indicatif dans le champ de saisie selon le pays
-  // Renvoie l'indicatif du pays de réception sélectionné
   getIndicatifBeneficiaire(): string {
     const pays = this.paysReception.find(p => p.country === this.beneficiaire.pays);
     return pays ? pays.phoneCode : '';
   }
 
   // --- 7. NAVIGATION & ACTIONS : La gestion des clics ---
-  // Passe à l'étape suivante si on est en dessous de 3
   nextStep(): void {
     if (this.currentStep < 3) this.currentStep++;
   }
 
-  // Retourne à l'étape précédente si on est au-dessus de 1
   prevStep(): void {
     if (this.currentStep > 1) this.currentStep--;
   }
 
-  // Redirige l'agent vers la page de confirmation finale
   confirmerTransfert(): void {
     this.router.navigate(['/agent/confirmation']);
   }
