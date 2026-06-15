@@ -1,9 +1,17 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-topbar',
   imports: [],
   templateUrl: './header.html',
-  styleUrl: './header.css',
+  styleUrl: './header.css'
 })
-export class Header {}
+export class TopbarComponent {
+  userName = 'Admin Principal';
+  userEmail = 'admin@okanetransfer.com';
+  userInitials = 'AP';
+
+  logout(): void {
+    // logique de déconnexion
+  }
+}

@@ -137,40 +137,42 @@ export class CurrencyManagementComponent implements OnInit {
   //  CORRIDORS
   // ════════════════════════════════════════════════════════
 
-  loadCorridors(): void {
-    this.corridorsLoading = true;
-    this.corridorService.getAllCorridors().subscribe({
-      next: (data) => {
-        this.corridors = data;
-        this.corridorsLoading = false;
-      },
-      error: () => {
-        this.showError('Erreur lors du chargement des corridors.');
-        this.corridorsLoading = false;
-      }
-    });
-  }
+ loadCorridors(): void {
+  this.corridorsLoading = true;
+  this.corridorService.getAllCorridors().subscribe({
+    next: (data) => {
+      this.corridors = data;
+      this.corridorsLoading = false;
+      this.cdr.detectChanges(); // force le re-render ici uniquement
+    },
+    error: () => {
+      this.showError('Erreur lors du chargement des corridors.');
+      this.corridorsLoading = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   toggleCorridor(corridor: CorridorResponse): void {
-    if (this.corridorToggleLoadingId === corridor.id) return;
-    this.corridorToggleLoadingId = corridor.id;
+  if (this.corridorToggleLoadingId === corridor.id) return;
+  this.corridorToggleLoadingId = corridor.id;
 
-    this.corridorService.toggleCorridor(corridor.id).subscribe({
-      next: (updated) => {
-        const index = this.corridors.findIndex(c => c.id === updated.id);
-        if (index !== -1) {
-          this.corridors[index] = updated;
-        }
-        this.corridorToggleLoadingId = null;
-        const etat = updated.active ? 'activé' : 'désactivé';
-        this.showSuccess(`Corridor ${updated.sourceCurrencyCode} → ${updated.destinationCurrencyCode} ${etat}.`);
-      },
-      error: () => {
-        this.corridorToggleLoadingId = null;
-        this.showError('Erreur lors du changement de statut du corridor.');
-      }
-    });
-  }
+  this.corridorService.toggleCorridor(corridor.id).subscribe({
+    next: (updated) => {
+      // Remplace le tableau entier → force Angular à re-render
+      this.corridors = this.corridors.map(c => c.id === updated.id ? updated : c);
+      this.corridorToggleLoadingId = null;
+      const etat = updated.active ? 'activé' : 'désactivé';
+      this.showSuccess(`Corridor ${updated.sourceCurrencyCode} → ${updated.destinationCurrencyCode} ${etat}.`);
+      this.cdr.detectChanges(); // force la détection
+    },
+    error: () => {
+      this.corridorToggleLoadingId = null;
+      this.showError('Erreur lors du changement de statut du corridor.');
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   isToggleLoading(corridorId: number): boolean {
     return this.corridorToggleLoadingId === corridorId;

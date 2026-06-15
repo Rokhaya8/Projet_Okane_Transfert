@@ -117,68 +117,67 @@ export class Agences implements OnInit {
     this.chargement = false;
   }
 
-  soumettre(): void {
-    if (!this.formulaire.name || !this.formulaire.address || !this.formulaire.country) {
-      this.erreurMessage = 'Veuillez remplir tous les champs obligatoires.';
-      return;
-    }
-    this.chargement = true;
-    this.erreurMessage = '';
-
-    const handleSuccess = () => {
-      this.chargement = false;
-      this.afficherModal = false;
-      this.chargerAgences();
-    };
-
-    const handleError = (err: any, message: string) => {
-      console.error(message, err);
-      const backendMessage = err?.error?.message;
-      if (err.status === 0 || err.status === 201 || err.status === 200) {
-        handleSuccess();
-      } else {
-        this.erreurMessage = backendMessage || message;
-        this.chargement = false;
-      }
-    };
-
-    if (this.modeEdition && this.agenceEnEdition) {
-      this.agenceService.modifier(this.agenceEnEdition.id, this.formulaire).subscribe({
-        next: () => handleSuccess(),
-        error: (err) => handleError(err, 'Erreur lors de la modification.'),
-      });
-    } else {
-      this.agenceService.creer(this.formulaire).subscribe({
-        next: () => handleSuccess(),
-        error: (err) => handleError(err, 'Erreur lors de la création.'),
-      });
-    }
+ soumettre(): void {
+  if (!this.formulaire.name || !this.formulaire.address || !this.formulaire.country) {
+    this.erreurMessage = 'Veuillez remplir tous les champs obligatoires.';
+    this.cdr.detectChanges();
+    return;
   }
+  this.chargement = true;
+  this.erreurMessage = '';
+  this.cdr.detectChanges();
 
- deactivateAgence(agence: Agence): void {
+  const handleSuccess = () => {
+    this.chargement = false;
+    this.afficherModal = false;
+    this.cdr.detectChanges();
+    this.chargerAgences();
+  };
+
+  const handleError = (err: any, message: string) => {
+    console.error(message, err);
+    const backendMessage = err?.error?.message;
+    if (err.status === 0 || err.status === 200 || err.status === 201 || err.status === 204) {
+      handleSuccess();
+    } else {
+      this.erreurMessage = backendMessage || message;
+      this.chargement = false;
+      this.cdr.detectChanges();
+    }
+  };
+
+  if (this.modeEdition && this.agenceEnEdition) {
+    this.agenceService.modifier(this.agenceEnEdition.id, this.formulaire).subscribe({
+      next: () => handleSuccess(),
+      error: (err) => handleError(err, 'Erreur lors de la modification.'),
+    });
+  } else {
+    this.agenceService.creer(this.formulaire).subscribe({
+      next: () => handleSuccess(),
+      error: (err) => handleError(err, 'Erreur lors de la création.'),
+    });
+  }
+}
+deactivateAgence(agence: Agence): void {
   if (!confirm(`Désactiver l'agence "${agence.name}" ?`)) return;
-
-  console.log('Désactivation agence', agence.id);
 
   this.agenceService.desactiver(agence.id).subscribe({
     next: (response) => {
-      console.log('Réponse désactivation', response.status);
-
       if (response.status === 204 || response.status === 200) {
-        this.agences = this.agences.filter(a => a.id !== agence.id);
+        const index = this.agences.findIndex(a => a.id === agence.id);
+        if (index !== -1) {
+          this.agences[index].active = false;
+        }
         this.appliquerFiltres();
         this.cdr.detectChanges();
       } else {
-        console.error('Réponse inattendue', response);
-        this.erreurMessage =
-          'Échec de la désactivation : statut inattendu ' + response.status;
+        this.erreurMessage = 'Échec de la désactivation : statut inattendu ' + response.status;
+        this.cdr.detectChanges();
       }
     },
-
     error: (err) => {
-      console.error('Erreur désactivation', err);
-      this.erreurMessage =
-        err?.error?.message || 'Erreur lors de la désactivation.';
+      this.erreurMessage = err?.error?.message || 'Erreur lors de la désactivation.';
+      this.cdr.detectChanges();
     },
   });
 }
