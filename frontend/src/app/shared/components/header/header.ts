@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-// Header pour l'espace agent/client
 @Component({
   selector: 'app-header',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './header.html',
   styleUrl: './header.css'
@@ -30,9 +30,9 @@ export class Header implements OnInit {
   onLogout(): void { console.log('Déconnexion cliquée !'); }
 }
 
-// Topbar pour l'espace admin
 @Component({
   selector: 'app-topbar',
+  standalone: true,
   imports: [],
   template: `
     <header class="topbar">
@@ -42,13 +42,7 @@ export class Header implements OnInit {
           <span class="user-email">{{ userEmail }}</span>
         </div>
         <div class="avatar">{{ userInitials }}</div>
-        <button class="logout-btn" (click)="logout()" title="Déconnexion">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" y1="12" x2="9" y2="12"></line>
-          </svg>
-        </button>
+        <button class="logout-btn" (click)="logout()">↪</button>
       </div>
     </header>`,
   styleUrl: './header.css'

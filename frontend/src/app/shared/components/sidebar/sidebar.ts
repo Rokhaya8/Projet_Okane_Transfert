@@ -5,6 +5,7 @@ import { ClientStateService } from '../../../core/services/client-state';
 
 @Component({
   selector: 'app-sidebar',
+  standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css'
@@ -44,12 +45,3 @@ export class Sidebar implements OnInit {
     this.router.navigate(['/auth/login']);
   }
 }
-
-// SidebarComponent pour l'espace admin
-@Component({
-  selector: 'app-sidebar-admin',
-  imports: [RouterLink, RouterLinkActive],
-  templateUrl: './sidebar.html',
-  styleUrl: './sidebar.css'
-})
-export class SidebarComponent {}

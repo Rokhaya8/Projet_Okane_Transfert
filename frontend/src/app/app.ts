@@ -8,9 +8,4 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {}        this.agent.set(data);
-      },
-      error: (err) => console.error('Erreur :', err)
-    });
-  }
-}
+export class App {}
