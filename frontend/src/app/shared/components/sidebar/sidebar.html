@@ -34,11 +34,30 @@
         <span class="material-icons">history</span> Mon Historique
       </a>
     </ng-container>
+
+    <ng-container *ngIf="userRole === 'ADMIN'">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeMenu()">
+        <span class="material-icons">dashboard</span> Dashboard
+      </a>
+      <a routerLink="/admin/agences" routerLinkActive="active" (click)="closeMenu()">
+        <span class="material-icons">business</span> Agences
+      </a>
+      <a routerLink="/admin/devises" routerLinkActive="active" (click)="closeMenu()">
+        <span class="material-icons">currency_exchange</span> Devises
+      </a>
+      <a routerLink="/admin/audit" routerLinkActive="active" (click)="closeMenu()">
+        <span class="material-icons">fact_check</span> Journal d'audit
+      </a>
+      <a routerLink="/admin/report" routerLinkActive="active" (click)="closeMenu()">
+        <span class="material-icons">assessment</span> Rapports
+      </a>
+    </ng-container>
   </nav>
 
   <div class="sidebar-footer">
     <div class="agent-name" *ngIf="userRole === 'AGENT'">Mode Agent</div>
     <div class="agent-name" *ngIf="userRole === 'CLIENT'">Espace Client</div>
+    <div class="agent-name" *ngIf="userRole === 'ADMIN'">Espace Admin</div>
     <button class="btn-logout" (click)="logout()">Déconnexion</button>
   </div>
 </div>

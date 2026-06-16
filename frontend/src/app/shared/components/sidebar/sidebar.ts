@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject, computed } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ClientStateService } from '../../../core/services/client-state';
@@ -7,7 +7,7 @@ import { ClientStateService } from '../../../core/services/client-state';
   selector: 'app-sidebar',
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
-  styleUrl: './sidebar.css',
+  styleUrl: './sidebar.css'
 })
 export class Sidebar implements OnInit {
   @Input() userRole: 'AGENT' | 'CLIENT' | 'ADMIN' = 'AGENT';
@@ -34,22 +34,22 @@ export class Sidebar implements OnInit {
 
   ngOnInit(): void {}
 
-  // Ferme le menu automatiquement quand on clique sur un lien mobile
-  closeMenu(): void {
-    this.requestClose.emit();
-  }
+  closeMenu(): void { this.requestClose.emit(); }
 
   logout(): void {
-    console.log('Déclenchement de la procédure de déconnexion...');
-
-    // ÉTAPE A : Nettoyage local (Sécurité de la Session)
-    // On supprime le jeton JWT et les infos utilisateur stockés dans le navigateur
-    localStorage.removeItem('token'); 
-    localStorage.removeItem('user_role');
-    
-    // sessionStorage.clear();
-
-    // ÉTAPE B : Redirection programmée vers l'authentification
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('fullName');
     this.router.navigate(['/auth/login']);
   }
 }
+
+// SidebarComponent pour l'espace admin
+@Component({
+  selector: 'app-sidebar-admin',
+  imports: [RouterLink, RouterLinkActive],
+  templateUrl: './sidebar.html',
+  styleUrl: './sidebar.css'
+})
+export class SidebarComponent {}

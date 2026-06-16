@@ -11,24 +11,13 @@ import java.util.List;
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
 
-    // Chercher par code de retrait
     Optional<Transfer> findByReferenceCode(String referenceCode);
-
-    // Chercher par téléphone du bénéficiaire
     List<Transfer> findByBeneficiaryPhone(String phone);
-
     List<Transfer> findByBeneficiaryPhoneAndStatus(String phone, Transfer.TransferStatus status);
-
-    // Chercher les transferts d'un agent
     List<Transfer> findByAgentId(Long agentId);
-
-    // Chercher les transferts d'un expéditeur
     List<Transfer> findBySenderId(Long senderId);
-
-    // Chercher par statut
     List<Transfer> findByStatus(Transfer.TransferStatus status);
 
-    //Suivi de transfert on charge le transfert et ses relations associées
     @Query("SELECT t FROM Transfer t " +
             "LEFT JOIN FETCH t.client " +
             "LEFT JOIN FETCH t.beneficiary " +
@@ -37,7 +26,6 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
             "WHERE t.referenceCode = :referenceCode")
     Optional<Transfer> findByReferenceCodeWithAllRelations(@Param("referenceCode") String referenceCode);
 
-    //Historique des transferts d'un client spécifique
     @Query("SELECT t FROM Transfer t " +
             "LEFT JOIN FETCH t.client " +
             "LEFT JOIN FETCH t.beneficiary " +
@@ -46,8 +34,6 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
             "ORDER BY t.createdAt DESC")
     List<Transfer> findByClientIdWithRelations(@Param("clientId") Long clientId);
 
-    //Dashboard KPI la somme des montants envoyés pour les transferts payés
     @Query("SELECT SUM(t.amountSent) FROM Transfer t WHERE t.client.id = :clientId AND t.status = :status")
     Double sumTotalSentByClient(@Param("clientId") Long clientId, @Param("status") com.okanetransfer.entity.Transfer.TransferStatus status);
-
 }

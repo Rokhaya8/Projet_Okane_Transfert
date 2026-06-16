@@ -1,6 +1,7 @@
 package com.okanetransfer.service;
 
 import com.okanetransfer.dto.*;
+import com.okanetransfer.dto.response.TransferResponse;
 import com.okanetransfer.entity.*;
 import com.okanetransfer.exception.BusinessException;
 import com.okanetransfer.exception.ResourceNotFoundException;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -155,11 +157,34 @@ public class TransferService {
         return transferRepository.findByAgentId(agentId);
     }
 
+    // ===== POUR L'ADMIN DASHBOARD =====
+    @Transactional(readOnly = true)
+    public List<TransferResponse> getAll() {
+        return transferRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    private TransferResponse toResponse(Transfer t) {
+        return TransferResponse.builder()
+                .id(t.getId())
+                .referenceCode(t.getReferenceCode())
+                .amountSent(t.getAmountSent())
+                .amountReceived(t.getAmountReceived())
+                .fees(t.getFees())
+                .status(t.getStatus())
+                .createdAt(t.getCreatedAt())
+                .agentName(t.getAgent() != null ? t.getAgent().getFullName() : "-")
+                .agencyName(t.getAgency() != null ? t.getAgency().getName() : "-")
+                .beneficiaryName(t.getBeneficiary() != null ? t.getBeneficiary().getFullName() : "-")
+                .build();
+    }
+
     private void validatePayableTransfer(Transfer transfer) {
         if (transfer.getStatus() != Transfer.TransferStatus.EN_ATTENTE) {
             throw new BusinessException("Ce transfert ne peut pas etre paye");
         }
-
         if (transfer.getExpiryDate() != null && transfer.getExpiryDate().isBefore(LocalDateTime.now())) {
             transfer.setStatus(Transfer.TransferStatus.EXPIRE);
             transferRepository.save(transfer);
