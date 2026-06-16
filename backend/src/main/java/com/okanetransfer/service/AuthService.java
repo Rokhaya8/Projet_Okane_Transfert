@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -37,6 +36,6 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
-        return new LoginResponse(token, user.getFullName(), user.getRole().name());
+        return new LoginResponse(user.getId(), token, user.getFullName(), user.getRole().name());
     }
 }

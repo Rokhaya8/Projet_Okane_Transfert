@@ -17,15 +17,14 @@ public class AgentController {
     private AgentService agentService;
 
     @GetMapping("/profile/{id}")
-    public ResponseEntity<AgentProfileDTO> getAgentProfile(@PathVariable Long id) {
+    public ResponseEntity<AgentProfileDTO> getAgentProfile(@PathVariable("id") Long id) {
         AgentProfileDTO dto = agentService.getAgentProfileDto(id);
         return (dto != null) ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/reception-countries")
     public ResponseEntity<List<ReceptionCountryDTO>> getReceptionCountries(
-            @RequestParam String sourceCountry) {
+            @RequestParam("sourceCountry") String sourceCountry) {
         return ResponseEntity.ok(agentService.getReceptionCountries(sourceCountry));
     }
-
 }

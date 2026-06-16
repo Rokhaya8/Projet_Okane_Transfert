@@ -26,7 +26,7 @@ public class AuthController {
 
     // TEMPORAIRE — pour générer un hash de mot de passe. À SUPPRIMER après les tests.
     @GetMapping("/hash")
-    public ResponseEntity<String> hash(@RequestParam String password) {
+    public ResponseEntity<String> hash(@RequestParam("password") String password) {
         return ResponseEntity.ok(passwordEncoder.encode(password));
     }
 }

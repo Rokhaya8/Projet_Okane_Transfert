@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+
+
 @Service
 public class TransferServiceClient {
     private final TransferRepository transferRepository;
@@ -35,12 +37,12 @@ public class TransferServiceClient {
         List<Transfer> history = transferRepository.findByClientIdWithRelations(clientId);
 
         // ici la somme globale envoyée
-        Double totalSent = transferRepository.sumTotalSentByClient(clientId, Transfer.TransferStatus.PAID);
+        Double totalSent = transferRepository.sumTotalSentByClient(clientId, Transfer.TransferStatus.PAYE);
 
         long totalTransfersCount = history.size();
 
         long pendingTransfersCount = history.stream()
-                .filter(t -> Transfer.TransferStatus.PENDING.equals(t.getStatus()))
+                .filter(t -> Transfer.TransferStatus.EN_ATTENTE.equals(t.getStatus()))
                 .count();
 
         // 5 dernières transactions

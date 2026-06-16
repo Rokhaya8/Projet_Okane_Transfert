@@ -44,14 +44,7 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    path: 'auth',
-    component: ClientLayoutComponent,
-    children: [
-      { path: '', redirectTo: 'login', pathMatch: 'full' },
-      { path: 'login', component: Login },
-      { path: 'inscription', component: Inscription },
-    ]
-  },
-  { path: '', redirectTo: 'agent/dashboard', pathMatch: 'full' },
+  { path: 'auth/login', component: Login },
+  { path: 'auth/inscription', component: Inscription },
+  { path: 'auth', redirectTo: 'auth/login', pathMatch: 'full' },
 ];
