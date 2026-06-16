@@ -1,1 +1,57 @@
-<p>chatbot works!</p>
+<div class="assistant-avatar-wrapper" (click)="toggleChat()" [class.active]="isOpen()">
+  <div class="ping-animation"></div>
+  <div class="assistant-icon">
+    <span class="material-icons">support_agent</span>
+  </div>
+</div>
+
+@if (isOpen()) {
+  <div class="chat-window">
+    <div class="chat-header">
+      <div class="header-profile">
+        <span class="material-icons bot-avatar-icon">support_agent</span>
+        <div class="header-info">
+          <h3>Assistant Okane</h3>
+          <div class="status-container">
+            <span class="status-dot"></span>
+            <small>En ligne</small>
+          </div>
+        </div>
+      </div>
+      <button style="border-radius: 50%; margin: 2px; padding: 3px;" class="close-btn" (click)="toggleChat()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="chat-messages" #scrollContainer>
+      @for (msg of messages(); track msg.timestamp) {
+        <div class="message-row" [ngClass]="msg.sender">
+          <div class="bubble">
+            <div [innerHTML]="formatMessage(msg.text)"></div>
+            <span class="time">{{ msg.timestamp | date:'HH:mm' }}</span>
+          </div>
+        </div>
+      }
+
+      @if (isTyping()) {
+        <div class="message-row bot">
+          <div class="bubble typing">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="chat-footer">
+      <input 
+        type="text" 
+        placeholder="Posez votre question..." 
+        [ngModel]="userInput()" 
+        (ngModelChange)="userInput.set($event)"
+        (keyup.enter)="send()" />
+      <button class="send-btn" (click)="send()" [disabled]="!userInput().trim()">
+        <span class="material-icons">send</span>
+      </button>
+    </div>
+  </div>
+}
