@@ -1,0 +1,75 @@
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">Nouvel agent</h2>
+      <p class="page-subtitle">Ajouter un agent à votre agence</p>
+    </div>
+    <a mat-stroked-button routerLink="/manager/agents">
+      <mat-icon>arrow_back</mat-icon>
+      Retour
+    </a>
+  </div>
+
+  @if (error) {
+    <div class="error-alert">{{ error }}</div>
+  }
+
+  <div class="content-card form-card">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nom complet</mat-label>
+            <input matInput formControlName="fullName" />
+            @if (form.controls.fullName.touched && form.controls.fullName.hasError('required')) {
+              <mat-error>Obligatoire</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" />
+            @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+              <mat-error>Obligatoire</mat-error>
+            }
+            @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+              <mat-error>Email invalide</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Téléphone</mat-label>
+            <input matInput formControlName="phone" />
+            @if (form.controls.phone.touched && form.controls.phone.hasError('required')) {
+              <mat-error>Obligatoire</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput type="password" formControlName="password" />
+            @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+              <mat-error>Obligatoire</mat-error>
+            }
+            @if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+              <mat-error>Minimum 8 caractères</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button mat-flat-button color="primary" type="submit" [disabled]="submitting">
+          @if (submitting) {
+            <mat-spinner diameter="20" class="btn-spinner"></mat-spinner>
+          } @else {
+            <mat-icon>save</mat-icon>
+          }
+          Créer l'agent
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

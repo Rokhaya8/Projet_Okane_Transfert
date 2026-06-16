@@ -3,9 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
 import { Header } from '../../../../shared/components/header/header';
 import { ClientStateService } from '../../../../core/services/client-state';
+import {ChatBot} from "../../components/chatbot/chatbot"
+
 @Component({
 	selector: 'app-client-layout',
-	imports: [RouterOutlet, Sidebar, Header],
+	imports: [RouterOutlet, Sidebar, Header, ChatBot],
 	templateUrl: './layout.html',
 	styleUrl: './layout.css',
 })

@@ -5,6 +5,7 @@ import com.okanetransfer.dto.response.TransferResponse;
 import com.okanetransfer.entity.*;
 import com.okanetransfer.exception.BusinessException;
 import com.okanetransfer.exception.ResourceNotFoundException;
+import com.okanetransfer.repository.AgentRepository;
 import com.okanetransfer.repository.TransferPaymentRepository;
 import com.okanetransfer.repository.TransferRepository;
 import com.okanetransfer.repository.UserRepository;
@@ -24,6 +25,7 @@ public class TransferService {
 
     private final TransferRepository transferRepository;
     private final TransferPaymentRepository transferPaymentRepository;
+    private final AgentRepository agentRepository;
     private final UserRepository userRepository;
     private final FeeService feeService;
     private final ExchangeRateService exchangeRateService;
@@ -32,6 +34,7 @@ public class TransferService {
     public TransferService(
             TransferRepository transferRepository,
             TransferPaymentRepository transferPaymentRepository,
+            AgentRepository agentRepository,
             UserRepository userRepository,
             FeeService feeService,
             ExchangeRateService exchangeRateService,
@@ -39,6 +42,7 @@ public class TransferService {
     ) {
         this.transferRepository = transferRepository;
         this.transferPaymentRepository = transferPaymentRepository;
+        this.agentRepository = agentRepository;
         this.userRepository = userRepository;
         this.feeService = feeService;
         this.exchangeRateService = exchangeRateService;
@@ -46,7 +50,7 @@ public class TransferService {
     }
 
     public Transfer registerTransfer(Transfer transfer, Long agentId) {
-        User agent = userRepository.findById(agentId)
+        Agent agent = agentRepository.findById(agentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Agent introuvable"));
         AgentCashSession session = cashSessionService.getOpenSessionForUpdate(agentId);
 

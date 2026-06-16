@@ -1,0 +1,113 @@
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">Opérations</h2>
+      <p class="page-subtitle">Transactions de votre agence</p>
+    </div>
+    <button mat-stroked-button (click)="loadOperations()">
+      <mat-icon>refresh</mat-icon>
+      Actualiser
+    </button>
+  </div>
+
+  @if (error) {
+    <div class="error-alert">{{ error }}</div>
+  }
+
+  <div class="content-card">
+    <form [formGroup]="filterForm" class="filters-row" (ngSubmit)="loadOperations()">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Date début</mat-label>
+        <input matInput type="date" formControlName="from" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Date fin</mat-label>
+        <input matInput type="date" formControlName="to" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Statut</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="">Tous</mat-option>
+          @for (s of statuses; track s) {
+            <mat-option [value]="s">{{ s }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Agent</mat-label>
+        <mat-select formControlName="agentId">
+          <mat-option [value]="null">Tous</mat-option>
+          @for (a of agents; track a.id) {
+            <mat-option [value]="a.id">{{ a.fullName }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">
+        <mat-icon>filter_list</mat-icon>
+        Filtrer
+      </button>
+    </form>
+
+    @if (loading) {
+      <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+    } @else if (dataSource.data.length === 0) {
+      <app-empty-state message="Aucune opération trouvée." />
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+          <ng-container matColumnDef="referenceCode">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Référence</th>
+            <td mat-cell *matCellDef="let op">{{ op.referenceCode }}</td>
+          </ng-container>
+          <ng-container matColumnDef="agentName">
+            <th mat-header-cell *matHeaderCellDef>Agent</th>
+            <td mat-cell *matCellDef="let op">{{ op.agentName ?? '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="senderName">
+            <th mat-header-cell *matHeaderCellDef>Expéditeur</th>
+            <td mat-cell *matCellDef="let op">{{ op.senderName ?? '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="beneficiaryName">
+            <th mat-header-cell *matHeaderCellDef>Bénéficiaire</th>
+            <td mat-cell *matCellDef="let op">{{ op.beneficiaryName ?? '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="amountSent">
+            <th mat-header-cell *matHeaderCellDef>Envoyé</th>
+            <td mat-cell *matCellDef="let op">{{ formatAmount(op.amountSent) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="sentCurrencyCode">
+            <th mat-header-cell *matHeaderCellDef>Devise env.</th>
+            <td mat-cell *matCellDef="let op">{{ op.sentCurrencyCode ?? '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="amountReceived">
+            <th mat-header-cell *matHeaderCellDef>Reçu</th>
+            <td mat-cell *matCellDef="let op">{{ formatAmount(op.amountReceived) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="receivedCurrencyCode">
+            <th mat-header-cell *matHeaderCellDef>Devise reçue</th>
+            <td mat-cell *matCellDef="let op">{{ op.receivedCurrencyCode ?? '—' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let op">{{ formatDate(op.createdAt) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let op"><app-badge-statut [status]="op.status" /></td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let op">
+              <a mat-icon-button [routerLink]="['/manager/operations', op.id]">
+                <mat-icon>visibility</mat-icon>
+              </a>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons />
+      </div>
+    }
+  </div>
+</div>

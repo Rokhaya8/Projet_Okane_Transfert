@@ -5,26 +5,14 @@
 
     <div class="form-group">
       <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        [(ngModel)]="email"
-        placeholder="exemple@okane.com"
-        (keyup.enter)="onSubmit()"
-      />
+      <input type="email" id="email" name="email" [(ngModel)]="email"
+             placeholder="exemple@okane.com" (keyup.enter)="onSubmit()" />
     </div>
 
     <div class="form-group">
       <label for="password">Mot de passe</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        [(ngModel)]="password"
-        placeholder="••••••••"
-        (keyup.enter)="onSubmit()"
-      />
+      <input type="password" id="password" name="password" [(ngModel)]="password"
+             placeholder="••••••••" (keyup.enter)="onSubmit()" />
     </div>
 
     @if (errorMessage) {

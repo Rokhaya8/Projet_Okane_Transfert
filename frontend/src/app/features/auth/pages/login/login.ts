@@ -48,8 +48,8 @@ export class Login {
         this.router.navigate(['/manager/dashboard']);
         break;
       case 'ROLE_CLIENT':
-        const clientId = localStorage.getItem('userId');  // ← CHANGÉ
-        this.router.navigate(['/client', clientId, 'dashboard']);  // ← CHANGÉ
+        const clientId = localStorage.getItem('userId');
+        this.router.navigate(['/client', clientId, 'dashboard']);
         break;
       default:
         this.router.navigate(['/']);
