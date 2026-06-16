@@ -1,42 +1,48 @@
 package com.okanetransfer.service;
 
-import com.okanetransfer.dto.LoginRequest;
-import com.okanetransfer.dto.LoginResponse;
+import com.okanetransfer.dto.request.LoginRequest;
+import com.okanetransfer.dto.response.LoginResponse;
 import com.okanetransfer.entity.User;
+import com.okanetransfer.exception.BusinessException;
 import com.okanetransfer.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.okanetransfer.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-    
-
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       JwtService jwtService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-    }
-
+    @Transactional
     public LoginResponse login(LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email ou mot de passe incorrect"));
+                .orElseThrow(() -> new BusinessException("Utilisateur introuvable"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Email ou mot de passe incorrect");
-        }
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
 
-        if (!user.isActive()) {
-            throw new RuntimeException("Compte désactivé");
-        }
+        String token = jwtTokenProvider.generateToken(authentication);
 
-        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
-        return new LoginResponse(token, user.getFullName(), user.getRole().name());
+        return LoginResponse.builder()
+                .accessToken(token)
+                .tokenType("Bearer")
+                .userId(user.getId())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(user.getRole().name())
+                .build();
     }
 }

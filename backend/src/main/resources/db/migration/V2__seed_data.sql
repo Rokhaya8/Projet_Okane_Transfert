@@ -1,126 +1,146 @@
--- Dev seed data for the agent frontend.
--- Execute this script on the okane_transfer PostgreSQL database after the schema exists.
-
-INSERT INTO users (id, user_type, fullName, email, password, phone, active, createdAt, lastLogin, role)
+-- Test data. Password for all users: password123
+INSERT INTO users (user_type, full_name, email, password, phone, active, role, created_at)
 VALUES
-  (1, 'AGENT', 'Agent Okane', 'agent@okane.test', 'dev-password', '+212600000001', true, now(), null, 'ROLE_AGENT'),
-  (2, 'MANAGER', 'Manager Okane', 'manager@okane.test', 'dev-password', '+212600000002', true, now(), null, 'ROLE_MANAGER'),
-  (3, 'CLIENT', 'Client Demo', 'client@okane.test', 'dev-password', '+212600000003', true, now(), null, 'ROLE_CLIENT')
-ON CONFLICT (id) DO UPDATE SET
-  user_type = EXCLUDED.user_type,
-  fullName = EXCLUDED.fullName,
-  email = EXCLUDED.email,
-  phone = EXCLUDED.phone,
-  active = EXCLUDED.active,
-  role = EXCLUDED.role;
+('USER', 'Admin Okane', 'admin@okane.com', '$2a$10$uE3IRHTP2LLpzUIW.CJ.KuEvtPA5WRdHSf8JECAZJpxU0aldgeA0S', '+212600000001', TRUE, 'ROLE_ADMIN', NOW()),
+('ROLE_MANAGER', 'Karim Manager', 'manager@okane.com', '$2a$10$uE3IRHTP2LLpzUIW.CJ.KuEvtPA5WRdHSf8JECAZJpxU0aldgeA0S', '+212600000002', TRUE, 'ROLE_MANAGER', NOW()),
+('USER', 'Client Youssef', 'client@okane.com', '$2a$10$uE3IRHTP2LLpzUIW.CJ.KuEvtPA5WRdHSf8JECAZJpxU0aldgeA0S', '+212600000005', TRUE, 'ROLE_CLIENT', NOW())
+ON CONFLICT (email) DO UPDATE
+SET user_type = EXCLUDED.user_type,
+    role = EXCLUDED.role,
+    active = TRUE;
 
-INSERT INTO agencies (id, name, address, country, dailyLimit, active, createdAt, manager_id)
-VALUES
-  (1, 'Agence Principale', 'Boulevard Mohammed V, Casablanca', 'Maroc', 500000.00, true, now(), 2)
-ON CONFLICT (id) DO UPDATE SET
-  name = EXCLUDED.name,
-  address = EXCLUDED.address,
-  country = EXCLUDED.country,
-  dailyLimit = EXCLUDED.dailyLimit,
-  active = EXCLUDED.active,
-  manager_id = EXCLUDED.manager_id;
+INSERT INTO agencies (name, address, country, daily_limit, active, manager_id, created_at)
+SELECT 'Agence Casablanca Centre', '12 Bd Mohammed V, Casablanca', 'Maroc', 500000.00, TRUE, u.id, NOW()
+FROM users u
+WHERE u.email = 'manager@okane.com'
+  AND NOT EXISTS (SELECT 1 FROM agencies a WHERE a.manager_id = u.id);
 
-INSERT INTO beneficiaries (id, fullName, phone, country, identityNumber, watchlistFlag)
-VALUES
-  (1, 'Moussa Diallo', '+221771112233', 'Senegal', 'SN123456', false),
-  (2, 'Fatou Sow', '+221776667788', 'Senegal', 'SN998877', false),
-  (3, 'Aminata Diop', '+221770001122', 'Senegal', 'SN445566', false)
-ON CONFLICT (id) DO UPDATE SET
-  fullName = EXCLUDED.fullName,
-  phone = EXCLUDED.phone,
-  country = EXCLUDED.country,
-  identityNumber = EXCLUDED.identityNumber,
-  watchlistFlag = EXCLUDED.watchlistFlag;
+UPDATE users u
+SET agency_id = a.id
+FROM agencies a
+WHERE u.email = 'manager@okane.com'
+  AND a.manager_id = u.id;
 
-INSERT INTO agent_cash_sessions (
-  id, agent_id, agency_id, openingBalance, currentBalance, closingBalance,
-  countedAmount, discrepancyAmount, openedAt, closedAt, status
-)
+INSERT INTO users (user_type, full_name, email, password, phone, active, role, agency_id, matricule, commission_rate, created_at)
+SELECT 'ROLE_AGENT', 'Agent Ahmed', 'agent@okane.com',
+       '$2a$10$uE3IRHTP2LLpzUIW.CJ.KuEvtPA5WRdHSf8JECAZJpxU0aldgeA0S',
+       '+212600000003', TRUE, 'ROLE_AGENT', a.id, 'AG-001', 2.5, NOW()
+FROM agencies a
+JOIN users m ON a.manager_id = m.id
+WHERE m.email = 'manager@okane.com'
+ON CONFLICT (email) DO UPDATE
+SET user_type = 'ROLE_AGENT',
+    role = 'ROLE_AGENT',
+    agency_id = EXCLUDED.agency_id,
+    matricule = EXCLUDED.matricule,
+    commission_rate = EXCLUDED.commission_rate,
+    active = TRUE;
+
+INSERT INTO users (user_type, full_name, email, password, phone, active, role, agency_id, matricule, commission_rate, created_at)
+SELECT 'ROLE_AGENT', 'Agent Sara', 'sara.agent@okane.com',
+       '$2a$10$uE3IRHTP2LLpzUIW.CJ.KuEvtPA5WRdHSf8JECAZJpxU0aldgeA0S',
+       '+212600000004', TRUE, 'ROLE_AGENT', a.id, 'AG-002', 3.0, NOW()
+FROM agencies a
+JOIN users m ON a.manager_id = m.id
+WHERE m.email = 'manager@okane.com'
+ON CONFLICT (email) DO UPDATE
+SET user_type = 'ROLE_AGENT',
+    role = 'ROLE_AGENT',
+    agency_id = EXCLUDED.agency_id,
+    matricule = EXCLUDED.matricule,
+    commission_rate = EXCLUDED.commission_rate,
+    active = TRUE;
+
+INSERT INTO currencies (code, name, symbol, active)
 VALUES
-  (1, 1, 1, 10000.00, 15600.00, null, null, null, now() - interval '2 hours', null, 'OPEN')
-ON CONFLICT (id) DO UPDATE SET
-  agent_id = EXCLUDED.agent_id,
-  agency_id = EXCLUDED.agency_id,
-  openingBalance = EXCLUDED.openingBalance,
-  currentBalance = EXCLUDED.currentBalance,
-  closingBalance = EXCLUDED.closingBalance,
-  countedAmount = EXCLUDED.countedAmount,
-  discrepancyAmount = EXCLUDED.discrepancyAmount,
-  openedAt = EXCLUDED.openedAt,
-  closedAt = EXCLUDED.closedAt,
-  status = EXCLUDED.status;
+('MAD', 'Dirham marocain', 'DH', TRUE),
+('EUR', 'Euro', 'EUR', TRUE),
+('USD', 'Dollar americain', 'USD', TRUE)
+ON CONFLICT (code) DO NOTHING;
+
+INSERT INTO transfer_corridors (source_country, destination_country, source_currency_id, destination_currency_id, active)
+SELECT 'Maroc', 'France', mad.id, eur.id, TRUE
+FROM currencies mad, currencies eur
+WHERE mad.code = 'MAD' AND eur.code = 'EUR'
+  AND NOT EXISTS (
+      SELECT 1 FROM transfer_corridors c
+      WHERE c.source_country = 'Maroc' AND c.destination_country = 'France'
+  );
+
+INSERT INTO transfer_corridors (source_country, destination_country, source_currency_id, destination_currency_id, active)
+SELECT 'Maroc', 'Etats-Unis', mad.id, usd.id, TRUE
+FROM currencies mad, currencies usd
+WHERE mad.code = 'MAD' AND usd.code = 'USD'
+  AND NOT EXISTS (
+      SELECT 1 FROM transfer_corridors c
+      WHERE c.source_country = 'Maroc' AND c.destination_country = 'Etats-Unis'
+  );
+
+INSERT INTO senders (full_name, phone, country, identity_type, identity_number)
+SELECT 'Client Youssef', '+212600000005', 'Maroc', 'CIN', 'MA123456'
+WHERE NOT EXISTS (SELECT 1 FROM senders WHERE identity_number = 'MA123456');
+
+INSERT INTO beneficiaries (full_name, phone, country, identity_number, watchlist_flag)
+SELECT 'Marie Dupont', '+33600000001', 'France', 'FR123456', FALSE
+WHERE NOT EXISTS (SELECT 1 FROM beneficiaries WHERE identity_number = 'FR123456');
+
+INSERT INTO beneficiaries (full_name, phone, country, identity_number, watchlist_flag)
+SELECT 'John Smith', '+12025550123', 'Etats-Unis', 'US987654', FALSE
+WHERE NOT EXISTS (SELECT 1 FROM beneficiaries WHERE identity_number = 'US987654');
 
 INSERT INTO transfers (
-  id, referenceCode, amountSent, amountReceived, fees, commissionAgency,
-  commissionCentral, status, createdAt, paidAt, expiryDate, agent_id,
-  paying_agent_id, agency_id, paying_agency_id, corridor_id, client_id, beneficiary_id
+    reference_code, amount_sent, amount_received, fees,
+    commission_agency, commission_central, status, reception_mode,
+    created_at, paid_at, expiry_date,
+    agent_id, agency_id, source_agency_id, destination_agency_id,
+    corridor_id, sender_id, client_id, beneficiary_id
 )
-VALUES
-  (1, 'OKN20261', 1000.00, 65000.00, 25.00, 10.00, 15.00, 'EN_ATTENTE', now() - interval '1 day', null, now() + interval '6 days', 1, null, 1, null, null, 3, 1),
-  (2, 'OKN20262', 500.00, 32500.00, 15.00, 6.00, 9.00, 'PAYE', now() - interval '2 days', now() - interval '1 hour', now() + interval '5 days', 1, 1, 1, 1, null, 3, 2),
-  (3, 'OKN20263', 2500.00, 162500.00, 50.00, 20.00, 30.00, 'EN_ATTENTE', now() - interval '3 hours', null, now() + interval '7 days', 1, null, 1, null, null, 3, 3)
-ON CONFLICT (id) DO UPDATE SET
-  referenceCode = EXCLUDED.referenceCode,
-  amountSent = EXCLUDED.amountSent,
-  amountReceived = EXCLUDED.amountReceived,
-  fees = EXCLUDED.fees,
-  commissionAgency = EXCLUDED.commissionAgency,
-  commissionCentral = EXCLUDED.commissionCentral,
-  status = EXCLUDED.status,
-  createdAt = EXCLUDED.createdAt,
-  paidAt = EXCLUDED.paidAt,
-  expiryDate = EXCLUDED.expiryDate,
-  agent_id = EXCLUDED.agent_id,
-  paying_agent_id = EXCLUDED.paying_agent_id,
-  agency_id = EXCLUDED.agency_id,
-  paying_agency_id = EXCLUDED.paying_agency_id,
-  corridor_id = EXCLUDED.corridor_id,
-  client_id = EXCLUDED.client_id,
-  beneficiary_id = EXCLUDED.beneficiary_id;
+SELECT
+    'OKN-TEST-001', 1000.00, 91.00, 25.00,
+    15.00, 10.00, 'PAID', 'CASH_AGENCE',
+    NOW() - INTERVAL '2 days', NOW() - INTERVAL '1 day', NOW() + INTERVAL '28 days',
+    ag.id, a.id, a.id, a.id,
+    c.id, s.id, cl.id, b.id
+FROM users ag
+JOIN agencies a ON ag.agency_id = a.id
+JOIN users cl ON cl.email = 'client@okane.com'
+JOIN senders s ON s.identity_number = 'MA123456'
+JOIN beneficiaries b ON b.identity_number = 'FR123456'
+JOIN transfer_corridors c ON c.destination_country = 'France'
+WHERE ag.email = 'agent@okane.com'
+ON CONFLICT (reference_code) DO NOTHING;
 
-INSERT INTO transfer_payments (
-  id, transfer_id, agent_id, agency_id, beneficiaryIdentityNumber,
-  paidAmount, paidAt, receiptNumber
+INSERT INTO transfers (
+    reference_code, amount_sent, amount_received, fees,
+    commission_agency, commission_central, status, reception_mode,
+    created_at, paid_at, expiry_date,
+    agent_id, agency_id, source_agency_id, destination_agency_id,
+    corridor_id, sender_id, client_id, beneficiary_id
 )
-VALUES
-  (1, 2, 1, 1, 'SN998877', 32500.00, now() - interval '1 hour', 'RCT-DEMO-001')
-ON CONFLICT (id) DO UPDATE SET
-  transfer_id = EXCLUDED.transfer_id,
-  agent_id = EXCLUDED.agent_id,
-  agency_id = EXCLUDED.agency_id,
-  beneficiaryIdentityNumber = EXCLUDED.beneficiaryIdentityNumber,
-  paidAmount = EXCLUDED.paidAmount,
-  paidAt = EXCLUDED.paidAt,
-  receiptNumber = EXCLUDED.receiptNumber;
+SELECT
+    'OKN-TEST-002', 2500.00, 245.00, 50.00,
+    30.00, 20.00, 'PENDING', 'CASH_AGENCE',
+    NOW(), NULL, NOW() + INTERVAL '30 days',
+    ag.id, a.id, a.id, a.id,
+    c.id, s.id, cl.id, b.id
+FROM users ag
+JOIN agencies a ON ag.agency_id = a.id
+JOIN users cl ON cl.email = 'client@okane.com'
+JOIN senders s ON s.identity_number = 'MA123456'
+JOIN beneficiaries b ON b.identity_number = 'US987654'
+JOIN transfer_corridors c ON c.destination_country = 'Etats-Unis'
+WHERE ag.email = 'sara.agent@okane.com'
+ON CONFLICT (reference_code) DO NOTHING;
 
-INSERT INTO cash_operations (
-  id, cash_session_id, operationType, amount, balanceBefore, balanceAfter,
-  operationDate, reference, transfer_id
-)
-VALUES
-  (1, 1, 'OPENING', 10000.00, 0.00, 10000.00, now() - interval '2 hours', 'OPEN-1', null),
-  (2, 1, 'ADJUSTMENT', 40000.00, 10000.00, 50000.00, now() - interval '90 minutes', 'Alimentation caisse', null),
-  (3, 1, 'TRANSFER_PAID', 32500.00, 50000.00, 17500.00, now() - interval '1 hour', 'OKN20262', 2),
-  (4, 1, 'ADJUSTMENT', -1900.00, 17500.00, 15600.00, now() - interval '20 minutes', 'Correction caisse', null)
-ON CONFLICT (id) DO UPDATE SET
-  cash_session_id = EXCLUDED.cash_session_id,
-  operationType = EXCLUDED.operationType,
-  amount = EXCLUDED.amount,
-  balanceBefore = EXCLUDED.balanceBefore,
-  balanceAfter = EXCLUDED.balanceAfter,
-  operationDate = EXCLUDED.operationDate,
-  reference = EXCLUDED.reference,
-  transfer_id = EXCLUDED.transfer_id;
+INSERT INTO sensitive_operations (operation_type, status, transfer_id, requested_by_id, agency_id, amount, created_at)
+SELECT 'TRANSFER_VALIDATION', 'PENDING', t.id, t.agent_id, t.source_agency_id, t.amount_sent, NOW()
+FROM transfers t
+WHERE t.reference_code = 'OKN-TEST-002'
+  AND NOT EXISTS (SELECT 1 FROM sensitive_operations so WHERE so.transfer_id = t.id);
 
-SELECT setval(pg_get_serial_sequence('users', 'id'), 3, true);
-SELECT setval(pg_get_serial_sequence('agencies', 'id'), 1, true);
-SELECT setval(pg_get_serial_sequence('beneficiaries', 'id'), 3, true);
-SELECT setval(pg_get_serial_sequence('agent_cash_sessions', 'id'), 1, true);
-SELECT setval(pg_get_serial_sequence('transfers', 'id'), 3, true);
-SELECT setval(pg_get_serial_sequence('transfer_payments', 'id'), 1, true);
-SELECT setval(pg_get_serial_sequence('cash_operations', 'id'), 4, true);
+INSERT INTO cash_drawers (agent_id, agency_id, opening_balance, current_balance, closing_balance, status, opened_at, closed_at)
+SELECT ag.id, a.id, 10000.00, 8750.00, NULL, 'OPEN', NOW() - INTERVAL '1 day', NULL
+FROM users ag
+JOIN agencies a ON ag.agency_id = a.id
+WHERE ag.email = 'agent@okane.com'
+  AND NOT EXISTS (SELECT 1 FROM cash_drawers cd WHERE cd.agent_id = ag.id AND cd.status = 'OPEN');

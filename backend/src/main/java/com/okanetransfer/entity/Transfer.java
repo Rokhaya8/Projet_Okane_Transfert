@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -37,38 +38,42 @@ public class Transfer {
     private TransferStatus status;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private ReceptionMode receptionMode;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime paidAt;
 
-    @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime expiryDate;
 
-    // Relations
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id")
-    private User agent;
+    private Agent agent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paying_agent_id")
     private User payingAgent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paying_agency_id")
     private Agency payingAgency;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_agency_id")
+    private Agency sourceAgency;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_agency_id")
+    private Agency destinationAgency;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "corridor_id")
     private TransferCorridor corridor;
 
@@ -89,7 +94,11 @@ public class Transfer {
         EN_ATTENTE,
         PAYE,
         ANNULE,
-        EXPIRE
+        EXPIRE,
+        PENDING,
+        PAID,
+        CANCELLED,
+        EXPIRED
     }
 
     public enum ReceptionMode {

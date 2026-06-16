@@ -1,7 +1,9 @@
 package com.okanetransfer.entity;
 
+import com.okanetransfer.enums.CashDrawerStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -14,28 +16,52 @@ public class CashDrawer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "agent_id")
-    private User agent;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id", nullable = false)
+    private Agent agent;
 
-    @ManyToOne
-    @JoinColumn(name = "agency_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agency_id", nullable = false)
     private Agency agency;
 
     @Column(nullable = false)
-    private BigDecimal balance;
+    private BigDecimal openingBalance = BigDecimal.ZERO;
+
+    @Column(nullable = false)
+    private BigDecimal currentBalance = BigDecimal.ZERO;
+
+    private BigDecimal closingBalance;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CashDrawerStatus status;
+    private CashDrawerStatus status = CashDrawerStatus.OPEN;
 
-    private LocalDateTime openingTime;
+    @Column(nullable = false)
+    private LocalDateTime openedAt = LocalDateTime.now();
 
-    private LocalDateTime closingTime;
+    private LocalDateTime closedAt;
 
-    public enum CashDrawerStatus {
-        OPEN,
-        CLOSED,
-        SUSPENDED
+    public BigDecimal getBalance() {
+        return currentBalance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.currentBalance = balance;
+    }
+
+    public LocalDateTime getOpeningTime() {
+        return openedAt;
+    }
+
+    public void setOpeningTime(LocalDateTime openingTime) {
+        this.openedAt = openingTime;
+    }
+
+    public LocalDateTime getClosingTime() {
+        return closedAt;
+    }
+
+    public void setClosingTime(LocalDateTime closingTime) {
+        this.closedAt = closingTime;
     }
 }
