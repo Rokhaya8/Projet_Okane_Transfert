@@ -1,1 +1,29 @@
-<p>login works!</p>
+<div class="login-container">
+  <div class="login-card">
+    <h2>OkaneTransfer</h2>
+    
+    <div class="form-group">
+      <label>Adresse e-mail</label>
+      <input type="email" [(ngModel)]="credentials.email" placeholder="nom@exemple.com">
+    </div>
+
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" [(ngModel)]="credentials.password" placeholder="********">
+    </div>
+
+    <div class="form-group">
+      <label>Type d'utilisateur (Demo)</label>
+      <select [(ngModel)]="credentials.role">
+        <option value="ROLE_ADMIN">Administrateur</option>
+        <option value="ROLE_MANAGER">Responsable d'agence</option>
+        <option value="ROLE_AGENT">Agent</option>
+        <option value="ROLE_CLIENT">Client</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" (click)="login()">Se connecter</button>
+    
+    <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+  </div>
+</div>

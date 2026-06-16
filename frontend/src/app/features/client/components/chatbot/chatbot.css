@@ -1,0 +1,110 @@
+/* --- Bouton Flottant --- */
+.assistant-avatar-wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #762504; /* Bleu Okane */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s;
+}
+
+.assistant-avatar-wrapper.active {
+  background-color: #f97316; /* Orange */
+  transform: rotate(180deg);
+}
+
+.ping-animation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #c8430b;
+  opacity: 0.4;
+  animation: ping 2s infinite;
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* --- Fenêtre Chat --- */
+.chat-window {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 360px;
+  height: 500px;
+  background: white;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 9998;
+}
+
+.chat-header {
+  background: #7e2e03;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-profile { display: flex; align-items: center; gap: 10px; }
+
+.bot-avatar-icon { 
+    background: rgba(255,255,255,0.2); 
+    padding: 5px; 
+    border-radius: 50%; }
+
+.status-dot { width: 8px; 
+    height: 8px; 
+    background: #10b981; 
+    border-radius: 50%; 
+    display: inline-block; 
+    margin: 0 8px;
+}
+
+/* --- Messages --- */
+.chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+
+.message-row { display: flex; }
+.message-row.user { justify-content: flex-end; }
+
+.bubble { 
+  padding: 10px 15px; 
+  border-radius: 15px; 
+  max-width: 80%; 
+  font-size: 14px; 
+}
+
+.message-row.user .bubble { background: #c75e1d; color: white; border-bottom-right-radius: 2px; }
+.message-row.bot .bubble { background: #f3f4f6; color: #333; border-bottom-left-radius: 2px; }
+
+.time { font-size: 10px; display: block; margin-top: 5px; opacity: 0.6; }
+
+/* --- Footer --- */
+.chat-footer { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; }
+
+.chat-footer input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+
+.send-btn { 
+  background: #f97316; 
+  color: white; 
+  border: none; 
+  border-radius: 50%; 
+  width: 40px; 
+  height: 40px; 
+  cursor: pointer; 
+}
