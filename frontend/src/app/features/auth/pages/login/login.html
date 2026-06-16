@@ -1,18 +1,35 @@
 <div class="login-container">
   <div class="login-card">
-    <h2>Connexion</h2>
-    <p>Espace de travail Okane Transfer</p>
+
+    <div class="login-brand">
+      <span class="brand-okane">Okane</span>
+      <span class="brand-transfer">Transfer</span>
+    </div>
+
+    <p class="login-subtitle">Connectez-vous à votre espace de travail</p>
 
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" [(ngModel)]="email"
-             placeholder="exemple@okane.com" (keyup.enter)="onSubmit()" />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="exemple@okane.com"
+        (keyup.enter)="onSubmit()"
+      />
     </div>
 
     <div class="form-group">
       <label for="password">Mot de passe</label>
-      <input type="password" id="password" name="password" [(ngModel)]="password"
-             placeholder="••••••••" (keyup.enter)="onSubmit()" />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="••••••••"
+        (keyup.enter)="onSubmit()"
+      />
     </div>
 
     @if (errorMessage) {
@@ -22,5 +39,6 @@
     <button (click)="onSubmit()" [disabled]="loading">
       {{ loading ? 'Connexion...' : 'Se connecter' }}
     </button>
+
   </div>
 </div>
