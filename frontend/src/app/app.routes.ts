@@ -26,6 +26,9 @@ import { DashboardComponent } from './features/admin/pages/dashboard/dashboard';
 import { AuditLogComponent } from './features/admin/pages/audit/audit';
 import { AdminReportComponent } from './features/admin/pages/rapports/rapports';
 
+// Manager
+import { managerRoutes } from './features/manager/manager.routes';
+
 export const routes: Routes = [
   // Auth
   { path: 'auth/login', component: Login },
@@ -63,6 +66,12 @@ export const routes: Routes = [
   { path: 'admin/dashboard', component: DashboardComponent },
   { path: 'admin/audit', component: AuditLogComponent },
   { path: 'admin/report', component: AdminReportComponent },
+
+  // Manager
+  {
+    path: 'manager',
+    children: managerRoutes
+  },
 
   // Défaut → login
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },

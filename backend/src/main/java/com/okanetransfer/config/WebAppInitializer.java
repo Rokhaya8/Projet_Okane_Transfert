@@ -1,21 +1,26 @@
 package com.okanetransfer.config;
 
+import jakarta.servlet.Filter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{RootConfig.class, JpaConfig.class, SecurityConfig.class};
+        return new Class[]{ JpaConfig.class, SecurityConfig.class };
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{WebMvcConfig.class, SwaggerConfig.class};
+        return new Class[]{ WebMvcConfig.class };
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/api/*"};
+        return new String[]{ "/" };
+    }
+
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[]{ new GlobalCorsFilter() };
     }
 }

@@ -52,12 +52,22 @@
         <span class="material-icons">assessment</span> Rapports
       </a>
     </ng-container>
+
+    <ng-container *ngIf="userRole === 'MANAGER'">
+      <a *ngFor="let item of navItems"
+         [routerLink]="item.route"
+         routerLinkActive="active"
+         (click)="closeMenu()">
+        <span class="material-icons">{{ item.icon }}</span> {{ item.label }}
+      </a>
+    </ng-container>
   </nav>
 
   <div class="sidebar-footer">
     <div class="agent-name" *ngIf="userRole === 'AGENT'">Mode Agent</div>
     <div class="agent-name" *ngIf="userRole === 'CLIENT'">Espace Client</div>
     <div class="agent-name" *ngIf="userRole === 'ADMIN'">Espace Admin</div>
+    <div class="agent-name" *ngIf="userRole === 'MANAGER'">Espace Responsable</div>
     <button class="btn-logout" (click)="logout()">Déconnexion</button>
   </div>
 </div>

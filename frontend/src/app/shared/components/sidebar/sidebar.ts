@@ -3,6 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ClientStateService } from '../../../core/services/client-state';
 
+export interface NavItem {
+  label: string;
+  icon?: string;
+  route: string;
+}
+
 @Component({
   selector: 'app-sidebar',
   standalone: true,
@@ -11,9 +17,13 @@ import { ClientStateService } from '../../../core/services/client-state';
   styleUrl: './sidebar.css'
 })
 export class Sidebar implements OnInit {
-  @Input() userRole: 'AGENT' | 'CLIENT' | 'ADMIN' = 'AGENT';
+  @Input() userRole: 'AGENT' | 'CLIENT' | 'ADMIN' | 'MANAGER' = 'AGENT';
   @Input() isMobileMenuOpen: boolean = false;
+  @Input() title: string = 'Okane Transfer';
+  @Input() subtitle: string = '';
+  @Input() navItems: NavItem[] = [];
   @Output() requestClose = new EventEmitter<void>();
+  @Output() navClick = new EventEmitter<void>();
 
   private clientState = inject(ClientStateService);
   private router = inject(Router);
@@ -35,7 +45,10 @@ export class Sidebar implements OnInit {
 
   ngOnInit(): void {}
 
-  closeMenu(): void { this.requestClose.emit(); }
+  closeMenu(): void {
+    this.requestClose.emit();
+    this.navClick.emit();
+  }
 
   logout(): void {
     localStorage.removeItem('token');

@@ -5,10 +5,10 @@
       title="Okane Transfer"
       subtitle="Responsable d'agence"
       [navItems]="navItems"
+      userRole="MANAGER"
       (navClick)="sidebarOpen.set(false)"
     />
   </div>
-
   <div class="main-wrapper">
     <app-header pageTitle="Espace Responsable" (menuToggle)="toggleSidebar()" />
     <main class="main-content">

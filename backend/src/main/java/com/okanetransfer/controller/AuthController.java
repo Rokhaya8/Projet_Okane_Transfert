@@ -1,25 +1,28 @@
 package com.okanetransfer.controller;
 
-import com.okanetransfer.dto.request.LoginRequest;
-import com.okanetransfer.dto.response.LoginResponse;
+import com.okanetransfer.dto.LoginRequest;
+import com.okanetransfer.dto.LoginResponse;
 import com.okanetransfer.service.AuthService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping({"/auth", "/api/auth"})
-@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
 
+    public AuthController(AuthService authService, PasswordEncoder passwordEncoder) {
+        this.authService = authService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @PostMapping("/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 
     @GetMapping("/hash")

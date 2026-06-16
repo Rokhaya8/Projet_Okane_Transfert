@@ -3,19 +3,13 @@ package com.okanetransfer.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
 @Table(name = "agencies")
 public class Agency {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,10 +35,5 @@ public class Agency {
 
     @OneToOne
     @JoinColumn(name = "manager_id")
-    private Manager manager;
-
-    @OneToMany(mappedBy = "agency", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<Agent> agents = new ArrayList<>();
+    private User manager;
 }
