@@ -1,13 +1,10 @@
 <div class="login-container">
   <div class="login-card">
-
     <div class="login-brand">
       <span class="brand-okane">Okane</span>
       <span class="brand-transfer">Transfer</span>
     </div>
-
     <p class="login-subtitle">Connectez-vous à votre espace de travail</p>
-
     <div class="form-group">
       <label for="email">Email</label>
       <input
@@ -19,7 +16,6 @@
         (keyup.enter)="onSubmit()"
       />
     </div>
-
     <div class="form-group">
       <label for="password">Mot de passe</label>
       <input
@@ -31,14 +27,15 @@
         (keyup.enter)="onSubmit()"
       />
     </div>
-
     @if (errorMessage) {
       <div class="error-message">{{ errorMessage }}</div>
     }
-
     <button (click)="onSubmit()" [disabled]="loading">
       {{ loading ? 'Connexion...' : 'Se connecter' }}
     </button>
-
+    <p class="login-register-link">
+      Pas encore de compte ?
+      <a routerLink="/auth/inscription">S'inscrire</a>
+    </p>
   </div>
 </div>

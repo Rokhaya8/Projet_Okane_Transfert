@@ -1,19 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
   private auth = inject(Auth);
   private router = inject(Router);
-
   email = '';
   password = '';
   errorMessage = '';
@@ -22,7 +21,6 @@ export class Login {
   onSubmit(): void {
     this.errorMessage = '';
     this.loading = true;
-
     this.auth.login(this.email, this.password).subscribe({
       next: (response) => {
         this.loading = false;

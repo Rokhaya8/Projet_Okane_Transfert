@@ -73,6 +73,6 @@ export const routes: Routes = [
     children: managerRoutes
   },
 
-  // Défaut → login
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  // Défaut → inscription
+  { path: '', redirectTo: 'auth/inscription', pathMatch: 'full' },
 ];
