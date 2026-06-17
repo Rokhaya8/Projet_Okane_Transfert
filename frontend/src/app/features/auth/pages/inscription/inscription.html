@@ -1,1 +1,87 @@
-<p>inscription works!</p>
+<div class="registration-container">
+  <div class="brand-panel">
+    <div class="brand-overlay"></div>
+    <div class="brand-content">
+      <h1 class="brand-logo">Okane <span>Transfer</span></h1>
+      <p class="brand-tagline">Envoyez de l'argent instantanément, avec la douceur d'une transaction sécurisée.</p>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Créer un compte</h2>
+        <p>Rejoignez Okane et facilitez vos transferts dès aujourd'hui.</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="custom-form">
+        
+        @if (errorMessage) {
+          <div class="alert alert-error">{{ errorMessage }}</div>
+        }
+        @if (successMessage) {
+          <div class="alert alert-success">{{ successMessage }}</div>
+        }
+
+        <div class="input-group">
+          <label for="fullName">Nom Complet</label>
+          <div class="input-wrapper">
+            <input id="fullName" formControlName="fullName" type="text" placeholder="Zineb Chaouch"
+                   [class.input-error]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid">
+          </div>
+          @if (registerForm.get('fullName')?.touched && registerForm.get('fullName')?.errors?.['required']) {
+            <span class="error-text">Le nom complet est requis.</span>
+          }
+        </div>
+
+        <div class="input-group">
+          <label for="email">Adresse Email</label>
+          <div class="input-wrapper">
+            <input id="email" formControlName="email" type="email" placeholder="exemple@okane.com"
+                   [class.input-error]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+          </div>
+          @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+            <span class="error-text">
+              @if (registerForm.get('email')?.errors?.['required']) { L'adresse email est requise. }
+              @if (registerForm.get('email')?.errors?.['email']) { Format d'email invalide. }
+            </span>
+          }
+        </div>
+
+        <div class="input-group">
+          <label for="password">Mot de passe</label>
+          <div class="input-wrapper">
+            <input id="password" formControlName="password" type="password" placeholder="••••••••"
+                   [class.input-error]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+          </div>
+          @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+            <span class="error-text">Le mot de passe doit contenir au moins 6 caractères.</span>
+          }
+        </div>
+
+        <div class="input-group">
+          <label for="confirmPassword">Confirmer le mot de passe</label>
+          <div class="input-wrapper">
+            <input id="confirmPassword" formControlName="confirmPassword" type="password" placeholder="••••••••"
+                   [class.input-error]="registerForm.touched && registerForm.errors?.['mismatch']">
+          </div>
+          @if (registerForm.touched && registerForm.errors?.['mismatch']) {
+            <span class="error-text">Les mots de passe ne correspondent pas.</span>
+          }
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid || isLoading" class="btn-submit">
+          @if (isLoading) {
+            <span class="spinner"></span> Inscription en cours...
+          } @else {
+            S'inscrire gratuitement
+          }
+        </button>
+
+        <p class="redirect-text">
+          Déjà inscrit ? <a routerLink="/auth/login">Connectez-vous ici</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>

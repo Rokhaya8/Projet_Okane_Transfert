@@ -17,7 +17,7 @@ import { ClientLayoutComponent } from './features/client/pages/layout/layout';
 
 // Auth
 import { Login } from './features/auth/pages/login/login';
-import { Inscription } from './features/auth/pages/inscription/inscription';
+import { InscriptionComponent } from './features/auth/pages/inscription/inscription';
 
 // Admin
 import { Agences } from './features/admin/pages/agences/agences';
@@ -32,7 +32,7 @@ import { managerRoutes } from './features/manager/manager.routes';
 export const routes: Routes = [
   // Auth
   { path: 'auth/login', component: Login },
-  { path: 'auth/inscription', component: Inscription },
+  { path: 'auth/inscription', component: InscriptionComponent },
   { path: 'auth', redirectTo: 'auth/login', pathMatch: 'full' },
 
   // Agent
