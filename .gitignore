@@ -6,7 +6,8 @@ backend/target/
 # Tomcat / plugins
 backend/.smarttomcat/
 # Frontend
-frontend/node_modules/
+node_modules/
+**/node_modules/
 frontend/dist/
 # Package Files #
 *.jar
