@@ -120,10 +120,10 @@ public class ManagerService {
         List<Transfer> transfers = transferRepository.findByAgentIdOrderByCreatedAtDesc(agent.getId());
 
         long paidTransfers = transfers.stream()
-                .filter(t -> t.getStatus() == Transfer.TransferStatus.PAID)
+                .filter(this::isPaid)
                 .count();
         long pendingTransfers = transfers.stream()
-                .filter(t -> t.getStatus() == Transfer.TransferStatus.PENDING)
+                .filter(this::isPending)
                 .count();
         BigDecimal totalAmount = transfers.stream()
                 .map(Transfer::getAmountSent)
@@ -215,10 +215,12 @@ public class ManagerService {
             totalVolume = totalVolume.add(transfer.getAmountSent());
             totalFees = totalFees.add(transfer.getFees());
             totalCommission = totalCommission.add(transfer.getCommissionAgency());
-            switch (transfer.getStatus()) {
-                case PAID -> paidCount++;
-                case PENDING -> pendingCount++;
-                case CANCELLED, EXPIRED -> cancelledCount++;
+            if (isPaid(transfer)) {
+                paidCount++;
+            } else if (isPending(transfer)) {
+                pendingCount++;
+            } else if (isCancelledOrExpired(transfer)) {
+                cancelledCount++;
             }
         }
 
@@ -290,7 +292,7 @@ public class ManagerService {
         for (Transfer transfer : monthlyTransfers) {
             monthlyVolume = monthlyVolume.add(transfer.getAmountSent());
             monthlyFees = monthlyFees.add(transfer.getFees());
-            if (transfer.getStatus() == Transfer.TransferStatus.PAID) {
+            if (isPaid(transfer)) {
                 paidCount++;
             }
         }
@@ -412,7 +414,7 @@ public class ManagerService {
                 .map(Transfer::getAmountSent)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         long paid = transfers.stream()
-                .filter(transfer -> transfer.getStatus() == Transfer.TransferStatus.PAID)
+                .filter(this::isPaid)
                 .count();
 
         String content = "Okane Transfer - Rapport agence\n"
@@ -462,10 +464,10 @@ public class ManagerService {
 
     private AgentPerformanceDTO buildAgentPerformance(Agent agent, List<Transfer> transfers) {
         long paid = transfers.stream()
-                .filter(transfer -> transfer.getStatus() == Transfer.TransferStatus.PAID)
+                .filter(this::isPaid)
                 .count();
         long pending = transfers.stream()
-                .filter(transfer -> transfer.getStatus() == Transfer.TransferStatus.PENDING)
+                .filter(this::isPending)
                 .count();
         BigDecimal totalAmount = transfers.stream()
                 .map(Transfer::getAmountSent)
@@ -485,6 +487,26 @@ public class ManagerService {
         if (operation.getAgency() == null || !operation.getAgency().getId().equals(agency.getId())) {
             throw new BusinessException("Cette operation n'appartient pas a votre agence");
         }
+    }
+
+    private boolean isPaid(Transfer transfer) {
+        return transfer != null
+                && (transfer.getStatus() == Transfer.TransferStatus.PAID
+                || transfer.getStatus() == Transfer.TransferStatus.PAYE);
+    }
+
+    private boolean isPending(Transfer transfer) {
+        return transfer != null
+                && (transfer.getStatus() == Transfer.TransferStatus.PENDING
+                || transfer.getStatus() == Transfer.TransferStatus.EN_ATTENTE);
+    }
+
+    private boolean isCancelledOrExpired(Transfer transfer) {
+        return transfer != null
+                && (transfer.getStatus() == Transfer.TransferStatus.CANCELLED
+                || transfer.getStatus() == Transfer.TransferStatus.ANNULE
+                || transfer.getStatus() == Transfer.TransferStatus.EXPIRED
+                || transfer.getStatus() == Transfer.TransferStatus.EXPIRE);
     }
 
     private LocalDateTime[] resolvePeriodRange(ReportPeriod period) {

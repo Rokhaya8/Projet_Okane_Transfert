@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
   // L'URL de base pour contacter ton serveur Java
-  private baseUrl = 'http://localhost:8081/okane_transfer_war_exploded/api';
+  private baseUrl = 'http://localhost:8080/api';
 
   // Injection du client HTTP pour faire des requêtes vers le serveur
   private http = inject(HttpClient);

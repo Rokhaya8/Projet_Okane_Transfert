@@ -4,6 +4,7 @@ import com.okanetransfer.service.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -39,22 +41,20 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())
                 .formLogin(form -> form.disable())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // OPTIONS toujours autorisé
                         .requestMatchers(new AntPathRequestMatcher("/api/**", HttpMethod.OPTIONS.name())).permitAll()
-                        // Auth publique
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                        // Swagger
+                        .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                         .requestMatchers(
                                 new AntPathRequestMatcher("/swagger-ui/**"),
-                                new AntPathRequestMatcher("/v3/api-docs/**")
+                                new AntPathRequestMatcher("/v3/api-docs/**"),
+                                new AntPathRequestMatcher("/api/swagger-ui/**"),
+                                new AntPathRequestMatcher("/api/v3/api-docs/**")
                         ).permitAll()
-                        // Espaces temporairement ouverts
-                        .requestMatchers(new AntPathRequestMatcher("/api/agent/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/client/**")).permitAll()
-                        // Manager : rôle requis
+                        .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).hasRole("ADMIN")
+                        .requestMatchers(new AntPathRequestMatcher("/api/agent/**")).hasRole("AGENT")
+                        .requestMatchers(new AntPathRequestMatcher("/api/client/**")).hasRole("CLIENT")
                         .requestMatchers(new AntPathRequestMatcher("/api/manager/**")).hasRole("MANAGER")
                         .anyRequest().authenticated()
                 )

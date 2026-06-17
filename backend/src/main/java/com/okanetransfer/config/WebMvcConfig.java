@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -19,8 +20,6 @@ import java.util.List;
 @ComponentScan(basePackages = {"com.okanetransfer.controller", "com.okanetransfer.exception"})
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    // CORS géré par SecurityConfig.corsConfigurationSource()
-
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -31,7 +30,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(0, new ByteArrayHttpMessageConverter());
         converters.add(new MappingJackson2HttpMessageConverter(objectMapper()));
     }
 

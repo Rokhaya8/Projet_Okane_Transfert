@@ -5,16 +5,17 @@ import { Observable, tap } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8081/okane_transfer_war_exploded/api';
+  private baseUrl = 'http://localhost:8080/api';
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/auth/login`, { email, password })
       .pipe(
         tap(response => {
-          localStorage.setItem('token', response.token);
+          const token = response.accessToken ?? response.token;
+          localStorage.setItem('token', token);
           localStorage.setItem('fullName', response.fullName);
           localStorage.setItem('role', response.role);
-          localStorage.setItem('userId', response.id.toString());  // ← AJOUT
+          localStorage.setItem('userId', (response.userId ?? response.id ?? '').toString());
         })
       );
   }

@@ -14,6 +14,6 @@ export class ConfirmationTransfert {
   codeRetrait = 'OK-2F9A4B';
   montant = 100;
   frais = 60;
-  montantRecu = 238;
+  montantRecu = 160;
   dateTransfert = new Date();
 }

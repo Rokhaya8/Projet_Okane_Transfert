@@ -7,6 +7,17 @@
 body {
   margin: 0;
   padding: 0;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+  --okane-primary: #7c341f;
+  --okane-primary-light: #e8541a;
+  --okane-bg: #f3f4f6;
+  --okane-surface: #ffffff;
+  --okane-text: #111827;
+  --okane-muted: #6b7280;
+  --okane-border: #e5e7eb;
 }
 
 .page-layout {
@@ -16,5 +27,3 @@ body {
 .page-layout .main-content {
   margin-left: 260px;
 }
-
-/* You can add global styles to this file, and also import other style files */

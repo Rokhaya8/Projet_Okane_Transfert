@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/manager")
+@RequestMapping("/api/manager")
 @PreAuthorize("hasRole('MANAGER')")
 @RequiredArgsConstructor
 public class ManagerController {
