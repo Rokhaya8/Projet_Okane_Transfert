@@ -23,7 +23,12 @@ public class GlobalCorsFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        String origin = request.getHeader("Origin");
+        if (origin != null && (
+                origin.equals("http://localhost:4200") ||
+                        origin.equals("https://projet-okane-transfert.vercel.app"))) {
+            response.setHeader("Access-Control-Allow-Origin", origin);
+        }
         response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS,PATCH");
         response.setHeader("Access-Control-Allow-Headers", "Origin,Accept,X-Requested-With,Content-Type,Authorization");
         response.setHeader("Access-Control-Allow-Credentials", "true");
