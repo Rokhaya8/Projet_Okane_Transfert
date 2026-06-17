@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS users (
     created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
     last_login      TIMESTAMP,
     role            VARCHAR(50)  NOT NULL,
-    agency_id       BIGINT
+    agency_id       BIGINT,
+    matricule       VARCHAR(100),
+    commission_rate DOUBLE PRECISION
 );
 
 CREATE TABLE IF NOT EXISTS agencies (
@@ -44,12 +46,21 @@ CREATE TABLE IF NOT EXISTS transfer_corridors (
     active                  BOOLEAN      NOT NULL DEFAULT TRUE
 );
 
+CREATE TABLE IF NOT EXISTS senders (
+    id              BIGSERIAL PRIMARY KEY,
+    full_name       VARCHAR(255) NOT NULL,
+    phone           VARCHAR(50)  NOT NULL,
+    country         VARCHAR(100) NOT NULL,
+    identity_type   VARCHAR(100) NOT NULL,
+    identity_number VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS beneficiaries (
     id              BIGSERIAL PRIMARY KEY,
     full_name       VARCHAR(255) NOT NULL,
     phone           VARCHAR(50)  NOT NULL,
     country         VARCHAR(100) NOT NULL,
-    identity_number VARCHAR(100) NOT NULL,
+    identity_number VARCHAR(100),
     watchlist_flag  BOOLEAN      NOT NULL DEFAULT FALSE
 );
 
@@ -72,23 +83,28 @@ CREATE TABLE IF NOT EXISTS fee_tiers (
 );
 
 CREATE TABLE IF NOT EXISTS transfers (
-    id                  BIGSERIAL PRIMARY KEY,
-    reference_code      VARCHAR(50)  NOT NULL UNIQUE,
-    amount_sent         NUMERIC(19, 2) NOT NULL,
-    amount_received     NUMERIC(19, 2) NOT NULL,
-    fees                NUMERIC(19, 2) NOT NULL,
-    commission_agency   NUMERIC(19, 2) NOT NULL,
-    commission_central  NUMERIC(19, 2) NOT NULL,
-    status              VARCHAR(50)  NOT NULL,
-    created_at          TIMESTAMP    NOT NULL DEFAULT NOW(),
-    paid_at             TIMESTAMP,
-    expiry_date         TIMESTAMP,
-    agent_id            BIGINT REFERENCES users(id),
-    source_agency_id    BIGINT REFERENCES agencies(id),
-    destination_agency_id BIGINT REFERENCES agencies(id),
-    corridor_id         BIGINT REFERENCES transfer_corridors(id),
-    client_id           BIGINT REFERENCES users(id),
-    beneficiary_id      BIGINT REFERENCES beneficiaries(id)
+    id                      BIGSERIAL PRIMARY KEY,
+    reference_code          VARCHAR(50)  NOT NULL UNIQUE,
+    amount_sent             NUMERIC(19, 2) NOT NULL,
+    amount_received         NUMERIC(19, 2) NOT NULL,
+    fees                    NUMERIC(19, 2) NOT NULL,
+    commission_agency       NUMERIC(19, 2),
+    commission_central      NUMERIC(19, 2),
+    status                  VARCHAR(50)  NOT NULL,
+    reception_mode          VARCHAR(50),
+    created_at              TIMESTAMP    NOT NULL DEFAULT NOW(),
+    paid_at                 TIMESTAMP,
+    expiry_date             TIMESTAMP,
+    agent_id                BIGINT REFERENCES users(id),
+    paying_agent_id         BIGINT REFERENCES users(id),
+    agency_id               BIGINT REFERENCES agencies(id),
+    paying_agency_id        BIGINT REFERENCES agencies(id),
+    source_agency_id        BIGINT REFERENCES agencies(id),
+    destination_agency_id   BIGINT REFERENCES agencies(id),
+    corridor_id             BIGINT REFERENCES transfer_corridors(id),
+    sender_id               BIGINT REFERENCES senders(id),
+    client_id               BIGINT REFERENCES users(id),
+    beneficiary_id          BIGINT REFERENCES beneficiaries(id)
 );
 
 CREATE TABLE IF NOT EXISTS cash_drawers (
@@ -103,8 +119,42 @@ CREATE TABLE IF NOT EXISTS cash_drawers (
     closed_at           TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_cash_drawers_agency ON cash_drawers(agency_id);
-CREATE INDEX IF NOT EXISTS idx_cash_drawers_agent  ON cash_drawers(agent_id);
+CREATE TABLE IF NOT EXISTS agent_cash_sessions (
+    id                  BIGSERIAL PRIMARY KEY,
+    agent_id            BIGINT       NOT NULL REFERENCES users(id),
+    agency_id           BIGINT       NOT NULL REFERENCES agencies(id),
+    opening_balance     NUMERIC(19, 2) NOT NULL,
+    current_balance     NUMERIC(19, 2) NOT NULL,
+    closing_balance     NUMERIC(19, 2),
+    counted_amount      NUMERIC(19, 2),
+    discrepancy_amount  NUMERIC(19, 2),
+    opened_at           TIMESTAMP    NOT NULL,
+    closed_at           TIMESTAMP,
+    status              VARCHAR(50)  NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS cash_operations (
+    id                  BIGSERIAL PRIMARY KEY,
+    cash_session_id     BIGINT       NOT NULL REFERENCES agent_cash_sessions(id),
+    operation_type      VARCHAR(50)  NOT NULL,
+    amount              NUMERIC(19, 2) NOT NULL,
+    balance_before      NUMERIC(19, 2) NOT NULL,
+    balance_after       NUMERIC(19, 2) NOT NULL,
+    operation_date      TIMESTAMP    NOT NULL,
+    reference           VARCHAR(255) NOT NULL,
+    transfer_id         BIGINT       REFERENCES transfers(id)
+);
+
+CREATE TABLE IF NOT EXISTS transfer_payments (
+    id                          BIGSERIAL PRIMARY KEY,
+    transfer_id                 BIGINT       NOT NULL UNIQUE REFERENCES transfers(id),
+    agent_id                    BIGINT       NOT NULL REFERENCES users(id),
+    agency_id                   BIGINT       NOT NULL REFERENCES agencies(id),
+    beneficiary_identity_number VARCHAR(255) NOT NULL,
+    paid_amount                 NUMERIC(19, 2) NOT NULL,
+    paid_at                     TIMESTAMP    NOT NULL,
+    receipt_number              VARCHAR(255) NOT NULL UNIQUE
+);
 
 CREATE TABLE IF NOT EXISTS sensitive_operations (
     id                  BIGSERIAL PRIMARY KEY,
@@ -119,8 +169,6 @@ CREATE TABLE IF NOT EXISTS sensitive_operations (
     created_at          TIMESTAMP    NOT NULL DEFAULT NOW(),
     processed_at        TIMESTAMP
 );
-
-CREATE INDEX IF NOT EXISTS idx_sensitive_ops_agency_status ON sensitive_operations(agency_id, status);
 
 CREATE TABLE IF NOT EXISTS exchange_rates (
     id              BIGSERIAL PRIMARY KEY,
@@ -140,3 +188,12 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     ip_address      VARCHAR(50)  NOT NULL,
     timestamp       TIMESTAMP    NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_users_agency ON users(agency_id);
+CREATE INDEX IF NOT EXISTS idx_transfers_agent ON transfers(agent_id);
+CREATE INDEX IF NOT EXISTS idx_transfers_client ON transfers(client_id);
+CREATE INDEX IF NOT EXISTS idx_transfers_reference ON transfers(reference_code);
+CREATE INDEX IF NOT EXISTS idx_cash_drawers_agency ON cash_drawers(agency_id);
+CREATE INDEX IF NOT EXISTS idx_cash_drawers_agent ON cash_drawers(agent_id);
+CREATE INDEX IF NOT EXISTS idx_sensitive_ops_agency_status ON sensitive_operations(agency_id, status);
