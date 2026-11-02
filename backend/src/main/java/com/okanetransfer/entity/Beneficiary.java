@@ -20,8 +20,7 @@ public class Beneficiary {
 
     @Column(nullable = false)
     private String country;
-
-    @Column(nullable = false)
+    
     private String identityNumber;
 
     @Column(nullable = false)

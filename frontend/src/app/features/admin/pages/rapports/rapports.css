@@ -1,0 +1,481 @@
+/* ═══════════════════════════════════════════════════════════
+   OKANETRANSFER — ADMIN REPORT CSS
+   Palette : Orange #EC6426 | Yellow #F8A91F | Brown #632713 | Cream #FDE3CF
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── TOOLBAR ────────────────────────────────────────────── */
+.ok-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 28px;
+  background: #ffffff;
+  border-bottom: 2.5px solid #EC6426;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 10px rgba(99, 39, 19, 0.08);
+}
+
+.ok-toolbar__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ok-logo {
+  flex-shrink: 0;
+}
+
+.ok-toolbar__brand {
+  font-size: 18px;
+  font-weight: 800;
+  color: #632713;
+  letter-spacing: -0.4px;
+}
+
+.ok-toolbar__badge {
+  background: #FDE3CF;
+  color: #632713;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 11px;
+  border-radius: 20px;
+  border: 1px solid rgba(236, 100, 38, 0.28);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.ok-toolbar__right {
+  display: flex;
+  gap: 10px;
+}
+
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.ok-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.18s, opacity 0.18s, transform 0.12s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.ok-btn:active { transform: scale(0.97); }
+.ok-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.ok-btn--primary {
+  background: #EC6426;
+  color: #ffffff;
+}
+.ok-btn--primary:not(:disabled):hover { background: #d45720; }
+
+.ok-btn--secondary {
+  background: #FDE3CF;
+  color: #632713;
+  border: 1px solid rgba(99, 39, 19, 0.18);
+}
+.ok-btn--secondary:not(:disabled):hover { background: #f9cfb0; }
+
+/* ─── ÉTAT ───────────────────────────────────────────────── */
+.ok-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 20px;
+  gap: 16px;
+}
+
+.ok-state__text {
+  font-size: 14px;
+  color: #888888;
+}
+
+.ok-state--error .ok-state__text { color: #EC6426; }
+
+.ok-spinner {
+  width: 38px;
+  height: 38px;
+  border: 3.5px solid #FDE3CF;
+  border-top-color: #EC6426;
+  border-radius: 50%;
+  animation: ok-spin 0.75s linear infinite;
+}
+
+@keyframes ok-spin { to { transform: rotate(360deg); } }
+
+/* ─── RAPPORT WRAPPER ────────────────────────────────────── */
+.ok-report {
+  background: #ffffff;
+  max-width: 920px;
+  margin: 28px auto;
+  padding: 36px 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(99, 39, 19, 0.1);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #1a1a1a;
+}
+
+/* ─── EN-TÊTE RAPPORT ────────────────────────────────────── */
+.ok-report__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.ok-report__header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ok-report__title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #632713;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.ok-report__subtitle {
+  font-size: 13px;
+  color: #EC6426;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.ok-report__header-right { text-align: right; }
+
+.ok-report__meta-label {
+  font-size: 10px;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.ok-report__meta-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #632713;
+  margin-top: 2px;
+}
+
+/* ─── DIVIDER ────────────────────────────────────────────── */
+.ok-divider {
+  height: 3px;
+  background: linear-gradient(90deg, #EC6426 0%, #F8A91F 55%, #FDE3CF 100%);
+  border-radius: 2px;
+  margin-bottom: 30px;
+}
+
+/* ─── SECTIONS ───────────────────────────────────────────── */
+.ok-section {
+  margin-bottom: 34px;
+}
+
+.ok-section__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #632713;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 14px;
+  padding-bottom: 9px;
+  border-bottom: 1.5px solid rgba(236, 100, 38, 0.18);
+}
+
+/* ─── KPI GRID ───────────────────────────────────────────── */
+.ok-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.ok-kpi {
+  border-radius: 10px;
+  padding: 18px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ok-kpi__icon {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.ok-kpi__value {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.ok-kpi__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  opacity: 0.72;
+}
+
+.ok-kpi--orange { background: #EC6426; color: #ffffff; }
+.ok-kpi--brown  { background: #632713; color: #FDE3CF; }
+.ok-kpi--yellow { background: #F8A91F; color: #632713; }
+.ok-kpi--cream  {
+  background: #FDE3CF;
+  color: #632713;
+  border: 1px solid rgba(236, 100, 38, 0.22);
+}
+
+/* ─── STATUS CARDS ───────────────────────────────────────── */
+.ok-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 12px;
+}
+
+.ok-status-card {
+  background: #FFF6EE;
+  border-left: 4px solid #EC6426;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ok-status-card__count {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ok-status-card__label {
+  font-size: 11px;
+  color: #888888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+}
+
+.ok-status-card__bar-bg {
+  height: 5px;
+  background: rgba(99, 39, 19, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ok-status-card__bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  min-width: 4px;
+}
+
+.ok-status-card__pct {
+  font-size: 11px;
+  color: #aaaaaa;
+  text-align: right;
+  margin-top: 3px;
+}
+
+/* ─── TABLEAUX ───────────────────────────────────────────── */
+.ok-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ok-table thead tr {
+  background: #632713;
+}
+
+.ok-table th {
+  padding: 10px 13px;
+  text-align: left;
+  color: #FDE3CF;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ok-table td {
+  padding: 9px 13px;
+  border-bottom: 1px solid rgba(99, 39, 19, 0.07);
+  color: #333333;
+  vertical-align: middle;
+}
+
+.ok-table tbody tr:nth-child(even) td {
+  background: #FFF6EE;
+}
+
+.ok-table tbody tr:hover td {
+  background: rgba(236, 100, 38, 0.05);
+}
+
+.ok-table__id {
+  color: #bbbbbb;
+  font-size: 12px;
+  width: 34px;
+  text-align: center;
+}
+
+.ok-table__date {
+  font-size: 12px;
+  color: #666666;
+  white-space: nowrap;
+}
+
+.ok-table__rate {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  color: #632713;
+}
+
+.ok-table__note {
+  font-size: 11px;
+  color: #aaaaaa;
+  margin-top: 8px;
+  font-style: italic;
+  text-align: right;
+}
+
+/* ─── BADGES ─────────────────────────────────────────────── */
+.ok-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.ok-badge--active {
+  background: rgba(236, 100, 38, 0.1);
+  color: #c0511e;
+  border: 1px solid rgba(236, 100, 38, 0.28);
+}
+
+.ok-badge--inactive {
+  background: rgba(99, 39, 19, 0.08);
+  color: #8b3a1e;
+  border: 1px solid rgba(99, 39, 19, 0.18);
+}
+
+/* ─── ACTION BADGES (AUDIT) ──────────────────────────────── */
+.ok-action-badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  background: rgba(99, 39, 19, 0.07);
+  color: #632713;
+}
+
+.ok-action-badge--create {
+  background: rgba(236, 100, 38, 0.1);
+  color: #c0511e;
+}
+
+.ok-action-badge--update {
+  background: rgba(248, 169, 31, 0.18);
+  color: #7a5c00;
+}
+
+.ok-action-badge--delete {
+  background: rgba(99, 39, 19, 0.12);
+  color: #632713;
+}
+
+/* ─── CURRENCY TAG (dans table corridors) ────────────────── */
+.ok-currency-tag {
+  display: inline-block;
+  background: rgba(236, 100, 38, 0.1);
+  color: #EC6426;
+  font-weight: 800;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.6px;
+}
+
+/* ─── CURRENCY CARDS ─────────────────────────────────────── */
+.ok-currency-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.ok-currency-card {
+  background: #FFF6EE;
+  border: 1px solid rgba(236, 100, 38, 0.2);
+  border-radius: 10px;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.ok-currency-card__code {
+  font-size: 22px;
+  font-weight: 800;
+  color: #EC6426;
+  letter-spacing: 1px;
+}
+
+.ok-currency-card__name {
+  font-size: 11px;
+  color: #888888;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+/* ─── FOOTER RAPPORT ─────────────────────────────────────── */
+.ok-report__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 2px solid #FDE3CF;
+  font-size: 11px;
+}
+
+.ok-report__footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #632713;
+}
+
+.ok-report__footer-right {
+  color: #bbbbbb;
+}

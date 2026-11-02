@@ -1,0 +1,36 @@
+:host {
+  --sidebar-width: clamp(240px, 22vw, 280px);
+  --header-height: 72px;
+}
+
+.client-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.client-main {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: calc(100% - var(--sidebar-width));
+}
+
+.client-content {
+  flex: 1;
+  min-width: 0;
+  padding: calc(var(--header-height) + 24px) 24px 24px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .client-main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .client-content {
+    padding: calc(var(--header-height) + 16px) 16px 16px;
+  }
+}

@@ -1,1 +1,112 @@
-<p>caisse works!</p>
+<div class="page-layout">
+  <app-navbar></app-navbar>
+
+  <main class="main-content">
+    <section class="page-header">
+      <div>
+        <p class="eyebrow">{{ context.agencyName }}</p>
+        <h1>Gestion de caisse</h1>
+      </div>
+      <button class="btn-secondary" type="button" (click)="loadCurrentSession()" [disabled]="loading">
+        Actualiser
+      </button>
+    </section>
+
+    <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+
+    <section class="panel">
+      <div *ngIf="session; else openSection" class="cash-card">
+        <h3>Caisse ouverte</h3>
+        <div class="detail-row"><span>Agent</span> {{ session.agentName }}</div>
+        <div class="detail-row"><span>Agence</span> {{ session.agencyName }}</div>
+        <div class="detail-row"><span>Solde actuel</span> {{ session.currentBalance | number:'1.2-2' }} MAD</div>
+        <div class="detail-row"><span>Ouverte le</span> {{ session.openedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+
+        <div class="form-group">
+          <label for="countedAmount">Montant compte en caisse</label>
+          <input
+            id="countedAmount"
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="countedAmount"
+            [disabled]="loading"
+          />
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" type="button" (click)="closeSession()" [disabled]="loading">
+            {{ loading ? 'Traitement...' : 'Cloturer la caisse' }}
+          </button>
+        </div>
+      </div>
+
+      <ng-template #openSection>
+        <div class="cash-card">
+          <h3>Ouvrir une nouvelle caisse</h3>
+          <div class="detail-row"><span>Agent</span> {{ context.agentName }}</div>
+          <div class="detail-row"><span>Agence</span> {{ context.agencyName }}</div>
+
+          <div class="form-group">
+            <label for="openingBalance">Solde d'ouverture</label>
+            <div class="money-input">
+              <input
+                id="openingBalance"
+                type="number"
+                min="1"
+                step="0.01"
+                placeholder="Ex: 10000"
+                [(ngModel)]="openingBalance"
+                [disabled]="loading"
+              />
+              <span>MAD</span>
+            </div>
+            <small>Entre le montant disponible dans le tiroir avant de demarrer la journee.</small>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-primary" type="button" (click)="openSession()" [disabled]="!canOpenSession">
+              {{ loading ? 'Ouverture...' : 'Ouvrir la caisse' }}
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </section>
+
+    <section *ngIf="session" class="panel">
+      <h3>Ajouter de l'argent</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="adjustAmount">Montant</label>
+          <div class="money-input">
+            <input
+              id="adjustAmount"
+              type="number"
+              min="1"
+              step="0.01"
+              [(ngModel)]="adjustAmount"
+              [disabled]="loading"
+            />
+            <span>MAD</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="adjustReference">Reference</label>
+          <input
+            id="adjustReference"
+            type="text"
+            placeholder="Ex: Alimentation caisse"
+            [(ngModel)]="adjustReference"
+            [disabled]="loading"
+          />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" type="button" (click)="adjustSession()" [disabled]="!canAdjustSession">
+          Ajouter
+        </button>
+      </div>
+    </section>
+  </main>
+</div>

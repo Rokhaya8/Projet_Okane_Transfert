@@ -1,0 +1,85 @@
+<div class="page-layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="main-content">
+
+    <app-header
+      [pageTitle]="'Agence Okane Casablanca'"
+      [userName]="'Agent Mohamed'"
+      [userEmail]="'mohamed@okanetransfer.com'">
+    </app-header>
+
+    <div class="dashboard-container">
+
+      <div class="agent-datetime-bar" *ngIf="clock$ | async as currentDateTime">
+        <span class="material-icons date-icon">schedule</span>
+        <span class="date-day">{{ currentDateTime | date: 'dd/MM/yyyy' }}</span>
+        <span class="date-separator">•</span>
+        <span class="date-time">{{ currentDateTime | date: 'HH:mm:ss' }}</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="material-icons stat-icon">account_balance_wallet</span>
+          <div class="stat-info">
+            <h3>Solde caisse</h3>
+            <p class="stat-value">10 500 MAD</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="material-icons stat-icon">send</span>
+          <div class="stat-info">
+            <h3>Transferts aujourd'hui</h3>
+            <p class="stat-value">12</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="material-icons stat-icon">payments</span>
+          <div class="stat-info">
+            <h3>Retraits aujourd'hui</h3>
+            <p class="stat-value">8</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="material-icons stat-icon">bar_chart</span>
+          <div class="stat-info">
+            <h3>Volume du jour</h3>
+            <p class="stat-value">45 000 MAD</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="recent-operations">
+        <h3>Dernières opérations</h3>
+        <table>
+          <thead>
+          <tr>
+            <th>Code</th>
+            <th>Montant</th>
+            <th>Bénéficiaire</th>
+            <th>Statut</th>
+            <th>Date</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>AB4X9K2M</td>
+            <td>1 000 MAD</td>
+            <td>Moussa Diallo</td>
+            <td><span class="badge pending">EN_ATTENTE</span></td>
+            <td>30/05/2026</td>
+          </tr>
+          <tr>
+            <td>CD8Y7P3Q</td>
+            <td>500 MAD</td>
+            <td>Fatou Sow</td>
+            <td><span class="badge paid">PAYÉ</span></td>
+            <td>30/05/2026</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

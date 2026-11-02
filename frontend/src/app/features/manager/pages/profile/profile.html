@@ -1,0 +1,100 @@
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">Mon profil</h2>
+      <p class="page-subtitle">Informations du responsable d'agence</p>
+    </div>
+  </div>
+
+  @if (error) {
+    <div class="error-alert">{{ error }}</div>
+  }
+  @if (success) {
+    <div class="success-alert">{{ success }}</div>
+  }
+
+  @if (loading) {
+    <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+  } @else if (profile) {
+    <div class="content-card">
+      <h3>Informations</h3>
+      <div class="detail-grid mb-3">
+        <div class="detail-item"><label>Nom</label><span>{{ profile.fullName }}</span></div>
+        <div class="detail-item"><label>Email</label><span>{{ profile.email }}</span></div>
+        <div class="detail-item"><label>Téléphone</label><span>{{ profile.phone }}</span></div>
+        <div class="detail-item"><label>Agence</label><span>{{ profile.agencyName ?? '—' }}</span></div>
+        <div class="detail-item"><label>Pays</label><span>{{ profile.agencyCountry ?? '—' }}</span></div>
+      </div>
+      <button mat-stroked-button (click)="editingProfile = !editingProfile">
+        <mat-icon>edit</mat-icon>
+        Modifier le profil
+      </button>
+    </div>
+
+    @if (editingProfile) {
+      <div class="content-card">
+        <h3>Modifier le profil</h3>
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Nom complet</mat-label>
+                <input matInput formControlName="fullName" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Téléphone</mat-label>
+                <input matInput formControlName="phone" />
+              </mat-form-field>
+            </div>
+          </div>
+          <button mat-flat-button color="primary" type="submit" [disabled]="submitting">Enregistrer</button>
+        </form>
+      </div>
+    }
+
+    <div class="content-card">
+      <h3>Sécurité</h3>
+      <button mat-stroked-button (click)="editingPassword = !editingPassword">
+        <mat-icon>lock</mat-icon>
+        Changer le mot de passe
+      </button>
+    </div>
+
+    @if (editingPassword) {
+      <div class="content-card">
+        <h3>Nouveau mot de passe</h3>
+        <form [formGroup]="passwordForm" (ngSubmit)="savePassword()">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Mot de passe actuel</mat-label>
+                <input matInput type="password" formControlName="currentPassword" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Nouveau mot de passe</mat-label>
+                <input matInput type="password" formControlName="newPassword" />
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Confirmer</mat-label>
+                <input matInput type="password" formControlName="confirmNewPassword" />
+              </mat-form-field>
+            </div>
+          </div>
+          <button mat-flat-button color="primary" type="submit" [disabled]="submitting">Modifier</button>
+        </form>
+      </div>
+    }
+  }
+</div>

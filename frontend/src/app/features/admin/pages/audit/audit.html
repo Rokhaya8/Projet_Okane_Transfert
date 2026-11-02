@@ -1,1 +1,118 @@
-<p>audit works!</p>
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="title-group">
+      <div class="dots">
+        <span class="dot orange"></span>
+        <span class="dot yellow"></span>
+        <span class="dot brown"></span>
+      </div>
+      <h1 class="title">Journal d'audit</h1>
+    </div>
+    <span class="badge-count">{{ filtered.length }} entrées</span>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-bar">
+
+    <!-- Recherche texte -->
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+           fill="none" stroke="#EC9428" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        type="text"
+        placeholder="Rechercher…"
+        [(ngModel)]="searchTerm"
+        (input)="applyFilters()"
+      />
+    </div>
+
+    <!-- Filtre utilisateur -->
+    <div class="select-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+           fill="none" stroke="#EC9428" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <select [(ngModel)]="selectedUser" (change)="applyFilters()">
+        <option value="">Tous les utilisateurs</option>
+        <option *ngFor="let u of users" [value]="u">{{ u }}</option>
+      </select>
+    </div>
+
+    <!-- Filtre action -->
+    <div class="select-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+           fill="none" stroke="#EC9428" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+      </svg>
+      <select [(ngModel)]="selectedAction" (change)="applyFilters()">
+        <option value="">Toutes les actions</option>
+        <option *ngFor="let a of actions" [value]="a">{{ a }}</option>
+      </select>
+    </div>
+
+    
+
+  </div>
+
+  <!-- Erreur non bloquante -->
+  <div *ngIf="error" class="error-banner">
+    ⚠ {{ error }} — Le tableau reste affiché mais aucune donnée n'a pu être chargée.
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          
+          <th>Utilisateur</th>
+          <th>Action</th>
+          <th>IP</th>
+          <th>Date</th>
+          <th>Détails</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Chargement -->
+        <tr *ngIf="loading">
+          <td colspan="7" class="state-row">
+            <span class="spinner"></span> Chargement des données…
+          </td>
+        </tr>
+
+        <!-- Données -->
+        <tr *ngFor="let log of filtered">
+         
+          <td class="user-cell">
+            <span class="avatar">{{ (log.username ?? '?')[0].toUpperCase() }}</span>
+            {{ log.username ?? '—' }}
+          </td>
+          <td>
+            <span class="action-badge" [ngClass]="getActionClass(log.action)">
+              {{ log.action }}
+            </span>
+          </td>
+          
+          <td><span class="ip">{{ log.ipAddress }}</span></td>
+          <td class="time">{{ log.timestamp | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td class="details">{{ log.details ?? '—' }}</td>
+        </tr>
+
+        <!-- Vide -->
+        <tr *ngIf="!loading && filtered.length === 0">
+          <td colspan="7" class="state-row">
+            {{ error ? 'Aucune donnée (erreur serveur).' : 'Aucun résultat pour ces filtres.' }}
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>

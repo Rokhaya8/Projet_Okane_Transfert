@@ -1,0 +1,24 @@
+<div class="client-container">
+  <app-sidebar
+    [userRole]="'CLIENT'"
+    [isMobileMenuOpen]="isMobileMenuOpen()"
+    (requestClose)="closeMobileMenu()">
+  </app-sidebar>
+
+  <div class="client-main">
+    <app-header
+      [pageTitle]="'Dashboard Client'"
+      [userName]="userName"
+      [userEmail]="userEmail"
+      [isMobileMenuOpen]="isMobileMenuOpen()"
+      (menuToggle)="toggleMobileMenu()">
+    </app-header>
+
+    <main class="client-content">
+      <router-outlet></router-outlet>
+    </main>
+
+    <app-chatbot></app-chatbot>
+    
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<div class="page-container">
+  <div class="page-header-row">
+    <div>
+      <h2 class="page-title">Supervision des caisses</h2>
+      <p class="page-subtitle">Suivi des caisses agents de votre agence</p>
+    </div>
+    <button mat-stroked-button (click)="load()">
+      <mat-icon>refresh</mat-icon>
+      Actualiser
+    </button>
+  </div>
+
+  @if (error) {
+    <div class="error-alert">{{ error }}</div>
+  }
+
+  @if (!loading && dataSource.data.length > 0) {
+    <div class="kpi-grid summary-kpis">
+      <div class="kpi-card">
+        <div class="kpi-label">Total caisses</div>
+        <div class="kpi-value">{{ dataSource.data.length }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Ouvertes</div>
+        <div class="kpi-value">{{ openCount }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Fermées</div>
+        <div class="kpi-value">{{ closedCount }}</div>
+      </div>
+    </div>
+  }
+
+  <div class="content-card">
+    @if (loading) {
+      <div class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+    } @else if (dataSource.data.length === 0) {
+      <app-empty-state
+        icon="point_of_sale"
+        title="Aucune caisse"
+        message="Aucune caisse enregistrée pour les agents de votre agence."
+      />
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+          <ng-container matColumnDef="agentName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Agent</th>
+            <td mat-cell *matCellDef="let d">{{ d.agentName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let d"><app-badge-statut [status]="d.status" /></td>
+          </ng-container>
+          <ng-container matColumnDef="openingBalance">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Solde ouverture</th>
+            <td mat-cell *matCellDef="let d">{{ formatAmount(d.openingBalance) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="currentBalance">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Solde actuel</th>
+            <td mat-cell *matCellDef="let d">{{ formatAmount(d.currentBalance) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="closingBalance">
+            <th mat-header-cell *matHeaderCellDef>Solde clôture</th>
+            <td mat-cell *matCellDef="let d">{{ formatAmount(d.closingBalance) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="openedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ouverture</th>
+            <td mat-cell *matCellDef="let d">{{ formatDate(d.openedAt) }}</td>
+          </ng-container>
+          <ng-container matColumnDef="closedAt">
+            <th mat-header-cell *matHeaderCellDef>Fermeture</th>
+            <td mat-cell *matCellDef="let d">{{ formatDate(d.closedAt) }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons />
+      </div>
+    }
+  </div>
+</div>

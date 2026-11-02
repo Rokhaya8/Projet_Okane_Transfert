@@ -1,1 +1,133 @@
-<p>dashboard works!</p>
+<div class="dashboard-page">
+
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <!-- Transferts du jour -->
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <span class="kpi-icon"><mat-icon>send</mat-icon></span>
+        <span class="kpi-badge badge-green">+12%</span>
+      </div>
+      <div class="kpi-value">{{ transfers.length }}</div>
+      <div class="kpi-label">Transferts total</div>
+      <div class="kpi-sub">{{ todayCount }} aujourd'hui</div>
+    </div>
+
+    <!-- Volume total -->
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <span class="kpi-icon"><mat-icon>bar_chart</mat-icon></span>
+        <span class="kpi-badge badge-green">+8%</span>
+      </div>
+      <div class="kpi-value">{{ totalVolumeLabel }}</div>
+      <div class="kpi-label">Volume total</div>
+      <div class="kpi-sub">montant cumulé</div>
+    </div>
+
+    <!-- Statuts -->
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <span class="kpi-icon"><mat-icon>receipt_long</mat-icon></span>
+        <span class="kpi-badge badge-orange">{{ pendingCount }} en attente</span>
+      </div>
+      <div class="kpi-value">{{ paidCount }} / {{ transfers.length }}</div>
+      <div class="kpi-label">Transferts payés</div>
+      <div class="kpi-sub">{{ pendingCount }} en attente</div>
+    </div>
+
+    <!-- Commissions -->
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <span class="kpi-icon"><mat-icon>payments</mat-icon></span>
+        <span class="kpi-badge badge-green">+5%</span>
+      </div>
+      <div class="kpi-value">{{ totalFeesLabel }}</div>
+      <div class="kpi-label">Commissions</div>
+      <div class="kpi-sub">frais collectés</div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="charts-row">
+    <!-- Bar Chart -->
+    <div class="chart-card chart-bar-card">
+      <div class="chart-header">
+        <span class="chart-title">Volume des transactions — 30 jours</span>
+        <span class="chart-currency-badge">MAD</span>
+      </div>
+      <canvas #barCanvas width="700" height="260"></canvas>
+    </div>
+
+    <!-- Donut Chart -->
+    <div class="chart-card chart-donut-card">
+      <div class="chart-header">
+        <span class="chart-title">Top 5 agences</span>
+      </div>
+      <div class="donut-wrapper">
+        <canvas #donutCanvas width="160" height="160"></canvas>
+      </div>
+      <div class="donut-legend">
+        <div *ngFor="let s of agencyStats" class="legend-row">
+          <span class="legend-dot" [style.background]="s.color"></span>
+          <span class="legend-label">{{ s.label }}</span>
+          <span class="legend-pct">{{ s.pct }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+  <div *ngIf="!loading && errorMessage" class="error-card">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Recent Transfers Table -->
+  <div class="table-card" *ngIf="!loading && !errorMessage">
+    <div class="table-header">
+      <span class="table-title">10 dernières transactions</span>
+     
+    </div>
+    <div class="table-responsive">
+      <table class="transfers-table">
+        <thead>
+          <tr>
+            <th>RÉFÉRENCE</th>
+            <th>AGENT</th>
+            <th>BÉNÉFICIAIRE</th>
+            <th>MONTANT ENVOYÉ</th>
+            <th>MONTANT REÇU</th>
+            <th>FRAIS</th>
+            <th>AGENCE</th>
+            <th>DATE</th>
+            <th>STATUT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of recentTransfers">
+            <td class="ref-cell">{{ t.referenceCode }}</td>
+            <td>{{ t.agentName }}</td>
+            <td>{{ t.beneficiaryName }}</td>
+            <td class="amount-cell">{{ fmt(t.amountSent) }} MAD</td>
+            <td class="amount-cell secondary">{{ fmt(t.amountReceived) }}</td>
+            <td class="fees-cell">{{ fmt(t.fees) }}</td>
+            <td>{{ t.agencyName }}</td>
+            <td class="date-cell">{{ fmtDate(t.createdAt) }}</td>
+            <td>
+              <span class="badge" [ngClass]="statusClass(t.status)">
+                <span *ngIf="t.status === 'PENDING'" class="dot-pending">•</span>
+                {{ statusLabel(t.status) }}
+              </span>
+            </td>
+          </tr>
+          <tr *ngIf="recentTransfers.length === 0 && !loading">
+            <td colspan="9" class="empty-row">Aucune transaction disponible</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

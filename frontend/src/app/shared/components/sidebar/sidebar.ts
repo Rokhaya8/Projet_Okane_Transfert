@@ -1,9 +1,60 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { ClientStateService } from '../../../core/services/client-state';
+
+export interface NavItem {
+  label: string;
+  icon?: string;
+  route: string;
+}
 
 @Component({
   selector: 'app-sidebar',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
-  styleUrl: './sidebar.css',
+  styleUrl: './sidebar.css'
 })
-export class Sidebar {}
+export class Sidebar implements OnInit {
+  @Input() userRole: 'AGENT' | 'CLIENT' | 'ADMIN' | 'MANAGER' = 'AGENT';
+  @Input() isMobileMenuOpen: boolean = false;
+  @Input() title: string = 'Okane Transfer';
+  @Input() subtitle: string = '';
+  @Input() navItems: NavItem[] = [];
+  @Output() requestClose = new EventEmitter<void>();
+  @Output() navClick = new EventEmitter<void>();
+
+  private clientState = inject(ClientStateService);
+  private router = inject(Router);
+
+  get clientDashboardLink(): string {
+    const id = this.clientState.currentClient()?.id;
+    return id ? `/client/${id}/dashboard` : '/client/1/dashboard';
+  }
+
+  get clientHistoriqueLink(): string {
+    const id = this.clientState.currentClient()?.id;
+    return id ? `/client/${id}/historique` : '/client/1/historique';
+  }
+
+  get clientSuivreLink(): string {
+    const id = this.clientState.currentClient()?.id;
+    return id ? `/client/${id}/suivre-transfert` : '/client/1/suivre-transfert';
+  }
+
+  ngOnInit(): void {}
+
+  closeMenu(): void {
+    this.requestClose.emit();
+    this.navClick.emit();
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('fullName');
+    this.router.navigate(['/auth/login']);
+  }
+}

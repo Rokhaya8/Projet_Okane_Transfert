@@ -1,0 +1,14 @@
+.form-card {
+  max-width: 800px;
+}
+
+.form-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 0.5rem;
+}

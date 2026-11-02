@@ -1,1 +1,91 @@
-<p>dashboard works!</p>
+<div class="dashboard-wrapper">
+  
+  <header class="dashboard-header">
+    <h1>Bonjour, <span class="highlight">{{ clientName }}</span> .</h1>
+    <p class="subtitle">Ravi de vous revoir sur votre espace Okane Transfer.</p>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon icon-orange">
+        <span class="material-icons">send</span>
+      </div>
+      <div class="stat-info">
+        <h3>Total Envoyé</h3>
+        <p class="stat-value">{{ totalEnvoye | number:'1.2-2' }} MAD</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon icon-blue">
+        <span class="material-icons">hourglass_empty</span>
+      </div>
+      <div class="stat-info">
+        <h3>En cours de retrait</h3>
+        <p class="stat-value">{{ transfertsActifsCount }} transfert(s)</p>
+      </div>
+    </div>
+
+    <div class="stat-card profile-summary">
+      <div class="stat-icon icon-brown">
+        <span class="material-icons">account_circle</span>
+      </div>
+      <div class="stat-info">
+        <h3>Mon Profil</h3>
+        <p class="profile-email">{{ clientEmail }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-content-grid">
+    
+    <div class="content-card chart-card">
+      <div class="card-header">
+        <h2>Aperçu de vos dépenses</h2>
+        <span class="text-muted">Dernières transactions</span>
+      </div>
+      <div class="chart-container">
+        <canvas #statsChart></canvas>
+      </div>
+    </div>
+
+    <div class="content-card table-card">
+      <div class="card-header">
+        <h2>Transferts récents</h2>
+        <a [routerLink]="'/client/' + currentClientId + '/historique'" class="btn-link">Voir tout</a>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Référence</th>
+              <th>Bénéficiaire</th>
+              <th>Montant</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trx of recentTransferts">
+              <td class="text-bold">{{ trx.referenceCode }}</td>
+              <td>{{ trx.beneficiary?.fullName || 'Inconnu' }}</td>
+              <td class="text-bold">{{ trx.amountSent | number:'1.2-2' }} MAD</td>
+              <td>
+                <span class="badge" [ngClass]="getStatutClass(trx.status)">
+                  {{ getStatutLabel(trx.status) }}
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="recentTransferts.length === 0">
+              <td colspan="4" style="text-align: center; color: var(--text-muted);">
+                Aucun transfert récent trouvé.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</div>
