@@ -1,4 +1,4 @@
-# Okane Transfer — Money Transfer Management Platform
+# Okane Transfer - Money Transfer Management Platform
 
 Web platform for national and international money transfers, in the spirit of Western
 Union or MoneyGram. Agents send and pay out transfers at the counter, managers supervise
